@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 set :application, "agsexplorer"
-set :server_name, "www.agsexplorer.com agsexplorer.com *.agsexplorer.com"
+set :server_name, "www1.agsexplorer.com www.agsexplorer.com agsexplorer.com *.agsexplorer.com"
 set :domain,      "180.153.142.123" #ey180
 set :repository,  "git@github.com:AlexChien/agsexplorer.git"
 set :use_sudo,    false
