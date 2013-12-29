@@ -15,6 +15,12 @@ gem "whenever", :require => false #it's not required in our application directly
 gem 'cancan'
 gem 'will_paginate-bootstrap'
 
+gem "cocaine", "0.3.2"
+
+gem 'sprockets'
+gem 'execjs'
+gem 'therubyracer'
+
 
 # Gems used only for assets and not required
 # in production environments by default.
