@@ -1,0 +1,11 @@
+@import 'twitter_bootstrap_override';
+@import 'social_cn';
+
+$title_font: "Microsoft YaHei","Hiragino Sans GB",\9ed1\4f53,arial,sans-serif;
+$content_font: Helvetica, STHeiti STXihei, Microsoft JhengHei, Microsoft YaHei, Tohoma, Arial;;
+
+#footer{
+  margin-top:1.2em;
+  dt { width:60px; }
+  dd { margin-left:80px; }
+}

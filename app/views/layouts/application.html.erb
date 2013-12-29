@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title><%= html_title %></title>
+  <meta name="description" content="<%= html_description %>" />
+  <meta name="keyword" content="<%= html_keyword %>" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Fav and touch icons -->
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/assets/site_icon/apple-touch-icon-144-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/assets/site_icon/apple-touch-icon-114-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/assets/site_icon/apple-touch-icon-72-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" href="/assets/site_icon/apple-touch-icon-57-precomposed.png">
+  <link rel="shortcut icon" href="<%#= image_path "site_icon/favicon.png" %>"> -->
+
+  <%= stylesheet_link_tag "application", :media => "all" %>
+  <!--[if lte IE 7]>
+    <%= stylesheet_link_tag "ie", :media => "all" %>
+  <![endif]-->
+
+  <%= csrf_meta_tags %>
+  <%= yield :header_css %>
+</head>
+<body id="<%= page_id %>">
+
+  <%= render :partial => 'shared/header' %>
+
+  <div class="container">
+    <%= raw flash_message %>
+
+    <%= yield :content  %>
+    <%= yield %>
+  </div>
+
+  <%= render :partial => "shared/footer" %>
+
+  <%= javascript_include_tag "application" %>
+
+  <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <!--[if lt IE 7]>
+    <script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE7.js"></script>
+    <script type="text/javascript" charset="utf-8">
+      // bootstrap-ie6
+      $.browser = {};
+      $.browser.mozilla = /firefox/.test(navigator.userAgent.toLowerCase());
+      $.browser.webkit = /webkit/.test(navigator.userAgent.toLowerCase());
+      $.browser.opera = /opera/.test(navigator.userAgent.toLowerCase());
+      $.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
+      if($.browser.msie&&parseInt($.browser.version,10)===6){$('.row div[class^="span"]:last-child').addClass("last-child");$('[class*="span"]').addClass("margin-left-20");$(':button[class="btn"], :reset[class="btn"], :submit[class="btn"], input[type="button"]').addClass("button-reset");$(":checkbox").addClass("input-checkbox");$('[class^="icon-"], [class*=" icon-"]').addClass("icon-sprite");$(".pagination li:first-child a").addClass("pagination-first-child")}
+
+      var dialog = '<div class="alert" style="text-align:center;margin-bottom:0px; margin-top:30px;"><span class="text-warning">为了不影响使用体验，请使用更现代的浏览器。我们向您推荐 <a href="http://www.baidu.com/s?wd=google+chrome" target=_blank>Google Chrome 浏览器</a>。</span><button class="btn" data-dismiss="alert">x</button></div';
+      $('#top').prepend(dialog);
+    </script>
+  <![endif]-->
+
+  <%= yield :footer_js %>
+
+  <%= render :partial => "shared/ga" if Rails.env.production? %>
+
+</body>
+</html>
