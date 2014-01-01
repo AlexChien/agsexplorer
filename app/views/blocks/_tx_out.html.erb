@@ -1,0 +1,24 @@
+<%
+addr = tx_out.get_address
+cls = if (@address && addr == @address) || (params[:idx].present? && params[:idx] == tx_out.tx_idx.to_s)
+  "label label-important"
+else
+  ""
+end
+%>
+<div>
+<%= link_to addr, address_path(network, addr), :class => cls %>
+<span class="pull-right hidden-phone">
+  <span data-c="<%= tx_out.value %>" data-time="<%= block.time %>">
+    <%= display_currency(tx_out.value, network) %>
+  </span>
+</span>
+</div>
+
+<% if @address && addr == @address %>
+<% content_for :footer_js do -%>
+$(function(){
+  $('#tx-totalout-<%= tx_out.get_tx.id %>').removeClass('btn-success').addClass('btn-danger');
+});
+<% end -%>
+<% end %>

@@ -1,0 +1,21 @@
+<%
+prev_out = tx_in.get_prev_out
+addr     = prev_out.get_address
+cls = if @address && addr == @address
+  "label label-important"
+else
+  ""
+end
+%>
+<span>
+<%= link_to addr, address_path(network, addr), :class => cls %> (<%= display_currency(prev_out.value) %>
+<%= link_to "Output", index_tx_path(network, prev_out.tx_id, tx_in.prev_out_index) %>)
+</span>
+
+<% if @address && addr == @address %>
+<% content_for :footer_js do -%>
+$(function(){
+  $('#tx-totalout-<%= tx_in.get_tx.id %>').removeClass('btn-danger').addClass('btn-success');
+});
+<% end -%>
+<% end %>

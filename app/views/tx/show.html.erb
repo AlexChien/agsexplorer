@@ -1,0 +1,58 @@
+<h2><%= @network.upcase %> Transactions <small>Transactions contained within this block</small></h2>
+<%= render partial: 'blocks/tx', collection: [@tx], as: 'tx', :locals => { :network => @network, :block => @block }  %>
+
+<div class="row-fluid">
+  <div class="span6">
+    <table class="table table-striped">
+      <tbody>
+        <tr>
+          <th colspan="2">Summary</th>
+        </tr>
+        <tr>
+          <td>Size</td>
+          <td><%= number_to_human_size(@tx.size.bytes) %></td>
+        </tr>
+
+        <tr>
+          <td>Received Time</td>
+          <td><%= display_time(@block.time) %></td>
+        </tr>
+
+        <tr>
+          <td>Included In Blocks</td>
+          <td>
+            <%= link_to @block.depth, height_block_path(@network, @block.depth) %> (<%= display_time(@block.time) %>) <br>
+
+          </td>
+        </tr>
+        <tr>
+          <td>Confirmations</td>
+          <td><%= number_with_delimiter(@tx.confirmations) %> Confirmations</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <div class="span6">
+    <table class="table table-striped">
+      <tbody>
+        <tr>
+          <th colspan="2">Inputs and Outputs</th>
+        </tr>
+        <tr>
+          <td>Total Input</td>
+          <td><span data-c="<%= @tx.total_in %>" data-time="<%= @block.time %>"><%= display_currency(@tx.total_in, @network) %></span></td>
+        </tr>
+        <tr>
+          <td>Total Output</td>
+          <td><span data-c="<%= @tx.total_out %>" data-time="<%= @block.time %>"><%= display_currency(@tx.total_out, @network) %></span></td>
+        </tr>
+        <tr>
+          <td>Fees</td>
+          <td><span data-c="<%= @tx.fee %>" data-time="<%= @block.time %>"><%= display_currency(@tx.fee, @network) %></span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

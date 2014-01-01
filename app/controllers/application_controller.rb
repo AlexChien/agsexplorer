@@ -8,6 +8,29 @@ class ApplicationController < ActionController::Base
     render_403
   end
 
+  # parse work from request param
+  def get_network(str = nil)
+    return false if str.nil?
+
+    case str.downcase
+    when "btc","bitcoin"
+      @network = :bitcoin
+    when "pts","protoshare"
+      @network = :protoshare
+    else
+      false
+    end
+  end
+
+  def get_store
+    if @network = get_network(params[:network])
+      backend, config = APP_CONFIG[@network]["storage"].split("::")
+      @store = Bitcoin::Storage.send(backend, { db: config, cache_head: true })
+    else
+      return false
+    end
+  end
+
   def render_403(options={})
     options.merge(:layout => !request.xhr?)
     respond_to do |format|

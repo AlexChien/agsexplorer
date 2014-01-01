@@ -1,0 +1,40 @@
+<% block = tx.get_block if block.nil? %>
+<div id="tx_<%= tx.id %>" class="txdiv" style="padding-top:10px;">
+  <table class="table table-striped" cellpadding="0" cellspacing="0" style="padding:0px;float:left;margin:0px;width:100%">
+    <tbody>
+      <tr>
+        <th colspan="3" align="left">
+          <%= link_to tx.hash, tx_path(network, tx.hash) %>
+          <span class="pull-right">
+            <span class="hidden-phone">
+              (Size: <%= number_to_human_size(tx.size.bytes) %> | Fee: <%= display_currency(tx.fee, network) %>)
+            </span>
+            <%= display_time(block.time) %>
+          </span>
+        </th>
+      </tr>
+      <tr>
+        <td width="500px" class="txtd hidden-phone">
+          <% if tx.is_coinbase? %>
+          <b>No Inputs (Newly Generated Coins)</b>
+          <% else %>
+            <%= render :partial => 'blocks/tx_in', :collection => tx.in, :as => "tx_in", :locals => { :network => network, :block => block } %>
+          <% end %>
+        </td>
+        <td width="48px" class="hidden-phone" style="padding:4px;text-align:center;vertical-align:middle;">
+          <i class="icon-arrow-right">=></i>
+        </td>
+        <td class="txtd">
+          <%= render :partial => 'blocks/tx_out', :collection => tx.out, :as => "tx_out", :locals => { :network => network, :block => block } %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="padding-bottom:30px;width:100%;text-align:right;clear:both">
+    <button class="btn cb" id="tx-totalout-<%= tx.id %>">
+      <span data-c="<%= tx.total_out %>" data-time="<%= block.time %>">
+        <%= display_currency(tx.total_out, network) %>
+      </span>
+    </button>
+  </div>
+</div>

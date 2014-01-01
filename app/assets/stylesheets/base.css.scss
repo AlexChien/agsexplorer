@@ -4,8 +4,14 @@
 $title_font: "Microsoft YaHei","Hiragino Sans GB",\9ed1\4f53,arial,sans-serif;
 $content_font: Helvetica, STHeiti STXihei, Microsoft JhengHei, Microsoft YaHei, Tohoma, Arial;;
 
+body {
+  font-size:13px; padding-top:50px;
+}
+
+.chart { min-height:400px; }
+
 #footer{
-  margin-top:1.2em;
+  margin-top:1.2em; padding-top:1.2em; border-top:1px solid #ccc;
   dt { width:60px; }
   dd { margin-left:80px; }
 }

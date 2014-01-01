@@ -1,0 +1,57 @@
+<h1><%= @network.upcase %> Address</h1>
+<h4><%= @address %></h4>
+<div class="row-fluid">
+  <div class="span5">
+    <table class="table table-striped">
+      <tbody>
+        <tr>
+          <th colspan="2">Summary</th>
+        </tr>
+        <tr>
+          <td>Address</td>
+          <td><%= link_to @address, address_path(@network, @address) %></td>
+        </tr>
+        <tr>
+          <td>Hash 160</td>
+          <td><%= link_to @hash160, address_path(@network, @hash160) %></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="span4" style="overflow:visible;">
+    <table class="table table-striped">
+      <tbody><tr>
+        <th colspan="3">Transactions</th>
+      </tr>
+      <tr>
+        <td>No. Transactions</td>
+        <td id="n_transactions">4</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Total Received</td>
+        <td id="total_received"><font color="green"><span><%= display_currency(@store.get_received(@address), @network) %></span></font></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Final Balance</td>
+        <td id="final_balance"><font color="green"><span><%= display_currency(@store.get_balance(@address), @network) %></span></font></td>
+        <td></td>
+      </tr>
+    </tbody></table>
+
+    <div style="width:420px">
+      <button class="btn" id="payment-request">Request Payment</button> <button class="btn" id="create-donation-button">Donation Button</button>
+    </div>
+  </div>
+
+  <div class="span3" align="center">
+    <% if is_btc?(@network) %>
+      <img src="http://blockchain.info/qr?data=<%= @address %>&size=200">
+    <% end %>
+  </div>
+</div>
+
+<h2>Transactions</h2>
+<%= render partial: 'blocks/tx', collection: @txs, as: 'tx', :locals => { :network => @network }  %>

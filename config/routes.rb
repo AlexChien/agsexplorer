@@ -1,5 +1,17 @@
 Agsexplorer::Application.routes.draw do
+
   match 'home' => 'home#index'
+
+  # blocks
+  get ':network/blocks/:hash' => 'blocks#show_by_hash', as: :block
+  get ':network/blocks-height/:height' => 'blocks#show_by_height', as: :height_block
+
+  # tx
+  get ':network/tx/:hash' => 'tx#show_by_hash', as: :tx
+  get ':network/tx-index/:tx_id(/:idx)' => 'tx#show_by_id', as: :index_tx
+  # address
+  get ':network/address/:address' => 'addresses#show', as: :address
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

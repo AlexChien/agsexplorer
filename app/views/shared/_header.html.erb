@@ -1,4 +1,4 @@
-<div id="top" class="navbar  navbar-static-top">
+<div id="top" class="navbar  navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
       <a class="brand" href="/" title="Angel Shares Explorer"><span class="brand-name">Angel Shares Explorer</span></a>
@@ -9,7 +9,7 @@
           <li><a href="#">BTS</a></li>
         </ul>
         <div class="nav pull-right">
-          <p class="navbar-text">UTC: 2012-12-30 12:30:12</p>
+          <p class="navbar-text">UTC: <span id="utc_now"><%= display_time(Time.now) %></span></p>
         </div>
       </div>
     </div>

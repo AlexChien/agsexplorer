@@ -1,0 +1,99 @@
+<h1><%= @network.upcase %> Block #<%= @block.depth %></h1>
+<h4><%= @block.hash %></h4>
+<div class="row-fluid">
+  <div class="span6">
+    <table class="table table-striped table-condensed table-hover">
+      <tbody><tr>
+        <th colspan="2">Summary</th>
+      </tr>
+      <tr>
+        <td>Number Of Transactions</td>
+        <td><%= @block.tx.count %></td>
+      </tr>
+      <tr>
+        <td>Output Total</td>
+        <td><span data-c="<%= @block.total_out %>" data-time="<%= @block.time %>"><%= display_currency(@block.total_out, @network) %></span></td>
+      </tr>
+      <tr>
+        <td>Transaction Fees</td>
+        <td><span data-c="<%= @block.total_fee %>" data-time="<%= @block.time%>" data-original-title=""><%= display_currency(@block.total_fee, @network) %></span></td>
+      </tr>
+      <tr>
+        <td>Height</td>
+        <td><%= link_to @block.depth, block_path(@network, @block.depth) %></td>
+      </tr>
+      <tr>
+        <td>Timestamp</td>
+        <td><%= display_time(@block.time) %></td>
+      </tr>
+      <tr>
+        <td>Difficulty</td>
+        <td><%= number_with_delimiter @block.difficulty %></td>
+      </tr>
+      <tr>
+        <td>Bits</td>
+        <td><%= @block.bits %></td>
+      </tr>
+      <tr>
+        <td>Size</td>
+        <td><%= number_to_human_size(@block.size.bytes) %></td>
+      </tr>
+      <tr>
+        <td>Version</td>
+        <td><%= @block.ver %></td>
+      </tr>
+      <tr>
+        <td>Nonce</td>
+        <td><%= @block.nonce %></td>
+      </tr>
+      <tr>
+        <td>Block Reward</td>
+        <td><span data-c="<%= Bitcoin.block_creation_reward(@block.depth) %>" data-time="<%= @block.time %>"><%= display_currency(Bitcoin.block_creation_reward(@block.depth), @network) %></span></td>
+      </tr>
+    </tbody></table>
+  </div>
+
+  <div class="span6">
+    <table class="table table-striped table table-hover">
+      <tbody><tr>
+        <th colspan="2">Hashes</th>
+      </tr>
+      <tr>
+        <td>Hash</td>
+        <td><%= link_to @block.hash, block_path(@network, @block.hash), class: "hash-link" %></td>
+      </tr>
+      <tr>
+
+        <td>Previous Block</td>
+        <td>
+          <%= link_to @block.prev_block.reverse_hth, block_path(@network, @block.prev_block.reverse_hth), class: "hash-link" unless @block.hash == Bitcoin.network[:genesis_hash] %>
+        </td>
+      </tr>
+      <tr>
+        <td>Next Block(s)</td>
+        <td><%= link_to @block.get_next_block.hash, block_path(@network, @block.get_next_block.hash), class: "hash-link" %></td>
+      </tr>
+      <tr>
+        <td>Merkle Root</td>
+        <td class="hash-link"><%= @block.mrkl_root.reverse_hth %></td>
+      </tr>
+    </tbody></table>
+
+    <% if false %>
+    <table class="table table-striped">
+      <tbody><tr>
+        <th colspan="2">Network Propagation <a href="/inv/<%= @block.hash %>">(Click To View)</a></th>
+      </tr>
+      <tr>
+        <td style="text-align:center"><a href="/inv/<%= @block.hash %>"><img src="https://maps.googleapis.com/maps/api/staticmap?center=0.0,0.0&amp;zoom=4&amp;size=480x180&amp;maptype=roadmap&amp;markers=0.0,0.0&amp;sensor=false"></a></td>
+      </tr>
+    </tbody></table>
+    <% end %>
+
+  </div>
+
+</div>
+
+
+<h2>Transactions <small>Transactions contained within this block</small></h2>
+<%= render partial: 'tx', collection: @block.tx, as: 'tx', :locals => { :network => @network, :block => @block }  %>

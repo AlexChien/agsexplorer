@@ -57,4 +57,30 @@ module ApplicationHelper
     end
     path.gsub(/^\//,'').gsub("/",'_')
   end
+
+  def display_time(timestamp)
+    Time.at(timestamp).utc.to_s(:db)
+  end
+
+  def display_currency(satoshi, currency = "bitcoin")
+    symbol = network_short_name(currency)
+    satoshi == 0 ? "0 #{symbol}" : "#{satoshi / Bitcoin::COIN.to_f} #{symbol}"
+  end
+
+  def network_short_name(network = "bitcoin")
+    case network.to_sym
+    when :btc, :bitcoin
+      "BTC"
+    when :pts, :protoshare
+      "PTS"
+    end
+  end
+
+  def is_btc?(network)
+    network_short_name(network) == "BTC"
+  end
+
+  def is_pts?(network)
+    network_short_name(network) == "PTS"
+  end
 end
