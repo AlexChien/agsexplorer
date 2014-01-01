@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: https://github.com/AlexChien/bitcoin-ruby
-  revision: ee4567394adf5c2607cc667cc875548a21184f2d
+  revision: 0a83ae4980a3e49fb018561d9cdbf85b92778041
   branch: master
   specs:
     bitcoin-ruby (0.0.4)
