@@ -21,6 +21,12 @@ gem 'sprockets'
 gem 'execjs'
 gem 'therubyracer'
 
+gem 'bitcoin-ruby', git: 'https://github.com/AlexChien/bitcoin-ruby', branch: 'master', require: 'bitcoin'
+gem 'eventmachine'
+gem 'sequel'
+gem 'sqlite3', :platforms => :ruby, :require => false
+gem 'pg', :platforms => :ruby, :require => false
+gem "em-dns"
 
 # Gems used only for assets and not required
 # in production environments by default.
