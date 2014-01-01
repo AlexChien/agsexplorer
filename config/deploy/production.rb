@@ -88,6 +88,7 @@ namespace :deploy do
   task :database_yml, :roles => [:web] do
     db_config = "#{shared_path}/config/database.yml.production"
     run "cp #{db_config} #{release_path}/config/database.yml"
+    run "cp #{shared_path}/config/app_config.yml.production #{release_path}/config/app_config.yml"
   end
 
   namespace :assets do

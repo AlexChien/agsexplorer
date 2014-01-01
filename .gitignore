@@ -25,6 +25,7 @@ config/*.sphinx.conf
 .sass-cache
 /config/config.yml
 /config/database.yml
+/config/app_config.yml
 /coverage/
 coverage.data
 /db/*.javadb/
