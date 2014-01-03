@@ -28,6 +28,8 @@ gem 'sqlite3', :platforms => :ruby, :require => false
 gem 'pg', :platforms => :ruby, :require => false
 gem "em-dns"
 
+gem 'rest-client', :require => 'restclient'
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
