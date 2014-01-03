@@ -1,3 +1,26 @@
+<% content_for :footer_js do -%>
+<script type="text/javascript" charset="utf-8">
+var chart_data = <%= @daily_data.to_json.html_safe %>;
+var span = Math.max(chart_data.btc.length, chart_data.pts.length)
+
+var s_btc_avg = Array(span+1).join(chart_data.btc_avg+'/').split('/').map(function(c){return Number(c);});
+s_btc_avg.pop();
+var s_pts_avg = Array(span+1).join(chart_data.pts_avg+'/').split('/').map(function(c){return Number(c);});
+s_pts_avg.pop();
+
+var s_date = [];
+var s_btc = [];
+var s_pts = [];
+for (var i = 0; i < chart_data.btc.length; i++) {
+  s_date.push(chart_data.btc[i].date);
+  s_btc.push(chart_data.btc[i].amount);
+  s_pts.push(chart_data.pts[i].amount);
+}
+
+
+</script>
+
+<% end -%>
 <h1>Overview</h1>
 <div class="row-fluid">
   <div class="span6">
@@ -8,13 +31,18 @@
   </div>
 </div>
 
-<h1>Charts</h1>
+<h1>Charts </h1>
 <div class="row-fluid">
-  <div id="btc-chart-container" class="span6 chart"></div>
-  <div id="pts-chart-container" class="span6 chart"></div>
+  <div id="chart-container" class="span12"></div>
+  <p>Donations made before 2014 are counted as day 1 (2014-01-01) donation.</p>
 </div>
 
-<h1>Latest AGS Blocks <small>Most recent blocks containing AGS investment transactions</small></h1>
+<h1>Today's Donation</h1>
+<div class="row-fluid">
+
+</div>
+
+<!-- <h1>Latest AGS Blocks <small>Most recent blocks containing AGS investment transactions</small></h1>
 <div class="row-fluid">
   <div id="btc-chart-container" class="span6">
     <%= render :partial => "blocks/tx", :collection => [], :as => 'tx' %>
@@ -22,4 +50,4 @@
   <div id="pts-chart-container" class="span6">
     <%#= render :partial => "blocks/tx", :collection => [], :as => 'tx' %>
   </div>
-</div>
+</div> -->

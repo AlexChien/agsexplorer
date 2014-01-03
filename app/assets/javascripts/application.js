@@ -45,47 +45,98 @@ $(function(){
 
   // draw charts
   if ($('body').attr('id') == 'home') {
-    drawChart('#btc-chart-container', 'btc', []);
-    drawChart('#pts-chart-container', 'pts', []);
+    drawChart('#chart-container', []);
   }
 
 });
 
-function drawChart(container, network, data){
+function drawChart(container, data){
   $(container).highcharts({
+    chart: {
+      zoomType: 'xy'
+    },
     title: {
-      text: 'Daily Investment: ' + network.toUpperCase(),
+      text: 'Daily Investment',
       x: -20 //center
     },
+    subtitle: {
+      text: 'BTC vs PTS'
+    },
     xAxis: {
-      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      categories: s_date
     },
-    yAxis: {
+    yAxis: [{
       title: {
-        text: 'Amount Invested (' + network.toUpperCase() + ')'
+        text: 'Amount Invested (BTC)'
       },
-      plotLines: [{
-        value: 0,
-        width: 1,
-        color: '#808080'
-      }]
+      labels: {
+        format: '{value} BTC',
+        style: {
+          color: '#99443E'
+        }
+      }
     },
+    {
+      title: {
+        text: 'Amount Invested (PTS)'
+      },
+      labels: {
+        format: '{value} PTS',
+        style: {
+          color: '#4572A7'
+        }
+      },
+      opposite: true
+    }],
     tooltip: {
-      valueSuffix: '°C'
+      shared: true
     },
     legend: {
       layout: 'vertical',
-      align: 'right',
-      verticalAlign: 'middle',
-      borderWidth: 0
+      align: 'left',
+      x: 90,
+      verticalAlign: 'top',
+      y: 30,
+      floating: true,
+      backgroundColor: '#FFFFFF'
     },
     series: [{
-      name: 'Daily Avg. Investment',
-      data: [9,9,9,9,9,9,9,9,9,9,9,9]
-    }, {
-      name: 'Investment',
-      data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+      name: 'Daily BTC Investment',
+      color: '#99443E',
+      type: 'column',
+      tooltip: {
+        valueSuffix: ' BTC'
+      },
+      data: s_btc
+    },
+    {
+      name: 'Daily BTC Average',
+      color: '#99443E',
+      type: 'spline',
+      tooltip: {
+        valueSuffix: ' BTC'
+      },
+      data: s_btc_avg
+    },
+    {
+      name: 'Daily PTS Investment',
+      color: '#4572A7',
+      type: 'column',
+      yAxis: 1,
+      tooltip: {
+        valueSuffix: ' PTS'
+      },
+      data: s_pts
+    },
+    {
+      name: 'Daily PTS Average',
+      color: '#4572A7',
+      type: 'spline',
+      yAxis: 1,
+      tooltip: {
+        valueSuffix: ' PTS'
+      },
+      data: s_pts_avg
     }]
   });
 }

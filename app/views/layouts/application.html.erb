@@ -59,9 +59,7 @@
     </script>
   <![endif]-->
 
-    <script type="text/javascript" charset="utf-8">
-      <%= yield :footer_js %>
-    </script>
+  <%= yield :footer_js %>
 
   <%= render :partial => "shared/ga" if Rails.env.production? %>
 
