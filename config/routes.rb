@@ -3,8 +3,8 @@ Agsexplorer::Application.routes.draw do
   match 'home' => 'home#index'
 
   # blocks
-  get ':network/blocks/:hash' => 'blocks#show_by_hash', as: :block
-  get ':network/blocks-height/:height' => 'blocks#show_by_height', as: :height_block
+  get ':network/block/:hash' => 'blocks#show_by_hash', as: :block
+  get ':network/block-height/:height' => 'blocks#show_by_height', as: :height_block
 
   # tx
   get ':network/tx/:hash' => 'tx#show_by_hash', as: :tx
