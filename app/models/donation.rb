@@ -44,8 +44,8 @@ class Donation < ActiveRecord::Base
         total = (total.to_f * 100_000_000).round #store in satoshi
         rate = (rate.to_f * 100_000_000).round #store in satoshi
 
-        if height.to_i >= highest_block and !Donation.exists?(block_height: height, time: time, address: addr, amount: amount, network: @network, rate: rate)
-          Donation.create(block_height: height, time: time, address: addr, amount: amount, network: @network, rate: rate)
+        if height.to_i >= highest_block and !Donation.exists?(block_height: height, time: time, address: addr, amount: amount, network: @network, rate: rate, total: total)
+          Donation.create(block_height: height, time: time, address: addr, amount: amount, network: @network, rate: rate, total: total)
         end
       end
     end
