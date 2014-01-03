@@ -1,5 +1,5 @@
 class Donation < ActiveRecord::Base
-  attr_accessible :address, :amount, :block_height, :network, :time, :rate
+  attr_accessible :address, :amount, :block_height, :network, :time, :rate, :total
 
   scope :btc, where(network: 'btc')
   scope :pts, where(network: 'pts')
