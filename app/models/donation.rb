@@ -5,10 +5,19 @@ class Donation < ActiveRecord::Base
   scope :pts, where(network: 'pts')
   scope :date_grouping, select("network, date(time) as day, sum(amount) as total").group("network, date(time)").order("network, date(time)")
 
+  def self.today_donations
+    today = Time.now.utc.to_date
+    where("time > ? and time < ?", today, today.tomorrow).order("time desc")
+  end
+
   # specific date's date
   # TODO: Day 1
   def self.by_date(date = Time.now.utc.to_date)
     date_grouping.where("time > ? and time < ?", date, date.tomorrow)
+  end
+
+  def self.today_donated(network)
+    date_grouping.by_date.where(network: network).try(:first).try(:total)
   end
 
   # daily data series
@@ -19,7 +28,7 @@ class Donation < ActiveRecord::Base
     date_grouping.each do |d|
       next if d.attributes.keys.any?{ |key| d[key].blank? }
 
-      total = (d.total / 100_000_000).to_i
+      total = d.total.to_i
       data["#{d.network}_total".to_sym] += total
 
       if Date.parse(d.day) < Date.parse('2014-01-01')
@@ -54,7 +63,7 @@ class Donation < ActiveRecord::Base
     %w(btc pts).map{ |n| parse(n) }
   end
 
-  def self.parse(network = "btc")
+  def self.parse(network = "btc", url = nil)
     @network = case network.to_s
     when "bitcoin"
       "btc"
@@ -64,13 +73,13 @@ class Donation < ActiveRecord::Base
       "btc"
     end
 
-    url = "http://q39.qhor.net/ags/{network}.txt?#{Time.now.to_i}".gsub('{network}', network)
+    url ||= "http://q39.qhor.net/ags/{network}.txt?#{Time.now.to_i}".gsub('{network}', network)
 
     begin
       RestClient.get(url){ |response, request, result, &block|
         case response.code
         when 200
-          parse_response(response)
+          parse_response(response, network)
         else
           response.return!(request, result, &block)
         end
@@ -80,7 +89,7 @@ class Donation < ActiveRecord::Base
     end
   end
 
-  def self.parse_response(response)
+  def self.parse_response(response, network = 'btc')
     highest_block = Donation.where(network: @network).maximum(:block_height).to_i
 
     response.each_line do |line|
@@ -90,8 +99,8 @@ class Donation < ActiveRecord::Base
         total = (total.to_f * 100_000_000).round #store in satoshi
         rate = (rate.to_f * 100_000_000).round #store in satoshi
 
-        if height.to_i >= highest_block and !Donation.exists?(block_height: height, time: time, address: addr, amount: amount, network: @network, rate: rate, total: total)
-          Donation.create(block_height: height, time: time, address: addr, amount: amount, network: @network, rate: rate, total: total)
+        if height.to_i >= highest_block and !Donation.exists?(block_height: height, time: time, address: addr, amount: amount, network: network, rate: rate, total: total)
+          Donation.create(block_height: height, time: time, address: addr, amount: amount, network: network, rate: rate, total: total)
         end
       end
     end

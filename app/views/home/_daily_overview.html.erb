@@ -5,47 +5,35 @@
       <th colspan="2">Today</th>
     </tr>
     <tr>
-      <td>Donated</td>
-      <td><%= donated_today(network) %></td>
+      <td>Total Donated <small>(so far)</small></td>
+      <td><%= dcp(donated_today(network), network) %></td>
     </tr>
     <tr>
       <td>Avg. Daily Donation</td>
-      <td><%= @daily_data["#{network}_avg".to_sym] %></td>
+      <td><%= dcp(@daily_data["#{network}_avg".to_sym], network) %></td>
     </tr>
     <tr>
-      <td>Advantage</td>
-      <td></td>
+      <td>Current Price <small>est.</small></td>
+      <td><%= dcp(Ags.daily_issue.to_f / donated_today(network) * Ags::COIN, network).gsub(network.to_s.upcase, "AGS / #{network.to_s.upcase}").html_safe %></td>
+    </tr>
+    <tr>
+      <td>Donation Efficiency</td>
+      <td><span id="<%= network %>_e" class="label">100%</span></td>
     </tr>
     <tr>
       <td>AGS to Issue</td>
-      <td><%= Ags.daily_issue(network) %></td>
+      <td><%= dcp(Ags.daily_issue(network), "ags") %></td>
     </tr>
     <tr>
       <th colspan="2">Summary</th>
     </tr>
     <tr>
       <td>Total Donated</td>
-      <td><%= @daily_data["#{network}_total".to_sym] %></td>
+      <td><%= dcp(@daily_data["#{network}_total".to_sym], network) %></td>
     </tr>
     <tr>
       <td>Total AGS Rewarded</td>
-      <td><%= Ags.issued(network) %></td>
-    </tr>
-    <tr>
-      <th colspan="2">Calculater</th>
-    </tr>
-    <tr>
-      <td>I want to donate</td>
-      <td>
-        <form class="form-inline">
-          <input type="text" class="input-small" placeholder="Amount">
-          <button type="submit" class="btn">Calculate</button>
-        </form>
-      </td>
-    </tr>
-    <tr>
-      <td>Percentage / AGS to obtain<small>EST.</small></td>
-      <td>13.2% / 23</td>
+      <td><%= dcp(Ags.issued(network), "ags") %></td>
     </tr>
   </tbody>
 </table>

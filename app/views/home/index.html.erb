@@ -3,21 +3,43 @@
 var chart_data = <%= @daily_data.to_json.html_safe %>;
 var span = Math.max(chart_data.btc.length, chart_data.pts.length)
 
-var s_btc_avg = Array(span+1).join(chart_data.btc_avg+'/').split('/').map(function(c){return Number(c);});
-s_btc_avg.pop();
-var s_pts_avg = Array(span+1).join(chart_data.pts_avg+'/').split('/').map(function(c){return Number(c);});
-s_pts_avg.pop();
+for (var i = 0; i < ags.neworks.length; i++) {
+  var c = ags.neworks[i];
 
-var s_date = [];
-var s_btc = [];
-var s_pts = [];
-for (var i = 0; i < chart_data.btc.length; i++) {
-  s_date.push(chart_data.btc[i].date);
-  s_btc.push(chart_data.btc[i].amount);
-  s_pts.push(chart_data.pts[i].amount);
+  ags['s_'+c+'_avg'] = Array(span+1).join(chart_data[c+'_avg']+'/').split('/').map(function(c){return Number(c/100000000);});
+  ags['s_'+c+'_avg'].pop();
+  ags['s_'+c] = [];
+  for (var j = 0; j < chart_data[c].length; j++) {
+    ags['s_'+c].push(chart_data[c][j].amount/100000000);
+  }
+
+  // current price
+  ags['price_btc'] = <%= Ags.daily_issue.to_f / donated_today(:btc) * Ags::COIN %>;
+  ags['price_pts'] = <%= Ags.daily_issue.to_f / donated_today(:pts) * Ags::COIN %>;
 }
 
+var l_date_c = 'btc';
+if (chart_data.btc.length < chart_data.pts.length) {
+  l_data_c = 'pts';
+}
+for (var i = 0; i < chart_data[l_date_c].length; i++) {
+  ags.s_date = chart_data[l_date_c][i].date
+}
 
+// var s_btc_avg, s_pts_avg, s_date, s_btc, s_pts;
+// var s_btc_avg = Array(span+1).join(chart_data.btc_avg+'/').split('/').map(function(c){return Number(c/100000000);});
+// s_btc_avg.pop();
+// var s_pts_avg = Array(span+1).join(chart_data.pts_avg+'/').split('/').map(function(c){return Number(c/100000000);});
+// s_pts_avg.pop();
+//
+// var s_date = [];
+// var s_btc = [];
+// var s_pts = [];
+// for (var i = 0; i < chart_data.btc.length; i++) {
+//   s_date.push(chart_data.btc[i].date);
+//   s_btc.push(chart_data.btc[i].amount/100000000);
+//   s_pts.push(chart_data.pts[i].amount/100000000);
+// }
 </script>
 
 <% end -%>
@@ -39,7 +61,8 @@ for (var i = 0; i < chart_data.btc.length; i++) {
 
 <h1>Today's Donation</h1>
 <div class="row-fluid">
-
+  <%= render :partial => 'today_donation_table', :locals => { :network => :btc, :donations => @today_btc_nonations } %>
+  <%= render :partial => 'today_donation_table', :locals => { :network => :pts, :donations => @today_pts_nonations } %>
 </div>
 
 <!-- <h1>Latest AGS Blocks <small>Most recent blocks containing AGS investment transactions</small></h1>
@@ -51,3 +74,45 @@ for (var i = 0; i < chart_data.btc.length; i++) {
     <%#= render :partial => "blocks/tx", :collection => [], :as => 'tx' %>
   </div>
 </div> -->
+
+<!-- modal -->
+<div id="balance_lookup" class="modal hide fade" role="dialog">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Balance Lookup</h3>
+  </div>
+  <div class="modal-body">
+    <form class="form-search">
+      <fieldset style="text-align:center;">
+        <input type="text" placeholder="Input your BTC/PTS address">
+        <button type="submit" class="btn">Search</button>
+        <span class="help-block">Coming real soon.</span>
+      </fieldset>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn btn-primary">Done</a>
+  </div>
+</div>
+
+<div id="notification" class="modal hide fade" role="dialog">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Notification</h3>
+  </div>
+  <div class="modal-body">
+    <form class="form-search">
+      <fieldset style="text-align:center;">
+        <input type="text" placeholder="Input your email address">
+        <button type="submit" class="btn">Submit</button>
+        <span class="help-block">
+          <p>Will send you a status report 3 hours before the end of each day.</p>
+          <p>Coming real soon.</p>
+        </span>
+      </fieldset>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn btn-primary">Done</a>
+  </div>
+</div>

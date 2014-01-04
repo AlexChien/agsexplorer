@@ -62,9 +62,28 @@ module ApplicationHelper
     Time.at(timestamp).utc.to_s(:db)
   end
 
-  def display_currency(satoshi, currency = "bitcoin")
+  # amount in satoshi unit
+  def display_currency(amount, currency = "bitcoin", pretty = false)
     symbol = network_short_name(currency)
-    satoshi == 0 ? "0 #{symbol}" : "#{satoshi / Bitcoin::COIN.to_f} #{symbol}"
+    if pretty
+      small(amount / Bitcoin::COIN.to_f, symbol)
+    else
+      amount == 0 ? "0 #{symbol}" : "#{amount / Bitcoin::COIN.to_f} #{symbol}"
+    end
+  end
+
+  # display_currency with pretty
+  def dcp(amount, currency = "bitcoin")
+    display_currency(amount, currency, true).html_safe
+  end
+
+  def small(num, symbol)
+    parts = num.to_s.split('.')
+    if parts.size == 2
+      "#{number_with_delimiter(parts.first.to_i)}<small class='num'>.#{parts.last.first(8)} #{symbol}</small>"
+    else
+      "#{number_with_delimiter(parts.first.to_i)}<small class='num'>.0 #{symbol}</small>"
+    end
   end
 
   def network_short_name(network = "bitcoin")
@@ -73,6 +92,8 @@ module ApplicationHelper
       "BTC"
     when :pts, :protoshare
       "PTS"
+    when :ags, :angelshare
+      "AGS"
     end
   end
 

@@ -1,7 +1,9 @@
 module Ags
+  COIN = 100_000_000
+
   ISSURANCE = {
-    btc: 5_000,
-    pts: 5_000
+    btc: 5_000 * COIN,
+    pts: 5_000 * COIN
   }
 
   def self.daily_issue(network = "btc")

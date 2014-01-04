@@ -10,13 +10,15 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-//= require jquery
+// require jquery
 //= require jquery_ujs
-//= require bootstrap-all
-//= require bootstrap-affix
-//= require scrollUp/lib/jquery.easing.min.js
-//= require scrollUp/jquery.scrollUp.js
+// require bootstrap-all
+// require bootstrap-affix
+// require scrollUp/lib/jquery.easing.min.js
+// require scrollUp/jquery.scrollUp.js
 // require_tree .
+
+var ags = { s_date:[], neworks: ['btc', 'pts'] };
 
 $(function(){
   // tabs activated by hover event
@@ -39,7 +41,7 @@ $(function(){
   // current time: utc
   setInterval(function(){
     var now = new Date();
-    str = dd(now.getUTCFullYear()) + '-' + dd(now.getUTCMonth()) + '-' + dd(now.getUTCDate()) + ' ' + dd(now.getUTCHours()) + ':' + dd(now.getUTCMinutes()) + ':' + dd(now.getUTCSeconds());
+    str = dd(now.getUTCFullYear()) + '-' + dd(now.getUTCMonth()+1) + '-' + dd(now.getUTCDate()) + ' ' + dd(now.getUTCHours()) + ':' + dd(now.getUTCMinutes()) + ':' + dd(now.getUTCSeconds());
     $('#utc_now').html(str);
   },1000);
 
@@ -48,7 +50,25 @@ $(function(){
     drawChart('#chart-container', []);
   }
 
+  // calculate donation efficiency
+  calculateEfficiency(); setInterval(calculateEfficiency, 250000);
 });
+
+function calculateEfficiency(){
+  $.getJSON('/proxy/bter/ticker/pts_btc', function(data){
+    if (data.result == 'true') {
+      var btc_e = ags.price_btc * data.last / ags.price_pts;
+      var pts_e = 1 / btc_e;
+
+      $('#btc_e').html(Math.round(btc_e*100)+'%').addClass(btc_e>pts_e?'label-success':'label-important');
+      $('#pts_e').html(Math.round(pts_e*100)+'%').addClass(pts_e>btc_e?'label-success':'label-important');
+    }
+  })
+  // for (var i = 0; i < ags.networks.length; i++) {
+  //   var c = ags.networks[i];
+  //
+  // }
+}
 
 function drawChart(container, data){
   $(container).highcharts({
@@ -56,18 +76,18 @@ function drawChart(container, data){
       zoomType: 'xy'
     },
     title: {
-      text: 'Daily Investment',
+      text: 'Daily Donation',
       x: -20 //center
     },
     subtitle: {
       text: 'BTC vs PTS'
     },
     xAxis: {
-      categories: s_date
+      categories: ags.s_date
     },
     yAxis: [{
       title: {
-        text: 'Amount Invested (BTC)'
+        text: 'Amount Donated (BTC)'
       },
       labels: {
         format: '{value} BTC',
@@ -78,7 +98,7 @@ function drawChart(container, data){
     },
     {
       title: {
-        text: 'Amount Invested (PTS)'
+        text: 'Amount Donated (PTS)'
       },
       labels: {
         format: '{value} PTS',
@@ -101,13 +121,13 @@ function drawChart(container, data){
       backgroundColor: '#FFFFFF'
     },
     series: [{
-      name: 'Daily BTC Investment',
+      name: 'Daily BTC Donation',
       color: '#99443E',
       type: 'column',
       tooltip: {
         valueSuffix: ' BTC'
       },
-      data: s_btc
+      data: ags.s_btc
     },
     {
       name: 'Daily BTC Average',
@@ -116,17 +136,17 @@ function drawChart(container, data){
       tooltip: {
         valueSuffix: ' BTC'
       },
-      data: s_btc_avg
+      data: ags.s_btc_avg
     },
     {
-      name: 'Daily PTS Investment',
+      name: 'Daily PTS Donation',
       color: '#4572A7',
       type: 'column',
       yAxis: 1,
       tooltip: {
         valueSuffix: ' PTS'
       },
-      data: s_pts
+      data: ags.s_pts
     },
     {
       name: 'Daily PTS Average',
@@ -136,13 +156,13 @@ function drawChart(container, data){
       tooltip: {
         valueSuffix: ' PTS'
       },
-      data: s_pts_avg
+      data: ags.s_pts_avg
     }]
   });
 }
 
 function dd(d){
-  return d > 9 ? d : "0"+9;
+  return d > 9 ? d : "0"+d;
 }
 
 var copyToClipboard = function(from_selector){
