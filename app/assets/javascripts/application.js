@@ -46,7 +46,7 @@ $(function(){
   },1000);
 
   // draw charts
-  if ($('body').attr('id') == 'home') {
+  if ($('body').attr('id').match(/^home/)) {
     drawChart('#chart-container', []);
   }
 
