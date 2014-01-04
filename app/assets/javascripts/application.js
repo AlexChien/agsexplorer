@@ -36,13 +36,13 @@ $(function(){
     animationOutSpeed: 200, // Animation out speed (ms)
     scrollText: '', // Text for element
     activeOverlay: false  // Set CSS color to display scrollUp active point, e.g '#00FFFF'
-  })
+  });
+
+  $('.tooltip').tooltip();
 
   // current time: utc
   setInterval(function(){
-    var now = new Date();
-    str = dd(now.getUTCFullYear()) + '-' + dd(now.getUTCMonth()+1) + '-' + dd(now.getUTCDate()) + ' ' + dd(now.getUTCHours()) + ':' + dd(now.getUTCMinutes()) + ':' + dd(now.getUTCSeconds());
-    $('#utc_now').html(str);
+    $('#utc_now').html(utcNow());
   },1000);
 
   // draw charts
@@ -62,12 +62,19 @@ function calculateEfficiency(){
 
       $('#btc_e').html(Math.round(btc_e*100)+'%').addClass(btc_e>pts_e?'label-success':'label-important');
       $('#pts_e').html(Math.round(pts_e*100)+'%').addClass(pts_e>btc_e?'label-success':'label-important');
+      $('#abbr_btc').attr('title', 'PTS_BTC: ' + data.last + ' ' + utcNow());
+      $('#abbr_pts').attr('title', 'PTS_BTC: ' + data.last + ' ' + utcNow());
     }
   })
   // for (var i = 0; i < ags.networks.length; i++) {
   //   var c = ags.networks[i];
   //
   // }
+}
+
+function utcNow(){
+  var now = new Date();
+  return dd(now.getUTCFullYear()) + '-' + dd(now.getUTCMonth()+1) + '-' + dd(now.getUTCDate()) + ' ' + dd(now.getUTCHours()) + ':' + dd(now.getUTCMinutes()) + ':' + dd(now.getUTCSeconds());
 }
 
 function drawChart(container, data){

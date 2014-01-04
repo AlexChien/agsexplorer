@@ -17,8 +17,8 @@
       <td><%= dcp(Ags.daily_issue.to_f / donated_today(network) * Ags::COIN, network).gsub(network.to_s.upcase, "AGS / #{network.to_s.upcase}").html_safe %></td>
     </tr>
     <tr>
-      <td>Donation Efficiency</td>
-      <td><span id="<%= network %>_e" class="label">100%</span></td>
+      <td>Donation Efficiency <abbr title="By querying bter's pts_btc exchange rate, to find out donate which currency is more favorable.">[?]</abbr></td>
+      <td><span id="<%= network %>_e" class="label">100%</span> <abbr id="abbr_<%= network %>" title="">[?]</abbr></td>
     </tr>
     <tr>
       <td>AGS to Issue</td>
