@@ -5,6 +5,10 @@ class Donation < ActiveRecord::Base
   scope :pts, where(network: 'pts')
   scope :date_grouping, select("network, date(time) as day, sum(amount) as total").group("network, date(time)").order("network, date(time)")
 
+  def self.get_balance(addr, network = nil)
+
+  end
+
   def self.today_donations
     today = Time.now.utc.to_date
     where("time > ? and time < ?", today, today.tomorrow).order("time desc")
