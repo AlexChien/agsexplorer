@@ -80,8 +80,8 @@ group :test do
   gem "faker"
   gem 'rb-readline'
   gem "guard-rspec"
-  gem "spork", "~> 0.9"
-  gem "guard-spork", "~> 0.8"
+  gem "spork"#, "~> 0.9"
+  gem "guard-spork"#, "~> 0.8"
   gem "guard-livereload"
   gem "growl"
   gem "pry"
@@ -106,7 +106,7 @@ end
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
 # To use Jbuilder templates for JSON
-gem 'jbuilder'
+# gem 'jbuilder'
 
 # Use unicorn as the app server
 # gem 'unicorn'
