@@ -22,7 +22,7 @@ end
 # --tag ~js: skip tagged with :js
 # --tag only: only run specs tagged with :only
 
-guard 'rspec', :cmd => 'bundle exec rspec --fail-fast -f doc --drb --tag ~skip --tag ~js', :all_on_start => false, :all_after_pass => false do
+guard 'rspec', :cmd => 'bundle exec rspec --fail-fast --drb --tag ~skip --tag ~js', :all_on_start => false, :all_after_pass => false do
   watch(%r{^spec/.+_spec\.rb$})
   watch(%r{^lib/(.+)\.rb$})     { |m| "spec/lib/#{m[1]}_spec.rb" }
   watch('spec/spec_helper.rb')  { "spec" }
@@ -48,12 +48,4 @@ guard 'livereload' do
   watch(%r{config/locales/.+\.yml})
   # Rails Assets Pipeline
   watch(%r{(app|vendor)/assets/\w+/(.+\.(css|js|html)).*})  { |m| "/assets/#{m[2]}" }
-end
-
-if ENV['CI'] != 'true'
-  group :docs do
-    guard :ronn do
-      watch(%r{^man/.+\.ronn?$})
-    end
-  end
 end
