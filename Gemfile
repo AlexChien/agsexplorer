@@ -6,10 +6,10 @@ gem 'rails', '3.2.14'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'pg'
 gem 'jquery-rails'
 gem 'god'
 gem "whenever", :require => false #it's not required in our application directly
+gem 'nokogiri'
 
 
 gem 'cancan'
