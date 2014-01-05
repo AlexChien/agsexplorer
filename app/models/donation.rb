@@ -10,6 +10,16 @@ class Donation < ActiveRecord::Base
     where("time > ? and time < ?", today, today.tomorrow).order("time desc")
   end
 
+  def self.current_price(network)
+    # if no one has donated yet, you can all of it
+    @@current_price ||= {}
+    @@current_price[network.to_sym] ||= if today_donated(network) == 0 || today_donated(network).nil?
+      Ags.daily_issue.to_f
+    else
+      Ags.daily_issue.to_f / today_donated(network) * Ags::COIN
+    end
+  end
+
   # specific date's date
   # TODO: Day 1
   def self.by_date(date = Time.now.utc.to_date)
@@ -17,7 +27,8 @@ class Donation < ActiveRecord::Base
   end
 
   def self.today_donated(network)
-    date_grouping.by_date.where(network: network).try(:first).try(:total)
+    @@today_donated ||= {}
+    @@today_donated[network.to_sym] ||= date_grouping.by_date.where(network: network).try(:first).try(:total) || 0
   end
 
   # daily data series
@@ -49,13 +60,6 @@ class Donation < ActiveRecord::Base
 
     end
 
-    # data[:btc].first.amount += pre_day1[:btc]
-    # data[:pts].first.amount += pre_day1[:pts]
-    # data[:btc_avg] += pre_day1[:btc]
-    # data[:pts_avg] += pre_day1[:pts]
-    # data[:btc_avg] = data[:btc_avg] / data[:btc].length
-    # data[:pts_avg] = data[:pts_avg] / data[:pts].length
-
     data
   end
 
@@ -73,7 +77,10 @@ class Donation < ActiveRecord::Base
       "btc"
     end
 
-    url ||= "http://q39.qhor.net/ags/{network}.txt?#{Time.now.to_i}".gsub('{network}', network)
+    # v1
+    # url ||= "http://q39.qhor.net/ags/{network}.txt?#{Time.now.to_i}".gsub('{network}', network)
+    # v2
+    url ||= "http://q39.qhor.net/ags/{network}.csv.txt?#{Time.now.to_i}".gsub('{network}', network)
 
     begin
       RestClient.get(url){ |response, request, result, &block|
@@ -93,8 +100,10 @@ class Donation < ActiveRecord::Base
     highest_block = Donation.where(network: @network).maximum(:block_height).to_i
 
     response.each_line do |line|
-      if line =~ /^\d+/
-        height, time, addr, amount, total, rate = line.split(';')
+      # if line =~ /^\d+/ #v1
+      if line =~ /^"{0,1}\d+/
+        # height, time, addr, amount, total, rate = line.split(';') #v1
+        height, time, addr, amount, total, rate = line.gsub("\"","").split(';')
         amount = (amount.to_f * 100_000_000).round #store in satoshi
         total = (total.to_f * 100_000_000).round #store in satoshi
         rate = (rate.to_f * 100_000_000).round #store in satoshi

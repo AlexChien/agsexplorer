@@ -66,10 +66,6 @@ function calculateEfficiency(){
       $('#abbr_pts').attr('title', 'PTS_BTC: ' + data.last + ' ' + utcNow());
     }
   })
-  // for (var i = 0; i < ags.networks.length; i++) {
-  //   var c = ags.networks[i];
-  //
-  // }
 }
 
 function utcNow(){

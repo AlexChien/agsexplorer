@@ -5,8 +5,8 @@
       <th colspan="2">Today</th>
     </tr>
     <tr>
-      <td>Total Donated <small>(so far)</small></td>
-      <td><%= dcp(donated_today(network), network) %></td>
+      <td>Donated Today <small>(so far)</small></td>
+      <td><%= dcp(Donation.today_donated(network), network) %></td>
     </tr>
     <tr>
       <td>Avg. Daily Donation</td>
@@ -14,7 +14,7 @@
     </tr>
     <tr>
       <td>Current Price <small>est.</small></td>
-      <td><%= dcp(Ags.daily_issue.to_f / donated_today(network) * Ags::COIN, network).gsub(network.to_s.upcase, "AGS / #{network.to_s.upcase}").html_safe %></td>
+      <td><%= dcp(Donation.current_price(network), network).gsub(network.to_s.upcase, "AGS / #{network.to_s.upcase}").html_safe %></td>
     </tr>
     <tr>
       <td>Donation Efficiency <abbr title="By querying bter's pts_btc exchange rate, to find out donate which currency is more favorable.">[?]</abbr></td>

@@ -14,8 +14,8 @@ for (var i = 0; i < ags.neworks.length; i++) {
   }
 
   // current price
-  ags['price_btc'] = <%= Ags.daily_issue.to_f / donated_today(:btc) * Ags::COIN %>;
-  ags['price_pts'] = <%= Ags.daily_issue.to_f / donated_today(:pts) * Ags::COIN %>;
+  ags['price_btc'] = <%= Donation.current_price(:btc) %>;
+  ags['price_pts'] = <%= Donation.current_price(:pts) %>;
 }
 
 var l_date_c = 'btc';
@@ -23,23 +23,8 @@ if (chart_data.btc.length < chart_data.pts.length) {
   l_data_c = 'pts';
 }
 for (var i = 0; i < chart_data[l_date_c].length; i++) {
-  ags.s_date = chart_data[l_date_c][i].date
+  ags.s_date.push( chart_data[l_date_c][i].date );
 }
-
-// var s_btc_avg, s_pts_avg, s_date, s_btc, s_pts;
-// var s_btc_avg = Array(span+1).join(chart_data.btc_avg+'/').split('/').map(function(c){return Number(c/100000000);});
-// s_btc_avg.pop();
-// var s_pts_avg = Array(span+1).join(chart_data.pts_avg+'/').split('/').map(function(c){return Number(c/100000000);});
-// s_pts_avg.pop();
-//
-// var s_date = [];
-// var s_btc = [];
-// var s_pts = [];
-// for (var i = 0; i < chart_data.btc.length; i++) {
-//   s_date.push(chart_data.btc[i].date);
-//   s_btc.push(chart_data.btc[i].amount/100000000);
-//   s_pts.push(chart_data.pts[i].amount/100000000);
-// }
 </script>
 
 <% end -%>
