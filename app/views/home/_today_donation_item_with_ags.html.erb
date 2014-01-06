@@ -1,11 +1,12 @@
 <% unless donation.confirmed? %>
+<% rate = Ags.daily_issue(network.to_sym).to_f * Ags::COIN / @today_total_donated %>
 <tr>
   <td><%= display_time donation.time %></td>
   <td><%= donation.address %></td>
   <td><%= dcp(donation.amount, network) %></td>
-  <td><%= dcp(donation.total, network) %></td>
-  <td><%= dcp(donation.rate, network).gsub(network.to_s.upcase, "AGS / #{network.to_s.upcase}").html_safe %></td>
-  <td><span class="label label-warning"><%= dcp(donation.ags_amount, network) %></span> ?</td>
+  <td><%= dcp(@today_total_donated, network) %></td>
+  <td><%= dcp(rate, network).gsub(network.to_s.upcase, "AGS / #{network.to_s.upcase}").html_safe %></td>
+  <td><span class="label label-warning"><%= dcp(donation.amount * rate / Ags::COIN, :ags) %></span> ?</td>
 </tr>
 <% else %>
 <tr>
@@ -13,7 +14,7 @@
   <td><%= donation.address %></td>
   <td><%= dcp(donation.amount, network) %></td>
   <td><%= dcp(donation.today_total_donation, network) %></td>
-  <td><%= dcp(donation.today_price, network).gsub(network.to_s.upcase, "AGS / #{network.to_s.upcase}").html_safe %></td>
-  <td><span class="label label-success"><%= dcp(donation.ags_amount, network) %></span></td>
+  <td><%= dcp(donation.today_price * Ags::COIN, network).gsub(network.to_s.upcase, "AGS / #{network.to_s.upcase}").html_safe %></td>
+  <td><span class="label label-success"><%= dcp(donation.ags_amount, :ags) %></span></td>
 </tr>
 <% end %>

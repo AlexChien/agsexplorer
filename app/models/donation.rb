@@ -6,7 +6,7 @@ class Donation < ActiveRecord::Base
   scope :date_grouping, select("network, date(time) as day, sum(amount) as total").group("network, date(time)").order("network, date(time)")
 
   def confirmed?
-    time < Date.today.to_time(:utc)
+    time < Time.zone.now.to_date.beginning_of_day
   end
 
   def self.get_balance(addr, network = nil)

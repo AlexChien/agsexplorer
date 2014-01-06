@@ -3,6 +3,7 @@
 
 <div class="row-fluid">
   <div class="span6">
+    <% if @total_donated %>
     <table class="table table-striped table-condensed table-hover" data-network="<%= @network %>">
       <tbody>
         <tr>
@@ -11,11 +12,11 @@
         </tr>
         <tr>
           <td>AGS Amount (Confirmed)</td>
-          <td><span class="label label-success"><%= dcp(@total_ags_confirmed, @network) %></span></td>
+          <td><span class="label label-success"><%= dcp(@total_ags_confirmed, :ags) %></span></td>
         </tr>
         <tr>
           <td>AGS Amount (Unconfirmed)</td>
-          <td><span class="label label-warning"><%= dcp(@total_ags_pending, @network) %></span></td>
+          <td><span class="label label-warning"><%= dcp(@total_ags_pending, :ags) %></span></td>
         </tr>
         <tr>
           <td></td>
@@ -27,11 +28,18 @@
         </tr>
       </tbody>
     </table>
+    <% else %>
+    <p>no donations found</p>
+    <% end %>
   </div>
 </div>
 
 <h1>Donation History</h1>
 <div class="row-fluid">
+  <% unless @donations.blank? %>
   <%= render :partial => 'home/today_donation_table_with_ags',
-      :locals => { :network => @network, :donations => @donations } unless @donations.empty? %>
+      :locals => { :network => @network, :donations => @donations }  %>
+  <% else %>
+  <p>no donations found</p>
+  <% end %>
 </div>

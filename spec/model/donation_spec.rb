@@ -56,7 +56,7 @@ describe Donation do
 
     end
 
-    context "calculate_ags_reward", :focus do
+    context "calculate_ags_reward" do
       let(:preday1_addr) { '1CXEo9yJwU5V3d6FmGyt6ni8KFE26i6t8i' }
       let(:day1_addr) { '1M9zLJveSTkoSYz1h5CWHUgo4sHijvPvjX' }
       let(:normal_addr) { '12tZFZL2Fcw5d5NyvHG35oK6tLwEjCfNhN' }
