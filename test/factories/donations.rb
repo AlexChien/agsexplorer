@@ -3,9 +3,9 @@
 FactoryGirl.define do
   factory :donation do
     block_height 1
-    time "2014-01-03 14:43:22"
+    time Time.now.utc
     address "MyString"
     amount 1
-    network "MyString"
+    network "btc"
   end
 end

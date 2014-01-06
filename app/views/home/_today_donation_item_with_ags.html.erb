@@ -1,0 +1,19 @@
+<% unless donation.confirmed? %>
+<tr>
+  <td><%= display_time donation.time %></td>
+  <td><%= donation.address %></td>
+  <td><%= dcp(donation.amount, network) %></td>
+  <td><%= dcp(donation.total, network) %></td>
+  <td><%= dcp(donation.rate, network).gsub(network.to_s.upcase, "AGS / #{network.to_s.upcase}").html_safe %></td>
+  <td><span class="label label-warning"><%= dcp(donation.ags_amount, network) %></span> ?</td>
+</tr>
+<% else %>
+<tr>
+  <td><%= display_time donation.time %></td>
+  <td><%= donation.address %></td>
+  <td><%= dcp(donation.amount, network) %></td>
+  <td><%= dcp(donation.today_total_donation, network) %></td>
+  <td><%= dcp(donation.today_price, network).gsub(network.to_s.upcase, "AGS / #{network.to_s.upcase}").html_safe %></td>
+  <td><span class="label label-success"><%= dcp(donation.ags_amount, network) %></span></td>
+</tr>
+<% end %>

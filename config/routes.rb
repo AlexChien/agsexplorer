@@ -1,6 +1,5 @@
 Agsexplorer::Application.routes.draw do
 
-
   match 'home' => 'home#index'
 
   # blocks
@@ -15,6 +14,8 @@ Agsexplorer::Application.routes.draw do
 
   # fetch ticker
   get "proxy/:market/ticker/:pair" => 'proxy#ticker', as: :ticker
+
+  match 'balances/:address' => 'balances#show', as: :balance
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

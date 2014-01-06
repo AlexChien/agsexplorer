@@ -12,6 +12,7 @@
 //
 // require jquery
 //= require jquery_ujs
+//= require jquery.cookie
 // require bootstrap-all
 // require bootstrap-affix
 // require scrollUp/lib/jquery.easing.min.js
@@ -52,6 +53,23 @@ $(function(){
 
   // calculate donation efficiency
   calculateEfficiency(); setInterval(calculateEfficiency, 250000);
+
+  // init balance_address init value
+  if ($('#balance_address') && $.cookie('balance_address')) {
+    $('#balance_address').val($.cookie('balance_address'));
+  }
+
+  $('#balance_search_frm').submit(function( event ){
+    var address = $('#balance_address').val();
+
+    if (address) {
+      $(this).attr('action', '/balances/'+address);
+      $.cookie('balance_address', address);
+      return true;
+    }
+
+    event.preventDefault();
+  });
 });
 
 function calculateEfficiency(){

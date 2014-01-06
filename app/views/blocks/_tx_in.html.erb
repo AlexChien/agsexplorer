@@ -14,8 +14,10 @@ end
 
 <% if @address && addr == @address %>
 <% content_for :footer_js do -%>
+<script type="text/javascript" charset="utf-8">
 $(function(){
   $('#tx-totalout-<%= tx_in.get_tx.id %>').removeClass('btn-danger').addClass('btn-success');
 });
+</script>
 <% end -%>
 <% end %>

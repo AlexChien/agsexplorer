@@ -13,7 +13,7 @@
       <td><%= dcp(@daily_data["#{network}_avg".to_sym], network) %></td>
     </tr>
     <tr>
-      <td>Current Price <small>est.</small></td>
+      <td>Current Rate <small>est.</small></td>
       <td><%= dcp(Donation.current_price(network), network).gsub(network.to_s.upcase, "AGS / #{network.to_s.upcase}").html_safe %></td>
     </tr>
     <tr>

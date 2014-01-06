@@ -63,7 +63,8 @@ module ApplicationHelper
   end
 
   # amount in satoshi unit
-  def display_currency(amount, currency = "bitcoin", pretty = false)
+  def display_currency(amount = 0, currency = "bitcoin", pretty = false)
+    amount = 0 if amount.nil?
     symbol = network_short_name(currency)
     if pretty
       small(amount / Bitcoin::COIN.to_f, symbol)
@@ -104,4 +105,5 @@ module ApplicationHelper
   def is_pts?(network)
     network_short_name(network) == "PTS"
   end
+
 end
