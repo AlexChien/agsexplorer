@@ -4,7 +4,7 @@ namespace :donation do
     if args[:date]
       date = Date.parse(args[:date])
     else
-      date = Time.now.utc.to_date
+      date = Time.zone.now.to_date.yesterday.beginning_of_day
     end
 
     Donation.calculate_ags_reward(date,args[:networks])
@@ -15,7 +15,7 @@ namespace :donation do
     if args[:date]
       to_date = Date.parse(args[:date])
     else
-      to_date = Time.now.utc.to_date.yesterday
+      to_date = Time.zone.now.to_date.yesterday
     end
 
     day1 = Date.parse('2014-01-01')

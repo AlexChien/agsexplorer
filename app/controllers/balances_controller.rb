@@ -1,6 +1,11 @@
 class BalancesController < ApplicationController
   def show
-    @donations = Donation.get_donations_by_address(params[:address]) unless params[:address].blank?
+    @address = params[:address]
+    wallet_id = Donation.where(address: @address).limit(1).first.try(:wallet_id)
+    @addresses = Donation.where(wallet_id: wallet_id).pluck("distinct address")
+
+    # @donations = Donation.get_donations_by_address(params[:address]) unless @address.blank?
+    @donations = Donation.where(address: @addresses).order('time desc') unless @addresses.blank?
     @network = @donations.first.try(:network) || :btc
 
     unless @donations.blank?

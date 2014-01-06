@@ -19,6 +19,12 @@
 
 # Learn more: http://github.com/javan/whenever
 
+# fetch new blockchain data
 every 5.minutes do
   runner "Donation.parse_all"
+end
+
+# update past day's ags amount actually accquired
+every 1.day, :at => '8:02 am' do
+  runner "Donation.calculate_ags_reward"
 end

@@ -1,5 +1,7 @@
 class Donation < ActiveRecord::Base
-  attr_accessible :address, :amount, :block_height, :network, :time, :rate, :total, :ags_amount
+  attr_accessible :address, :amount, :block_height, :network, :time, :rate, :total, :ags_amount, :wallet_id
+
+  belongs_to :wallet
 
   scope :btc, where(network: 'btc')
   scope :pts, where(network: 'pts')
@@ -18,7 +20,7 @@ class Donation < ActiveRecord::Base
   end
 
   def self.today_donations
-    today = Time.now.utc.to_date
+    today = Time.zone.now.to_date
     where("time >= ? and time < ?", today, today.tomorrow).order("time desc")
   end
 
@@ -35,7 +37,7 @@ class Donation < ActiveRecord::Base
 
   # specific date's date
   # TODO: Day 1
-  def self.by_date(date = Time.now.utc.to_date)
+  def self.by_date(date = Time.zone.now.to_date.beginning_of_day)
     date_grouping.where("time >= ? and time < ?", date, date.tomorrow)
   end
 
@@ -113,6 +115,7 @@ class Donation < ActiveRecord::Base
   def self.parse_response(response, network = 'btc')
     highest_block = Donation.where(network: @network).maximum(:block_height).to_i
 
+    oheight, oaddr, ototal, orate = nil,nil,nil,nil
     response.each_line do |line|
       # if line =~ /^\d+/ #v1
       if line =~ /^"{0,1}\d+/
@@ -123,7 +126,28 @@ class Donation < ActiveRecord::Base
         rate = (rate.to_f * 100_000_000).round #store in satoshi
 
         if height.to_i >= highest_block and !Donation.exists?(block_height: height, time: time, address: addr, amount: amount, network: network, rate: rate, total: total)
-          Donation.create(block_height: height, time: time, address: addr, amount: amount, network: network, rate: rate, total: total, ags_amount: 0)
+
+          # assign wallet_id
+          if height == oheight && total == ototal && rate == orate
+            brother_addr = oaddr
+
+            wallet_id = Donation.where(network: network, address: brother_addr).limit(1).first.try(:wallet_id)
+            my_addr_wallet_id = Donation.where(network: network, address: addr).limit(1).first.try(:wallet_id)
+
+            if my_addr_wallet_id
+              Donation.where(network: network, wallet_id: my_addr_wallet_id).update_all(wallet_id: wallet_id)
+            end
+          end
+
+          wallet_id ||= Donation.where(network: network, address: addr).limit(1).first.try(:wallet_id)
+          if wallet_id.nil?
+            wallet_id = SecureRandom.hex(30)
+          end
+
+          Donation.create(block_height: height, time: time, address: addr, amount: amount, network: network, rate: rate, total: total, ags_amount: 0, wallet_id: wallet_id)
+
+          oheight, oaddr, ototal, orate = height, addr, total, rate
+
         end
       end
     end
@@ -132,7 +156,7 @@ class Donation < ActiveRecord::Base
   # calcuated actual ags can be obtained in the past day
   # a cronjob should be prepared and run at beginning of utc day everyday
   # by default, calculate yesterday's reward
-  def self.calculate_ags_reward(date = Time.now.utc.yesterday, networks = [])
+  def self.calculate_ags_reward(date = Time.zone.now.to_date.yesterday.beginning_of_day, networks = [])
     ns = [:btc, :pts]
     unless networks.to_a.empty?
       ns = ns & networks.to_a.map(&:to_sym)

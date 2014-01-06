@@ -105,4 +105,31 @@ describe Donation do
 
   end
 
+  context "merged addresses" do
+    before do
+      Donation.parse_response(File.open(File.join(Rails.root, 'spec/factories/btc_data_merged_address.txt')), 'btc')
+    end
+
+    let(:addr21) { "14Ntbt1fRcAzreQUYtmPSJynsyuMKFxFmw" }
+    let(:addr22) { "1HRomwYh98owAbe7SYtA45Wki73KWpyt7E" }
+    let(:addr1) { "1M16SzSwY9RXpxadEyQ6vdjnNUntk4iogu" }
+
+    it "should have 2 member family" do
+      wallet_id = Donation.find_by_address(addr21).try(:wallet_id)
+      Donation.where(wallet_id: wallet_id).pluck('distinct address').size.should == 2
+    end
+
+    it "should have 2 member family" do
+      wallet_id = Donation.find_by_address(addr22).try(:wallet_id)
+      Donation.where(wallet_id: wallet_id).pluck('distinct address').size.should == 2
+    end
+
+    it "should have 1 member family", :focus do
+      wallet_id = Donation.find_by_address(addr1).try(:wallet_id)
+      Donation.where(wallet_id: wallet_id).pluck('distinct address').size.should == 1
+    end
+
+
+  end
+
 end
