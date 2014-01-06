@@ -1,11 +1,13 @@
 class BalancesController < ApplicationController
   def show
     @address = params[:address]
+    @view = params[:view] || "merged"
+
     wallet_id = Donation.where(address: @address).limit(1).first.try(:wallet_id)
+
     @addresses = Donation.where(wallet_id: wallet_id).pluck("distinct address")
 
-    # @donations = Donation.get_donations_by_address(params[:address]) unless @address.blank?
-    @donations = Donation.where(address: @addresses).order('time desc') unless @addresses.blank?
+    @donations = Donation.where(address: @view == 'seperate' ? @address : @addresses).order('time desc') unless @addresses.blank?
     @network = @donations.try(:first).try(:network) || :btc
 
     unless @donations.blank?

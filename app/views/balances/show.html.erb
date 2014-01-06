@@ -1,5 +1,11 @@
 <h1>Balance</h1>
-<h4><%= params[:address] %></h4>
+<h4>
+  <%= @address %>
+  <small class="pull-right">
+    <%= link_to "Change to Seperate View", balance_path(@address, view: 'seperate') if @view == "merged" %>
+    <%= link_to "Change to Merged View", balance_path(@address, view: 'merged') if @view == "seperate" %>
+  </small>
+</h4>
 
 <div class="row-fluid">
   <div class="span6">
@@ -23,8 +29,12 @@
           <td></td>
         </tr>
         <tr>
-          <td>Other known addresses</td>
-          <td><%= @addresses.join('<br />').html_safe %></td>
+          <td>Related Addresses</td>
+          <td>
+            <% @addresses.each do |address| %>
+              <%= link_to address, balance_path(address, view: @view) %><br />
+            <% end %>
+          </td>
         </tr>
       </tbody>
     </table>
