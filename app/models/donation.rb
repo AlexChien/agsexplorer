@@ -14,7 +14,7 @@ class Donation < ActiveRecord::Base
   end
 
   def self.get_donations_by_address(addr, network = nil)
-    Donation.where(address: addr)
+    Donation.where(address: addr).order('time desc')
   end
 
   def self.today_donations
