@@ -6,7 +6,7 @@ class BalancesController < ApplicationController
 
     # @donations = Donation.get_donations_by_address(params[:address]) unless @address.blank?
     @donations = Donation.where(address: @addresses).order('time desc') unless @addresses.blank?
-    @network = @donations.first.try(:network) || :btc
+    @network = @donations.try(:first).try(:network) || :btc
 
     unless @donations.blank?
       @total_donated = @donations.map(&:amount).sum
