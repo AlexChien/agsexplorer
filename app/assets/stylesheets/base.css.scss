@@ -5,7 +5,8 @@ $title_font: "Microsoft YaHei","Hiragino Sans GB",\9ed1\4f53,arial,sans-serif;
 $content_font: Helvetica, STHeiti STXihei, Microsoft JhengHei, Microsoft YaHei, Tohoma, Arial;;
 
 body {
-  font-size:13px; padding-top:50px;
+  font-size:13px;
+  padding-top:50px;
 }
 
 #chart-container { min-height:400px; }
@@ -17,4 +18,9 @@ small.num { font-size:10px; opacity:0.5; }
   margin-top:1.2em; padding-top:1.2em; border-top:1px solid #ccc;
   dt { width:60px; }
   dd { margin-left:80px; }
+}
+
+@media (max-width: 767px) /* @grid-float-breakpoint -1 */
+{
+  body { padding-top:0px; }
 }
