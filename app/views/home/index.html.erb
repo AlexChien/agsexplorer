@@ -50,12 +50,14 @@ for (var i = 0; i < chart_data[l_date_c].length; i++) {
   <%= render :partial => 'today_donation_table', :locals => { :network => :pts, :donations => @today_pts_nonations } %>
 </div>
 
-<!-- <h1>Latest AGS Blocks <small>Most recent blocks containing AGS investment transactions</small></h1>
+<% if false %>
+<h1>Latest AGS Blocks <small>Most recent blocks containing AGS investment transactions</small></h1>
 <div class="row-fluid">
   <div id="btc-chart-container" class="span6">
-    <%= render :partial => "blocks/tx", :collection => [], :as => 'tx' %>
+    <%#= render :partial => "blocks/tx", :collection => [], :as => 'tx' %>
   </div>
   <div id="pts-chart-container" class="span6">
     <%#= render :partial => "blocks/tx", :collection => [], :as => 'tx' %>
   </div>
-</div> -->
+</div>
+<% end %>

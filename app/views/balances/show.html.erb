@@ -1,10 +1,12 @@
 <h1>Balance</h1>
 <h4>
   <%= @address %>
+  <% if @addresses && @addresses.size > 1 %>
   <small class="pull-right">
     <%= link_to "Change to Seperate View", balance_path(@address, view: 'seperate') if @view == "merged" %>
     <%= link_to "Change to Merged View", balance_path(@address, view: 'merged') if @view == "seperate" %>
   </small>
+  <% end %>
 </h4>
 
 <div class="row-fluid">
