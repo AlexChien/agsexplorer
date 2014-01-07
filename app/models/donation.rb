@@ -1,7 +1,7 @@
 class Donation < ActiveRecord::Base
   attr_accessible :address, :amount, :block_height, :network, :time, :rate, :total, :ags_amount, :wallet_id
 
-  belongs_to :wallet
+  belongs_to :wallet, primary_key: :wallet_id
 
   scope :btc, where(network: 'btc')
   scope :pts, where(network: 'pts')
@@ -146,6 +146,14 @@ class Donation < ActiveRecord::Base
 
           Donation.create(block_height: height, time: time, address: addr, amount: amount, network: network, rate: rate, total: total, ags_amount: 0, wallet_id: wallet_id)
 
+          # update wallet
+          wallet = Wallet.find_or_initialize_by_wallet_id(wallet_id)
+          unless wallet.addresses.include?(addr)
+            wallet.addresses = wallet.addresses.push(addr)
+            wallet.network = network
+            wallet.save
+          end
+
           oheight, oaddr, ototal, orate = height, addr, total, rate
 
         end
@@ -173,9 +181,11 @@ class Donation < ActiveRecord::Base
       end
 
       total_amount = total_donations.sum(:amount)
+      return false if total_amount <= 0
       price =  Ags::ISSURANCE[network].to_f / total_amount
 
       total_donations.update_all(["ags_amount = amount * ?, today_total_donation = ?, today_price = ?", price, total_amount, price])
     end
   end
+
 end

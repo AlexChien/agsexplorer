@@ -15,6 +15,8 @@ Agsexplorer::Application.routes.draw do
   # fetch ticker
   get "proxy/:market/ticker/:pair" => 'proxy#ticker', as: :ticker
 
+  # balance
+  get "masterbook(/:network)" => 'balances#masterbook', as: :masterbook
   match 'balances/:address' => 'balances#show', as: :balance
   # The priority is based upon order of creation:
   # first created -> highest priority.

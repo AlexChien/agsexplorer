@@ -58,6 +58,11 @@ module ApplicationHelper
     path.gsub(/^\//,'').gsub("/",'_')
   end
 
+  # compare param with object_id, if yes, output current
+  def class_current(param, obj_id, cls = 'active')
+    param.present? && param.to_s == obj_id.to_s ? cls : ""
+  end
+
   def display_time(timestamp)
     Time.at(timestamp).utc.to_s(:db)
   end

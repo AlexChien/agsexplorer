@@ -1,0 +1,46 @@
+<h1>Angel Shares Master Book</h1>
+<h4><%= @network.to_s.upcase %> Donations</h4>
+<ul class="nav nav-pills pull-right">
+  <% %w(btc pts).each do |network| %>
+  <li class="<%= @network.to_s.downcase == network ? 'active' : '' %>">
+    <%= link_to network.upcase, masterbook_path(network) %>
+  </li>
+  <% end %>
+</ul>
+
+<table class="table table-striped table-condensed table-hover">
+  <tbody>
+    <tr>
+    <th>Wallet</th>
+    <th><%= @network.upcase %> Address</th>
+    <th>Angel Shares Amount</th>
+    </tr>
+    <% @wallets.each do |wallet| %>
+    <tr>
+      <td data-wallet_id="<%= wallet.wallet_id %>"><%= wallet.wallet_id.first(8) %></td>
+      <td data-addresses="<%= wallet.addresses %>">
+        <% wallet.addresses.each do |address| %>
+          <%= link_to address, balance_path(address) %><br />
+        <% end %>
+      </td>
+      <td data-ags_amount="<%= wallet.ags_amount %>"><%= dcp(wallet.ags_amount, :ags) %></td>
+    </tr>
+    <% end unless @wallets.blank? %>
+  </tbody>
+</table>
+<div class="pagination pagination-centered">
+  <%= will_paginate @wallets, renderer: BootstrapPagination::Rails unless params[:per_page] == "-1" %>
+</div>
+
+<h1>API Usage</h1>
+<p>http://agsexplorer.com/masterbook/:network(.:format)?per_page=x&page=y</p>
+
+<h4>Pagination</h4>
+<p>per_page: records per page; if per_page=-1, return all records</p>
+<p>page: page number, starts from 1</p>
+
+<h4>Format</h4>
+<p>JSON request example:</p>
+<pre>http://agsexplorer.com/masterbook/btc.json</pre>
+<p>XML request example:</p>
+<pre>http://agsexplorer.com/masterbook/btc.xml</pre>

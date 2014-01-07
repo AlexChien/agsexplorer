@@ -25,4 +25,19 @@ namespace :donation do
     end
   end
 
+  desc "reset: delete all data and rebuild"
+  task :reset => :environment do
+    # wipe db data
+    Donation.delete_all
+    Wallet.delete_all
+
+    # re-parse
+    Donation.parse_all
+
+    # re-calculate each donation's confirmed ags_amount
+    Rake::Task["donation:calculate_ags_reward_till"].invoke
+
+    # re-calculate each wallet's ags_amount sum
+    Wallet.calculate_ags_sum
+  end
 end

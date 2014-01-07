@@ -124,11 +124,10 @@ describe Donation do
       Donation.where(wallet_id: wallet_id).pluck('distinct address').size.should == 2
     end
 
-    it "should have 1 member family", :focus do
+    it "should have 1 member family" do
       wallet_id = Donation.find_by_address(addr1).try(:wallet_id)
       Donation.where(wallet_id: wallet_id).pluck('distinct address').size.should == 1
     end
-
 
   end
 

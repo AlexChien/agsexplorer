@@ -154,6 +154,8 @@ function drawChart(container, data){
       name: 'Daily BTC Average',
       color: '#99443E',
       type: 'spline',
+      marker: { enabled: false },
+      dashStyle: 'shortdot',
       tooltip: {
         valueSuffix: ' BTC'
       },
@@ -174,6 +176,8 @@ function drawChart(container, data){
       color: '#4572A7',
       type: 'spline',
       yAxis: 1,
+      marker: { enabled: false },
+      dashStyle: 'shortdot',
       tooltip: {
         valueSuffix: ' PTS'
       },
