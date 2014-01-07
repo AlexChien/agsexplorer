@@ -9,6 +9,10 @@ body {
   padding-top:50px;
 }
 
+#ticker {
+  max-height:40px; overflow:hidden; font-size:9px; margin-bottom:0;
+  th, td { padding:1px 5px; line-height:11px; text-align:right;}
+}
 #chart-container { min-height:400px; }
 
 small { opacity:0.5;}

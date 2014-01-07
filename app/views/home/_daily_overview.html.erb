@@ -1,20 +1,26 @@
 <h3 class="<%= network.to_s == 'pts' ? 'pull-right' : '' %>"><%= network.upcase %></h3>
-<table class="table table-striped table-condensed table-hover" data-network="<%= network %>">
+<table class="table table-striped table-condensed table-hover overview" data-network="<%= network %>">
   <tbody>
     <tr>
       <th colspan="2">Today</th>
     </tr>
     <tr>
       <td>Donated Today <small>(so far)</small></td>
-      <td><%= dcp(Donation.today_donated(network), network) %></td>
+      <td><span class="symolizable" data-type="<%= network %>" data-cur="<%= network %>" data-value="<%= Donation.today_donated(network) %>">
+        <%= dcp(Donation.today_donated(network), network) %>
+      </span></td>
     </tr>
     <tr>
       <td>Avg. Daily Donation</td>
-      <td><%= dcp(@daily_data["#{network}_avg".to_sym], network) %></td>
+      <td><span class="symolizable" data-type="<%= network %>" data-cur="<%= network %>" data-value="<%= @daily_data["#{network}_avg".to_sym] %>">
+        <%= dcp(@daily_data["#{network}_avg".to_sym], network) %>
+      </span></td>
     </tr>
     <tr>
       <td>Current Rate <small>est.</small></td>
-      <td><%= dcp(Donation.current_price(network), network).gsub(network.to_s.upcase, "AGS / #{network.to_s.upcase}").html_safe %></td>
+      <td><span class="symolizable" data-type="ags_<%= network %>" data-cur="ags_<%= network %>" data-value="<%= Donation.current_price(network) %>">
+        <%= dcp(Donation.current_price(network), network).gsub(network.to_s.upcase, "AGS / #{network.to_s.upcase}").html_safe %>
+      </span></td>
     </tr>
     <tr>
       <td>Donation Efficiency <abbr title="By querying bter's pts_btc exchange rate, to find out donate which currency is more favorable.">[?]</abbr></td>
@@ -29,7 +35,9 @@
     </tr>
     <tr>
       <td>Total Donated</td>
-      <td><%= dcp(@daily_data["#{network}_total".to_sym], network) %></td>
+      <td><span class="symolizable" data-type="<%= network %>" data-cur="<%= network %>" data-value="<%= @daily_data["#{network}_total".to_sym] %>">
+        <%= dcp(@daily_data["#{network}_total".to_sym], network) %>
+      </span></td>
     </tr>
     <tr>
       <td>Total AGS Rewarded</td>
@@ -37,6 +45,7 @@
     </tr>
   </tbody>
 </table>
-<div style="text-align:center;">
+
+<div style="text-align:center;clear:both;">
 <a href="#donate_<%= network %>" data-toggle="modal" class="btn btn-primary">Donate <%= network.to_s.upcase %> Now</a>
 </div>

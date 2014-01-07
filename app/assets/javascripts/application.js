@@ -20,6 +20,7 @@
 // require_tree .
 
 var ags = { s_date:[], neworks: ['btc', 'pts'] };
+var comify_re = /(\d{1,3})(?=(\d{3})+(?:$|\.))/g;
 
 $(function(){
   // tabs activated by hover event
@@ -52,13 +53,17 @@ $(function(){
   }
 
   // calculate donation efficiency
-  calculateEfficiency(); setInterval(calculateEfficiency, 250000);
+  // calculateEfficiency(); setInterval(calculateEfficiency, 250000);
 
   // init balance_address init value
   if ($('#balance_address') && $.cookie('balance_address')) {
     $('#balance_address').val($.cookie('balance_address'));
   }
 
+  // symbolizable
+  $('.overview .symolizable').click(changeSymbol);
+
+  // balance form
   $('#balance_search_frm').submit(function( event ){
     var address = $('#balance_address').val();
 
@@ -72,23 +77,120 @@ $(function(){
   });
 });
 
-function calculateEfficiency(){
-  $.getJSON('/proxy/bter/ticker/pts_btc', function(data){
-    if (data.result == 'true') {
-      var btc_e = ags.price_btc * data.last / ags.price_pts;
-      var pts_e = 1 / btc_e;
+function changeSymbol(){
+  $('.overview .symolizable').each(function(){
+    // btc
+    if ($(this).data('type') == 'btc' && $('#btc_usd').data('value') != 0) {
+      var cur = $(this).data('cur');
+      if (cur == 'btc') {
+        new_cur = 'usd';
+        new_val = $('#btc_usd').data('value') * $(this).data('value') / 100000000;
+      } else if (cur == 'usd'){
+        new_cur = 'btc';
+        new_val = $(this).data('value') / 100000000;
+      }
 
-      $('#btc_e').html(Math.round(btc_e*100)+'%').addClass(btc_e>pts_e?'label-success':'label-important');
-      $('#pts_e').html(Math.round(pts_e*100)+'%').addClass(pts_e>btc_e?'label-success':'label-important');
-      $('#abbr_btc').attr('title', 'PTS_BTC: ' + data.last + ' ' + utcNow());
-      $('#abbr_pts').attr('title', 'PTS_BTC: ' + data.last + ' ' + utcNow());
+      $(this).html(display_currency(new_val)).data('cur', new_cur);
     }
-  })
+
+    // pts
+    else if ($(this).data('type') == 'pts' && $('#pts_usd').data('value') != 0) {
+      var cur = $(this).data('cur');
+      if (cur == 'pts') {
+        new_cur = 'usd';
+        new_val = $('#pts_usd').data('value') * $(this).data('value') / 100000000;
+      } else if (cur == 'usd'){
+        new_cur = 'pts';
+        new_val = $(this).data('value') / 100000000;
+      }
+
+      $(this).html(display_currency(new_val)).data('cur', new_cur);
+    }
+
+    // ags_btc
+    else if ($(this).data('type') == 'ags_btc' && $('#btc_usd').data('value') != 0) {
+      var cur = $(this).data('cur');
+      if (cur == 'ags_btc') {
+        new_cur = 'usd_ags';
+        new_val = $('#btc_usd').data('value') / $(this).data('value') / 100000000;
+      } else if (cur == 'usd_ags'){
+        new_cur = 'ags_btc';
+        new_val = $(this).data('value') / 100000000;
+      }
+
+      $(this).html(display_currency(new_val)).data('cur', new_cur);
+    }
+
+    // ags_btc
+    else if ($(this).data('type') == 'ags_pts' && $('#pts_usd').data('value') != 0) {
+      var cur = $(this).data('cur');
+      if (cur == 'ags_pts') {
+        new_cur = 'usd_ags';
+        new_val = $('#pts_usd').data('value') / $(this).data('value') / 100000000;
+      } else if (cur == 'usd_ags'){
+        new_cur = 'ags_pts';
+        new_val = $(this).data('value') / 100000000;
+      }
+
+      $(this).html(display_currency(new_val)).data('cur', new_cur);
+    }
+  });
+}
+
+function display_currency(val){
+  parts = val.toString().split('.');
+  return parts[0].replace(comify_re, "$1,") + '<small class="num">.'+max8(parts[1])+' '+String(new_cur).split('_').join(' / ').toUpperCase()+'</small>'
+}
+
+function max8(d){
+  return String(d).substring(0,8);
+}
+
+function calculateEfficiency(data){
+  if (data.result == 'true') {
+    var btc_e = ags.price_btc * data.last / ags.price_pts;
+    var pts_e = 1 / btc_e;
+
+    $('#btc_e').html(Math.round(btc_e*100)+'%').addClass(btc_e>pts_e?'label-success':'label-important');
+    $('#pts_e').html(Math.round(pts_e*100)+'%').addClass(pts_e>btc_e?'label-success':'label-important');
+    $('#abbr_btc').attr('title', 'PTS_BTC: ' + data.last + ' ' + utcNow());
+    $('#abbr_pts').attr('title', 'PTS_BTC: ' + data.last + ' ' + utcNow());
+  }
 }
 
 function utcNow(){
   var now = new Date();
   return dd(now.getUTCFullYear()) + '-' + dd(now.getUTCMonth()+1) + '-' + dd(now.getUTCDate()) + ' ' + dd(now.getUTCHours()) + ':' + dd(now.getUTCMinutes()) + ':' + dd(now.getUTCSeconds());
+}
+
+function loadTickers(){
+  // load pts_btc and calculate efficiency
+  $.getJSON('/proxy/bter/ticker/pts_btc', function(data){
+    if (data.result == 'true') {
+      // ticker panel
+      $('#pts_btc').data('value', data.last).html(data.last);
+
+      // efficiency calculation
+      calculateEfficiency(data);
+
+      calculatePtsUsd();
+    }
+  });
+
+  $.getJSON('/proxy/bitstamp/ticker/btc_usd', function(data){
+      // ticker panel
+      $('#btc_usd').data('value', data.last).html(data.last);
+
+      calculatePtsUsd();
+  });
+}
+
+function calculatePtsUsd(){
+  if ($('#pts_btc').data('value') != 0 && $('#btc_usd').data('value') != 0) {
+    value = ($('#pts_btc').data('value') * $('#btc_usd').data('value')).toFixed(2);
+    $('#pts_usd').data('value', value).html(value);
+  }
+
 }
 
 function drawChart(container, data){

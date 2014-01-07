@@ -5,7 +5,11 @@ class ProxyController < ApplicationController
     market  = params[:market] || 'bter'
     pair    = params[:pair] || 'pts_btc'
 
-    api_url = "https://bter.com/api/1/ticker/#{pair}"
+    if market == 'bter'
+      api_url = "https://bter.com/api/1/ticker/#{pair}"
+    elsif market == 'bitstamp'
+      api_url = "https://www.bitstamp.net/api/ticker/"
+    end
 
     begin
       resp = RestClient.get api_url, :timeout => 2
