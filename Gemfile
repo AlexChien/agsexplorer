@@ -47,6 +47,12 @@ group :assets do
   gem 'sassy-buttons'
 end
 
+group :development, :test do
+  gem "rspec"#, "~> 2.7"
+  gem "rspec-rails"#, "~> 2.7"
+  gem "pry"
+  gem 'pry-rails'
+end
 
 group :development do
   # Deploy with Capistrano
@@ -59,8 +65,6 @@ group :development do
   gem 'rails-footnotes', '~> 3.7.8'
   gem "factory_girl_rails", "~> 1.4"
   gem "faker"
-  gem "pry"
-  gem 'pry-rails'
   gem "bullet"
   gem "magic_encoding"
   gem "thin"
@@ -70,8 +74,6 @@ end
 
 group :test do
   gem "ruby-debug19"
-  gem "rspec"#, "~> 2.7"
-  gem "rspec-rails"#, "~> 2.7"
   gem "yard"
 
   # speed up rspec
