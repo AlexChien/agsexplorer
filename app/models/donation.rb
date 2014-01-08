@@ -181,7 +181,7 @@ class Donation < ActiveRecord::Base
         if height.to_i >= highest_block and !Donation.exists?(block_height: height, time: time, address: addr, amount: amount, network: network, rate: rate, total: total)
 
           # assign wallet_id
-          if txbits = otxbits
+          if txbits == otxbits
             brother_addr = oaddr
 
             wallet_id = Donation.where(network: network, address: brother_addr).limit(1).first.try(:wallet_id)
@@ -207,7 +207,7 @@ class Donation < ActiveRecord::Base
             wallet.save
           end
 
-          otxbits, oaddr = txbits, oaddr
+          otxbits, oaddr = txbits, addr
 
         end
       end
