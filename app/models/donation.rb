@@ -100,6 +100,8 @@ class Donation < ActiveRecord::Base
     # v0.3
     url ||= "http://q39.qhor.net/ags/3/{network}.csv.txt?#{Time.now.to_i}".gsub('{network}', network)
 
+    puts "[#{Time.now.to_s(:db)}] Donation: parse network #{url}"
+
     begin
       RestClient.get(url){ |response, request, result, &block|
         case response.code
@@ -224,6 +226,8 @@ class Donation < ActiveRecord::Base
     end
 
     date = Date.parse(date) if date.is_a? String
+
+    puts "[#{Time.now.to_s(:db)}] Donation calculate_ags_reward #{date}"
 
     ns.each do |network|
       # day1 should include all before jan 1st

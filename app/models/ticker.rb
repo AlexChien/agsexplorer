@@ -9,7 +9,9 @@ class Ticker < ActiveRecord::Base
   def self.fetch_tickers
     TICKERS.each do |ticker|
       begin
-        resp = RestClient.get "#{ticker[:api_url]}?#{Time.now.to_i}", :timeout => 2
+        api_url = "#{ticker[:api_url]}?#{Time.now.to_i}"
+        puts "[#{Time.now.to_s(:db)}] Ticker: fetch #{api_url}"
+        resp = RestClient.get api_url, :timeout => 2
       rescue
         resp = nil
       end
