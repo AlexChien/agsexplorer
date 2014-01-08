@@ -9,10 +9,10 @@ class Ticker < ActiveRecord::Base
   def self.fetch_tickers
     TICKERS.each do |ticker|
       begin
-        api_url = "#{ticker[:api_url]}?#{Time.now.to_i}"
-        puts "[#{Time.now.to_s(:db)}] Ticker: fetch #{api_url}"
-        resp = RestClient.get api_url, :timeout => 2
+        puts "[#{Time.now.to_s(:db)}] Ticker: fetch #{ticker[:api_url]}"
+        resp = RestClient.get ticker[:api_url], :timeout => 2
       rescue
+        puts "resp is nil"
         resp = nil
       end
 
@@ -23,6 +23,7 @@ class Ticker < ActiveRecord::Base
   def self.parse(resp, ticker)
     if resp
       resp = JSON.parse(resp)
+      puts resp
 
       create(ticker.except(:api_url).merge(last: resp["last"])) if resp["last"]
     else
