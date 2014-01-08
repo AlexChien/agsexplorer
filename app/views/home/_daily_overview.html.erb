@@ -6,8 +6,8 @@
     </tr>
     <tr>
       <td>Donated Today <small>(so far)</small></td>
-      <td><span class="symolizable" data-type="<%= network %>" data-cur="<%= network %>" data-value="<%= Donation.today_donated(network) %>">
-        <%= dcp(Donation.today_donated(network), network) %>
+      <td><span class="symolizable" data-type="<%= network %>" data-cur="<%= network %>" data-value="<%= @data[:"today_#{network}_donated"] %>">
+        <%= dcp(@data[:"today_#{network}_donated"]) %>
       </span></td>
     </tr>
     <tr>
@@ -18,8 +18,8 @@
     </tr>
     <tr>
       <td>Current Rate <small>est.</small></td>
-      <td><span class="symolizable" data-type="ags_<%= network %>" data-cur="ags_<%= network %>" data-value="<%= Donation.current_price(network) %>">
-        <%= dcp(Donation.current_price(network), network).gsub(network.to_s.upcase, "AGS / #{network.to_s.upcase}").html_safe %>
+      <td><span class="symolizable" data-type="ags_<%= network %>" data-cur="ags_<%= network %>" data-value="<%= @data[:"#{network}_current_price"] %>">
+        <%= dcp(@data[:"#{network}_current_price"], network).gsub(network.to_s.upcase, "AGS / #{network.to_s.upcase}").html_safe %>
       </span></td>
     </tr>
     <tr>
