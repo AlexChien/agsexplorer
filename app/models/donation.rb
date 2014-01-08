@@ -117,7 +117,7 @@ class Donation < ActiveRecord::Base
   end
 
   # parse v0.2 api
-  def self.parse_response(response, network = 'btc')
+  def self.parse_response_v2(response, network = 'btc')
     highest_block = Donation.where(network: @network).maximum(:block_height).to_i
 
     oheight, oaddr, ototal, orate = nil,nil,nil,nil
