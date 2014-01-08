@@ -147,7 +147,7 @@ function max8(d){
 }
 
 function calculateEfficiency(data){
-  if (data.result == 'true') {
+  if (data["last"]) {
     var btc_e = ags.price_btc * data.last / ags.price_pts;
     var pts_e = 1 / btc_e;
 
