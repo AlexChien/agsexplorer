@@ -5,34 +5,12 @@ class ProxyController < ApplicationController
     market  = params[:market] || 'bter'
     pair    = params[:pair] || 'pts_btc'
 
-    if market == 'bter'
-      api_url = "https://bter.com/api/1/ticker/#{pair}"
-    elsif market == 'bitstamp'
-      api_url = "https://www.bitstamp.net/api/ticker/"
-    end
-
-    begin
-      resp = RestClient.get api_url, :timeout => 2
-    rescue
-      resp = nil
-    end
+    t = Ticker.where(market: market, pair: pair).order("created_at desc").first
+    json = "{\"last\": \"#{t.last.to_f}\", \"timestamp\": \"#{t.created_at.to_s(:db)}\"}" unless t.nil?
 
     respond_to do |format|
-      format.json { render_json resp }
-      format.js   { render_json resp }
+      format.json { render json: json }
+      format.js   { render json: json, callback: params[:callback] }
     end
   end
-
-  def render_json(json)
-    callback = params[:callback]
-    response = begin
-      if callback
-        "#{callback}(#{json});"
-      else
-        json
-      end
-    end
-    render({:content_type => :js, :text => response})
-  end
-
 end

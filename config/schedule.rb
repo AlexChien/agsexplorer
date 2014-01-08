@@ -24,6 +24,11 @@ every 5.minutes do
   runner "Donation.parse_all"
 end
 
+# fetch tickers every 1 minute
+every 1.minute do
+  runner "Ticker.fetch_tickers"
+end
+
 # update past day's ags amount actually accquired
 every 1.day, :at => '8:02 am' do
   # calculate each donation obtained ags reward for yesterday

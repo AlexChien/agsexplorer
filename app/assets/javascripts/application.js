@@ -165,8 +165,8 @@ function utcNow(){
 
 function loadTickers(){
   // load pts_btc and calculate efficiency
-  $.getJSON('/proxy/bter/ticker/pts_btc', function(data){
-    if (data.result == 'true') {
+  $.getJSON('/proxy/ticker/bter/pts_btc.json',{}, function(data){
+    if (data["last"]) {
       // ticker panel
       $('#pts_btc').data('value', data.last).html(data.last);
 
@@ -177,7 +177,7 @@ function loadTickers(){
     }
   });
 
-  $.getJSON('/proxy/bitstamp/ticker/btc_usd', function(data){
+  $.getJSON('/proxy/ticker/bitstamp/btc_usd.json',{}, function(data){
       // ticker panel
       $('#btc_usd').data('value', data.last).html(data.last);
 
@@ -190,7 +190,6 @@ function calculatePtsUsd(){
     value = ($('#pts_btc').data('value') * $('#btc_usd').data('value')).toFixed(2);
     $('#pts_usd').data('value', value).html(value);
   }
-
 }
 
 function drawChart(container, data){

@@ -13,7 +13,7 @@ Agsexplorer::Application.routes.draw do
   get ':network/address/:address' => 'addresses#show', as: :address
 
   # fetch ticker
-  get "proxy/:market/ticker/:pair" => 'proxy#ticker', as: :ticker
+  get "proxy/ticker/:market/:pair" => 'proxy#ticker', as: :ticker
 
   # balance
   get "masterbook(/:network)" => 'balances#masterbook', as: :masterbook
