@@ -1,6 +1,6 @@
 class BalancesController < ApplicationController
   def show
-    @address = params[:address]
+    @address = params[:address].try(:strip)
     @view = params[:view] || "merged"
 
     wallet_id = Donation.where(address: @address).limit(1).first.try(:wallet_id)

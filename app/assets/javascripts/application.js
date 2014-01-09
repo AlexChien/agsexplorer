@@ -57,7 +57,23 @@ $(function(){
 
   // init balance_address init value
   if ($('#balance_address') && $.cookie('balance_address')) {
-    $('#balance_address').val($.cookie('balance_address'));
+    var addrs = $.cookie('balance_address').split(',')
+    $('#balance_address').val(addrs[0]);
+
+    if (addrs.length > 1) {
+      for (var i = 0; i < addrs.length; i++) {
+        var li = $('<li><a href="/balances/'+addrs[i]+'">'+addrs[i]+'</a></li>').append(
+          $('<button type="button" class="close" data-dismiss="alert" data-addr="'+addrs[i]+'">×</button>').click(function()
+          {
+            var addrs = $.cookie('balance_address').split(',');
+            addrs.splice(addrs.indexOf($(this).data('addr')),1);
+            $.cookie('balance_address', addrs.join(','), {path: '/'});
+            $(this).parent().remove();
+          })
+        );
+        $('#balance_lookup .history').append(li);
+      }
+    }
   }
 
   // symbolizable
@@ -69,7 +85,11 @@ $(function(){
 
     if (address) {
       $(this).attr('action', '/balances/'+address);
-      $.cookie('balance_address', address);
+      var addrs = $.cookie('balance_address') || address;
+      if (addrs.indexOf(address) == -1) {
+        addrs += ',' + address;
+      }
+      $.cookie('balance_address', addrs, {path: '/'});
       return true;
     }
 
