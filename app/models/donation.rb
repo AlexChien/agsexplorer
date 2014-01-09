@@ -98,7 +98,9 @@ class Donation < ActiveRecord::Base
     # v0.2
     # url ||= "http://q39.qhor.net/ags/{network}.csv.txt?#{Time.now.to_i}".gsub('{network}', network)
     # v0.3
-    url ||= "http://q39.qhor.net/ags/3/{network}.csv.txt?#{Time.now.to_i}".gsub('{network}', network)
+    # url ||= "http://q39.qhor.net/ags/3/{network}.csv.txt?#{Time.now.to_i}".gsub('{network}', network)
+    # v0.4
+    url ||= "http://q39.qhor.net/ags/4/{network}.csv.txt?#{Time.now.to_i}".gsub('{network}', network)
 
     puts "[#{Time.now.to_s(:db)}] Donation: parse network #{url}"
 
@@ -107,6 +109,7 @@ class Donation < ActiveRecord::Base
         case response.code
         when 200
           parse_response_v3(response, network)
+          # check_total(response, network)
         else
           response.return!(request, result, &block)
         end
@@ -244,5 +247,48 @@ class Donation < ActiveRecord::Base
       total_donations.update_all(["ags_amount = amount * ?, today_total_donation = ?, today_price = ?", price, total_amount, price])
     end
   end
+
+  # baseline data
+  # {"BTC":[
+  # [2013-01-01: 61.861694286294],
+  # [2014-01-02: 54.312118818387],
+  # [2014-01-03: 52.742818852115],
+  # [2014-01-04: 69.206746369135],
+  # [2014-01-05: 55.873671190435],
+  # [2014-01-06: 41.049251734832]]
+  #
+  # "PTS":[
+  # [2013-01-01,2343.9963135793],
+  # [2014-01-02,2983.9877512266],
+  # [2014-01-03,2679.7434171562],
+  # [2014-01-04,2681.5032923108],
+  # [2014-01-05,2733.9719749189],
+  # [2014-01-06,2889.5240458697],
+  # [2013-01-07,3050.0523216445],
+  # [2014-01-08,2385.7550195996]]}
+  def self.check_total(response, network = 'btc')
+    odate = '2013-01-01'
+    gtotal = 0.0
+    response.each_line do |line|
+      if line =~ /^"{0,1}\d+/
+        height, time, txbits, addr, amount, total, rate = line.gsub("\"","").split(';')
+        date = time.split(' ')[0]
+
+        # new day starts
+        if date > odate && date > '2014-01-01'
+          puts "#{odate}: #{gtotal}"
+          odate = date
+          gtotal = 0
+        end
+
+        gtotal += amount.to_f
+
+        if gtotal.round(8) != total.to_f
+          binding.pry
+        end
+      end
+    end
+  end
+
 
 end
