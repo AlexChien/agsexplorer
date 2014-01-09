@@ -19,8 +19,8 @@ set :output, "/home/mongrel/agsexplorer/shared/log/cron_log.log"
 
 # Learn more: http://github.com/javan/whenever
 
-# fetch new blockchain data every 5 minutes
-every 5.minutes do
+# fetch new blockchain data every 1 minutes
+every 1.minutes do
   runner "Donation.parse_all"
 end
 
