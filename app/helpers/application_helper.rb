@@ -111,4 +111,12 @@ module ApplicationHelper
     network_short_name(network) == "PTS"
   end
 
+  def external_tx_path(tx, network = 'btc')
+    if network.to_s.downcase == 'btc'
+      "http://blockchain.info/tx/#{tx}"
+    else
+      "https://coinplorer.com/PTS/Transactions/#{tx}"
+    end
+  end
+
 end

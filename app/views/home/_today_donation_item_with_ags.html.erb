@@ -3,6 +3,7 @@
 <tr>
   <td><%= display_time donation.time %></td>
   <td><%= donation.address %></td>
+  <td><%= link_to 'tx', external_tx_path(donation.txbits, network), :target => "_blank" %></td>
   <td><%= dcp(donation.amount, network) %></td>
   <td><%= dcp(@today_total_donated, network) %></td>
   <td><%= dcp(rate, network).gsub(network.to_s.upcase, "AGS / #{network.to_s.upcase}").html_safe %></td>
@@ -12,6 +13,7 @@
 <tr>
   <td><%= display_time donation.time %></td>
   <td><%= donation.address %></td>
+  <td><%= link_to 'tx', external_tx_path(donation.txbits, network), :target => "_blank" %></td>
   <td><%= dcp(donation.amount, network) %></td>
   <td><%= dcp(donation.today_total_donation, network) %></td>
   <td><%= dcp(donation.today_price * Ags::COIN, network).gsub(network.to_s.upcase, "AGS / #{network.to_s.upcase}").html_safe %></td>

@@ -1,9 +1,38 @@
 require "spec_helper"
 
 describe Donation do
-  context "total" do
+  context "v0.5" do
     before do
-      Donation.parse_response(File.open(File.join(Rails.root, 'spec/factories/btc_data.txt')), 'btc')
+      Donation.parse_response_v5(File.open(File.join(Rails.root, 'spec/factories/btc_data_5.txt')), 'btc')
+    end
+
+    it "check total", :skip do
+      # baseline data
+      # {"BTC":[
+      # [2013-01-01: 61.861694286294],
+      # [2014-01-02: 54.312118818387],
+      # [2014-01-03: 52.742818852115],
+      # [2014-01-04: 69.206746369135],
+      # [2014-01-05: 55.873671190435],
+      # [2014-01-06: 41.049251734832]]
+      #
+      # "PTS":[
+      # [2013-01-01,2343.9963135793],
+      # [2014-01-02,2983.9877512266],
+      # [2014-01-03,2679.7434171562],
+      # [2014-01-04,2681.5032923108],
+      # [2014-01-05,2733.9719749189],
+      # [2014-01-06,2889.5240458697],
+      # [2013-01-07,3050.0523216445],
+      # [2014-01-08,2385.7550195996]]}
+
+      Donation.btc.sum(:amount).should == (61.861694286294 * Ags::COIN.to_i) + (54.312118818387 * Ags::COIN.to_i)
+    end
+  end
+
+  context "total", :focus do
+    before do
+      Donation.parse_response_v2(File.open(File.join(Rails.root, 'spec/factories/btc_data.txt')), 'btc')
     end
 
     it "total btc donation count" do
@@ -107,7 +136,7 @@ describe Donation do
 
   context "merged addresses" do
     before do
-      Donation.parse_response(File.open(File.join(Rails.root, 'spec/factories/btc_data_merged_address.txt')), 'btc')
+      Donation.parse_response_v3(File.open(File.join(Rails.root, 'spec/factories/btc_data_merged_address.txt')), 'btc')
     end
 
     let(:addr21) { "14Ntbt1fRcAzreQUYtmPSJynsyuMKFxFmw" }

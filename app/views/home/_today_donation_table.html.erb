@@ -5,6 +5,7 @@
       <tr>
         <th>Time</th>
         <th>Address</th>
+        <th>Tx</th>
         <th>Amount</th>
       </tr>
       <%= render :partial => 'home/today_donation_item', :collection => donations, :as => 'donation', :locals => { :network => network } %>
