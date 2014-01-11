@@ -7,7 +7,7 @@
     <tr>
       <td>Donated Today <small>(so far)</small></td>
       <td><span class="symolizable" data-type="<%= network %>" data-cur="<%= network %>" data-value="<%= @data[:"today_#{network}_donated"] %>">
-        <%= dcp(@data[:"today_#{network}_donated"]) %>
+        <%= dcp(@data[:"today_#{network}_donated"], network) %>
       </span></td>
     </tr>
     <tr>
