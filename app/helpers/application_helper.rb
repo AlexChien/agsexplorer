@@ -119,4 +119,12 @@ module ApplicationHelper
     end
   end
 
+  def donation_usage_link(network = 'btc')
+    if network.to_s.downcase == 'btc'
+      "https://docs.google.com/spreadsheet/ccc?key=0AqTwk-e7yzJydDFnQmlkTVlkbWpubnJBbzR2UG5ucnc&usp=sharing#gid=0"
+    else
+      "https://docs.google.com/a/invictus-innovations.com/spreadsheet/ccc?key=0AqTwk-e7yzJydFZ3bVVWT0o1OUwzXzdESHFBY0FkUWc&usp=sharing#gid=0"
+    end
+  end
+
 end

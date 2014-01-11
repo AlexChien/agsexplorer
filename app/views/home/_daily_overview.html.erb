@@ -5,22 +5,23 @@
       <th colspan="2">Today</th>
     </tr>
     <tr>
-      <td>Donated Today <small>(so far)</small></td>
-      <td><span class="symolizable" data-type="<%= network %>" data-cur="<%= network %>" data-value="<%= @data[:"today_#{network}_donated"] %>">
-        <%= dcp(@data[:"today_#{network}_donated"], network) %>
-      </span></td>
-    </tr>
-    <tr>
-      <td>Avg. Daily Donation</td>
-      <td><span class="symolizable" data-type="<%= network %>" data-cur="<%= network %>" data-value="<%= @daily_data["#{network}_avg".to_sym] %>">
-        <%= dcp(@daily_data["#{network}_avg".to_sym], network) %>
-      </span></td>
-    </tr>
-    <tr>
       <td>Current Rate <small>est.</small></td>
-      <td><span class="symolizable" data-type="ags_<%= network %>" data-cur="ags_<%= network %>" data-value="<%= @data[:"#{network}_current_price"] %>">
+      <td style="font-size:1.5em;"><span class="symolizable" data-type="ags_<%= network %>" data-cur="ags_<%= network %>" data-value="<%= @data[:"#{network}_current_price"] %>">
         <%= dcp(@data[:"#{network}_current_price"], network).gsub(network.to_s.upcase, "AGS / #{network.to_s.upcase}").html_safe %>
       </span></td>
+    </tr>
+    <tr>
+      <td>Donated Today / Average</td>
+      <% slowness = (100.0 * @data[:"today_#{network}_donated"] / @daily_data["#{network}_avg".to_sym]).round() %>
+      <td>
+        <span class="symolizable label label-<%= slowness < 100 ? "success" : "important" %>"
+          data-type="<%= network %>" data-cur="<%= network %>" data-value="<%= @data[:"today_#{network}_donated"] %>">
+        <%= dcp(@data[:"today_#{network}_donated"], network) %>
+        </span> / <span class="symolizable" data-type="<%= network %>" data-cur="<%= network %>" data-value="<%= @daily_data["#{network}_avg".to_sym] %>">
+        <%= dcp(@daily_data["#{network}_avg".to_sym], network) %>
+        </span>
+        <abbr title="<%= (slowness - 100).abs %>% <%= slowness < 100 ? "favorable" : "unfavorable" %> to donor against average day">[?]</abbr>
+    </td>
     </tr>
     <tr>
       <td>Donation Efficiency <abbr title="By querying bter's pts_btc exchange rate, to find out donate which currency is more favorable.">[?]</abbr></td>
@@ -42,6 +43,10 @@
     <tr>
       <td>Total AGS Rewarded</td>
       <td><%= dcp(Ags.issued(network), "ags") %></td>
+    </tr>
+    <tr>
+      <td>Fund Usage</td>
+      <td><%= link_to "view google doc", donation_usage_link(network), :target => "_blank" %></td>
     </tr>
   </tbody>
 </table>
