@@ -95,6 +95,9 @@ $(function(){
 
     event.preventDefault();
   });
+
+  // notification form
+  setup_notification_form();
 });
 
 function changeSymbol(){
@@ -311,11 +314,27 @@ function dd(d){
   return d > 9 ? d : "0"+d;
 }
 
-var copyToClipboard = function(from_selector){
-  if(window.clipboardData && window.clipboardData.setData){
-    window.clipboardData.setData('text', $(from_selector).val());
-  }else{
-    alert("您的浏览器不支持此复制功能，请使用Ctrl+C或鼠标右键。");
-    $(from_selector).select(); // 选中要复制的内容，给用户提供方便
-  }
+function setup_notification_form(){
+  $('#notification_form')
+    .bind("ajax:beforeSend",  function(){
+      var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      if (!re.test($(this).find('.email').val())){
+        $(this).find('div.alert').removeClass('alert-success')
+          .addClass('alert-error').html('Please check your email format.').show();
+        return false;
+      }
+    })
+    .bind('ajax:success', function(xhr, data, status){
+      $(this).find('div.alert').removeClass('alert-error')
+        .addClass('alert-success').html('Successfully subscribed.').show();
+    })
+    .bind('ajax:error', function(xhr, data, status){
+      var errorMessage = 'Sorry, an error has occured, your subscription is unsuccessful, please try again later.';
+      if (data.responseJSON.reason) {
+        errorMessage = data.responseJSON.reason;
+      }
+
+      $(this).find('div.alert').removeClass('alert-success')
+        .addClass('alert-error').html(errorMessage).show();
+    })
 }

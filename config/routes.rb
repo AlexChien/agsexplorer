@@ -18,6 +18,8 @@ Agsexplorer::Application.routes.draw do
   # balance
   get "masterbook(/:network)" => 'balances#masterbook', as: :masterbook
   match 'balances/:address' => 'balances#show', as: :balance
+
+  resources :notifications, only: :create
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
