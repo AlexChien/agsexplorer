@@ -1,20 +1,20 @@
 # -*- encoding : utf-8 -*-
-set :application, "meishi"
-set :server_name, "beta.enjoyoung.cn meishi.koocaa.com"
-set :domain,      "112.65.229.47" #ccgexpo
-set :repository,  "git@github.com:AlexChien/meishi.git"
+set :application, "agsexplorer"
+set :server_name, "server_name"
+set :domain,      "server ip"
+set :repository,  "git@github.com:AlexChien/agsexplorer.git"
 set :use_sudo,    false
-set :deploy_to,   "/usr/local/www/#{application}"
+set :deploy_to,   "deploy_path"
 set :scm,         "git"
-set :user,        "runner"
-set :runner,      "runner"
-set :sudo_user,   "runner"
-set :rake,        'rake'  #"/opt/ruby-enterprise/bin/rake"
+set :user,        "user"
+set :runner,      "runner_user"
+set :sudo_user,   "sudo_user"
+set :rake,        'rake'
 set :keep_releases, 5
-set :rvm_ruby_string, '1.9.3@meishi'
-set :passenger_ruby, '/home/runner/.rvm/wrappers/ruby-1.9.3-p125/ruby'
+set :rvm_ruby_string, '1.9.3@agsexplorer'
+set :passenger_ruby, 'passenger_ruby path'
 set :rvm_type, :user
-set :nginx_conf_path, "/usr/local/nginx/conf/vhosts"
+set :nginx_conf_path, "nginx conf path"
 set :asset_env, "RAILS_GROUPS=assets"
 
 # Whatever you set here will be taken set as the default RAILS_ENV value
@@ -25,9 +25,6 @@ set :bundle_cmd, "bundle" #"/opt/ruby-enterprise/bin/bundle"
 # without darwin, since we are using rb-fsevent gem on mac
 set :bundle_without, [:darwin, :development, :test]
 default_run_options[:pty] = true
-set :default_environment, {
-  'JAVA_HOME' => '/usr/lib/jvm/java-6-openjdk'
-}
 
 # NOTE: for some reason Capistrano requires you to have both the public and
 # the private key in the same folder, the public key should have the
@@ -36,7 +33,7 @@ ssh_options[:keys] = ["#{ENV['HOME']}/.ssh/id_rsa"]
 
 set :scm, :git
 set :scm_verbose, true
-set :branch, "rc"
+set :branch, "master"
 
 set :deploy_via, :remote_cache
 
@@ -46,25 +43,15 @@ role :db,  domain, :primary => true
 
 namespace :deploy do
 
-  desc "Generate database.yml and Create asset packages for production, minify and compress js and css files"
-  # after "deploy:update_code", :roles => [:web] do
+  desc "Generate database.yml"
   after "deploy:finalize_update", :roles => [:web] do
-    # database_yml task cannot be put in after "deploy:update_code" trigger
-    # it will conflict with asset:precompile
     database_yml
-    # asset_packager
-    run "ln -s #{shared_path}/bundle #{current_release}/vendor/bundle"
-    migrate
-  end
 
-  # [Deprecation Warning] This API has changed, please hook `deploy:create_symlink` instead of `deploy:symlink`.
-  # add soft link script for deploy
-  desc "Symlink the upload directories"
-  after "deploy:create_symlink", :roles => [:web] do
-    run "ln -s #{shared_path}/ckeditor_assets #{current_release}/public/ckeditor_assets"
-    # symlink assets is done by capistrano interal task
-    # run "ln -s #{shared_path}/assets #{current_release}/public/assets"
-    run "ln -s #{shared_path}/page_cache #{current_release}/public/cache"
+    # link bundle path
+    run "ln -s #{shared_path}/bundle #{current_release}/vendor/bundle"
+
+    # migrate db schema
+    migrate
   end
 
   desc "Migrate db"
@@ -90,6 +77,7 @@ namespace :deploy do
   task :database_yml, :roles => [:web] do
     db_config = "#{shared_path}/config/database.yml.production"
     run "cp #{db_config} #{release_path}/config/database.yml"
+    run "cp #{shared_path}/config/app_config.yml.production #{release_path}/config/app_config.yml"
   end
 
   namespace :assets do
@@ -117,32 +105,6 @@ namespace :deploy do
     end
   end
 
-
-  def try_killing_resque_workers
-    run "pkill -3 -f resque"
-  rescue
-    nil
-  end
-
-  desc "Restart God gracefully"
-  task :restart_god, :roles => :app do
-    god_config_path = File.join(current_release, 'config', 'app.god')
-    begin
-      sudo "god status"
-      sudo "god load #{god_config_path}"
-      sudo "god start xs-resque"
-
-      # Kill resque processes and have god restart them with the newly loaded config.
-      try_killing_resque_workers
-    rescue => ex
-      # god is dead, workers should be as well, but who knows.
-      try_killing_resque_workers
-
-      # Start god.
-      sudo "god -c #{god_config_path}"
-    end
-  end
-
 end
 
 namespace :rvm do
@@ -152,4 +114,3 @@ namespace :rvm do
 end
 
 after "deploy", "rvm:trust_rvmrc"
-# after :"deploy:restart", :"deploy:restart_god"

@@ -26,6 +26,8 @@ config/*.sphinx.conf
 /config/config.yml
 /config/database.yml
 /config/app_config.yml
+/config/deploy/production.rb
+/config/deploy/staging.rb
 /coverage/
 coverage.data
 /db/*.javadb/
