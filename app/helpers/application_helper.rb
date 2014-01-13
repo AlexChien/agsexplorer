@@ -83,6 +83,10 @@ module ApplicationHelper
     display_currency(amount, currency, true).html_safe
   end
 
+  def cent2coin(cent)
+    cent / Bitcoin::COIN.to_f
+  end
+
   def small(num, symbol)
     parts = num.to_s.split('.')
     if parts.size == 2

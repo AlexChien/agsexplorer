@@ -8,6 +8,17 @@ development: &dev
   #pagination per page default value
   per_page: 18
 
+  email:
+    address: "smtp.mail.com"
+    port: 25
+    domain: "smtp.mail.com"
+    authentication: :login
+    user_name: "senderemail"
+    password: "pwd"
+    default_charset: "utf-8"
+    default_content_type: "text/html; charset=utf-8"
+
+
 test:
   <<: *dev
 

@@ -8,6 +8,13 @@ Agsexplorer::Application.configure do
   config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true
 
+  # Don't care if the mailer can't send
+  config.action_controller.asset_host = "agsexplorer.com"
+
+  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.default_url_options = { :host => config.action_controller.asset_host }
+  config.action_mailer.asset_host = config.action_controller.asset_host
+
   # Disable Rails's static asset server (Apache or nginx will already do this)
   config.serve_static_assets = false
 
