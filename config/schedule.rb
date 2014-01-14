@@ -36,7 +36,10 @@ every 1.day, :at => '8:01 am' do
 
   # re-calculate each wallet's total ags amount obtained from its all addresses
   runner "Wallet.calculate_ags_sum"
+end
 
+# every day at 5am, 3 hours before end of day
+every 1.day, :at => '5:00 am' do
   # send daily email
   rake 'email:daily'
 end
