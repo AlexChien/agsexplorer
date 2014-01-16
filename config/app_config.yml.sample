@@ -1,8 +1,8 @@
 # APP_CONFIG[:key]
 development: &dev
   host_name: "127.0.0.1:3000"
-  site_title: "Angel Shares Explorer"
-  site_description: "Angel Shares Explorer: ProtoShare Bitcoin donation explorer"
+  site_title: "AngelShares Explorer"
+  site_description: "AngelShares Explorer: ProtoShare Bitcoin donation explorer"
   site_keyword: "Bitcoin Protoshare AngelShare btc pts ags"
 
   #pagination per page default value
