@@ -32,10 +32,8 @@ end
 # update past day's ags amount actually accquired
 every 1.day, :at => '8:01 am' do
   # calculate each donation obtained ags reward for yesterday
-  runner "Donation.calculate_ags_reward"
-
   # re-calculate each wallet's total ags amount obtained from its all addresses
-  runner "Wallet.calculate_ags_sum"
+  runner "Donation.calculate_ags_reward; Wallet.calculate_ags_sum"
 end
 
 # every day at 5am, 3 hours before end of day
