@@ -286,7 +286,7 @@ class Donation < ActiveRecord::Base
 
     date = Date.parse(date) if date.is_a? String
 
-    puts "[#{Time.now.to_s(:db)}] Donation calculate_ags_reward #{date}"
+    puts "[#{Time.now.to_s(:db)}] Donation calculate_ags_reward #{date.to_s(:ymd)}"
 
     ns.each do |network|
       # day1 should include all before jan 1st
@@ -298,7 +298,7 @@ class Donation < ActiveRecord::Base
 
       total_amount = total_donations.sum(:amount)
       return false if total_amount <= 0
-      price =  Ags::ISSURANCE[network].to_f / total_amount
+      price =  Ags::ISSURANCE[network.to_sym].to_f / total_amount
 
       total_donations.update_all(["ags_amount = amount * ?, today_total_donation = ?, today_price = ?", price, total_amount, price])
     end
