@@ -300,7 +300,7 @@ class Donation < ActiveRecord::Base
       return false if total_amount <= 0
       price =  Ags::ISSURANCE[network.to_sym].to_f / total_amount
 
-      total_donations.update_all(["ags_amount = amount * ?, today_total_donation = ?, today_price = ?", price, total_amount, price])
+      total_donations.update_all(["ags_amount = amount * ?, today_total_donation = ?, today_price = ?", price, total_amount, (price * Ags::COIN).round])
     end
   end
 
