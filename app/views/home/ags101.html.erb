@@ -1,0 +1,116 @@
+<h1>AngelShares 101 <small>frequently asked questions</small></h1>
+  <div class="accordion" id="ags101">
+
+    <div class="accordion-group">
+      <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#ags101" href="#whatisfqs">
+          What are AngelShares?
+        </a>
+      </div>
+      <div id="whatisfqs" class="accordion-body collapse">
+        <div class="accordion-inner">
+          <h3>What are AngelShares</h3>
+          <p>
+            The term "angel" in this context originally comes from Broadway, where it was used to describe wealthy patrons who provided money for theatrical productions.
+          </p>
+          <p>
+            We think everyone should have a chance to be a patron angel!
+          </p>
+          <p>
+            BitShares AGS, or Angelshares, represent a way to gain a stake in this new and exciting industry without mining coins.
+            Just as technologist contribute to the launch of a new industry by mining and trading BitShares PTS, or Protoshares, investors can partake by investing in BitShares AGS, or Angelshares.
+            AngelShares are created to acknowledge the equally important financial contribution to the development of an open, distributed, crypto-equity product called <a href="http://invictus-innovations.com/bitshares2" target="_blank">Bitshares</a>
+          </p>
+          <h3>Take part in new products</h3>
+          <p>
+            Both ProtoShares and AngelShares rely upon the willingness of us and allied developers to honor those contributions
+            with shares in new products that we as Invictus Innovations and others develop.  From Allied developers we expect a Social Consensus to form in the marketplace about
+            what constitutes honorable developer behavior. ProtoShares and AngelShares constitute concrete
+            documentation of what benefits developers received from those who laid the industry foundation.
+            Shares in individual products are concrete way for developers to acknowledge and reciprocate those benefits.
+            How the market responds to these new products, or <a href="http://invictus-innovations.com/i-dac/" target="_blank">DACs</a>, will depend upon how well that product is perceived to have honored
+            the emerging Social Consensus.
+          </p>
+          <h3>Social Consensus</h3>
+          <p>
+            We see a consensus beginning to form around the following principles:
+            (a) Developers should seek a reasonable balance between equal-opportunity lotteries and ways to compensate
+            those who sacrifice their savings or labor. (b) The market needs to give developers freedom to raise
+            funds to develop, support and promote their new DACs.  We believe that the following allocation represents
+            the minimum fair genesis allocation.
+          </p>
+          <ul style="list-style-type: circle;">
+            <li>10% of the crypto-equity should be allocated to holders of Bitshare PTS (ProtoShares).</li>
+            <li>10% of the crypto-equity should be allocated to holders of Bitshare AGS (AngelShares).</li>
+            <li>80% of the crypto-equity should be customized to the needs of each DAC.</li>
+          </ul>
+          <a href="http://invictus-innovations.com/social-concensus" target="_blank">Statement of Social Consensus</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-group">
+      <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#ags101" href="#changeaddress">
+          I can't find some of donations in my address lookup. <small>(Change Address)</small>
+        </a>
+      </div>
+      <div id="changeaddress" class="accordion-body collapse">
+        <div class="accordion-inner">
+          Other variance of this question might be:
+          <ul>
+            <li>My donation is credited to someone else's address!</li>
+            <li>My donation is missing!</li>
+          </ul>
+          <p>Many "missing donation" worries of this kind is due to being unfamiliar with the '<a href="https://en.bitcoin.it/wiki/Change" target="_blank"><cite>Change</cite></a>' concept of Bitcoin or ProtoShare.  Your wallet contains many addresses, some are created by you, some are created by wallet itself.  Everytime you make one transaction, say you have address A (contains 10BTC), you make 1BTC donation to AGS address(B), the transaction protocal is like this:</p>
+          <ul>
+            <li>(input) Destroy 10BTC in address A</li>
+            <li>(output) Create 1BTC in address B</li>
+            <li>(output) Create 9BTC in address C (C is a new address created by your wallet)</li>
+          </ul>
+          <p>Address C is the change address. </p>
+          <p>The next time you make a transaction, the amount might be deducted from address C, which will be credited AGS.</p>
+          <p>This is sometimes confusing for general wallet users.  Because the behind-scene action is done automatically.  When you think you made 2 donations from same address, they actually are not.  In the example above, address A and C are both credited AGS. </p>
+          <p>Every donation made by you will be credited to your address(es) in your wallet.  So don't worry.  As long as you control your wallet, they are not going anywhere.</p>
+          <p>AGSExplorer.com supports per-address lookup at the moment, we will soon release new feature to support multiple addresses lookup, all you need to do is export all your wallet addresses and bulk search here.  We will give you aggregated view of your donations and AGS balance.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-group">
+      <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#ags101" href="#findchangeaddress">
+          How do I find my hidden change addresses or what address actually sends out the donation?
+        </a>
+      </div>
+      <div id="findchangeaddress" class="accordion-body collapse">
+        <div class="accordion-inner">
+          <p>The easiest way is double click the donation transaction in your wallet, in the pop-up window (Transaction Detail), find the Transation ID, look it up in blockchain explorer.</p>
+          <ul>
+            <li>BTC: http://blockchain.info/tx/[your transation id]</li>
+            <li>PTS: http://coinplorer.com/PTS/Transactions/[your transation id]</li>
+          </ul>
+         <p> The addresses shown in the "Inputs" section is actual address(es) your donation is sent from.  </p>
+         <p>Note: sometimes it has multiple input addresses, they will be credited AGS proportionally by AGSExplorer.com.  When AngelShares genesis block is generated, 3I will randomly pick one of these addresses to credit AGS <a href="https://bitsharestalk.org/index.php?topic=1841.msg21823#msg21823" target="_blank"><cite>[?]</cite></a>. To redeem AGS in the future, it's safe to import the whole wallet that contains all these addresses.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-group">
+      <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#ags101" href="#coincontroll">
+          How can I control which address to send donation from?
+        </a>
+      </div>
+      <div id="coincontroll" class="accordion-body collapse">
+        <div class="accordion-inner">
+          <p>Some wallet clients don't support "Coin Control" yet.  For BTC, blockchain.info's online wallet has good coin control feature.  Next release of Bitcoin 0.9 might have coin control integrated.</p>
+
+          <p>You can manually create raw transaction to define which unspent outputs as your transaction's inputs.  But this is somewhat complicated and inexperienced user might make mistake and result in losing coins.  Highly not recommended for average users.</p>
+
+          <p>At the moment, you can just send donation as usual, and don't worry about the multiple addresses being credited.  3I has bounty set up for tools that can display AGS balance given a BTC or PTS wallet <a href="https://bitsharestalk.org/index.php?topic=1963.0" target="_blank">[?]</a>.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>

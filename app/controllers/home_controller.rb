@@ -12,4 +12,7 @@ class HomeController < ApplicationController
       pts_current_price:   Donation.current_price(:pts)
     }
   end
+
+  def ags101
+  end
 end

@@ -1,7 +1,5 @@
 Agsexplorer::Application.routes.draw do
 
-  match 'home' => 'home#index'
-
   # blocks
   get ':network/block/:hash' => 'blocks#show_by_hash', as: :block
   get ':network/block-height/:height' => 'blocks#show_by_height', as: :height_block
@@ -18,6 +16,9 @@ Agsexplorer::Application.routes.draw do
   # balance
   get "masterbook(/:network)" => 'balances#masterbook', as: :masterbook
   match 'balances/:address' => 'balances#show', as: :balance
+
+  # ags101
+  get 'ags101' => 'home#ags101'
 
   resources :notifications, only: :create
   # The priority is based upon order of creation:
