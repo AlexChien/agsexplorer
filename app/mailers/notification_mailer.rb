@@ -3,10 +3,11 @@ class NotificationMailer < ActionMailer::Base
 
   default from: "no-reply@agsexplorer.com"
 
-  def daily(email, data = nil)
+  def daily(notification, data = nil)
     return false if data.nil?
 
     @data = data
-    mail to: email, subject: "#{Time.now.utc} AGSExplorer Daily Notification"
+    @token = notification.token
+    mail to: notification.email, subject: "#{Time.now.utc} AGSExplorer Daily Notification"
   end
 end

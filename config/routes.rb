@@ -20,7 +20,8 @@ Agsexplorer::Application.routes.draw do
   # ags101
   get 'ags101' => 'home#ags101'
 
-  resources :notifications, only: :create
+  resources :notifications, only: [:create, :destroy]
+  get 'unsubscribe/:token' => 'notifications#unsubscribe', as: :unsubscribe
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

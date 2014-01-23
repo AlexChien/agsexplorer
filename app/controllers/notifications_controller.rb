@@ -12,4 +12,23 @@ class NotificationsController < ApplicationController
       end
     end
   end
+
+  def unsubscribe
+    @notification = Notification.find_by_token(params[:token])
+  end
+
+  def destroy
+    @notification = Notification.find_by_token(params[:notification][:token])
+
+    redirect_to unsubscribe_path(params[:notification][:token]) and return if @notification.nil?
+
+    @notification.destroy
+    if @notification.destroyed?
+      flash[:info] = "Successfully unsubscribed"
+    else
+      flash[:error] = "An error has occurred"
+    end
+
+    redirect_to root_url and return
+  end
 end

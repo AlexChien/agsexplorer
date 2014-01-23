@@ -5,4 +5,5 @@ Daily Notification:
 <%= render :partial => 'home/daily_overview', :locals => { :network => :pts }, :formats => [:text] %>
 
 ====================================
-AGSExplorer (http://agsexplorer.com)
+AGSExplorer (<%= root_url %>)
+Unsubscribe: <%= unsubscribe_url(@token) %>

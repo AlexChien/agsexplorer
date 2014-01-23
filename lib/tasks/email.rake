@@ -18,7 +18,7 @@ namespace :email do
 
     Notification.find_each do |n|
       puts "send > #{n.email}"
-      NotificationMailer.daily(n.email, @data).deliver
+      NotificationMailer.daily(n, @data).deliver
       sleep 2
     end
   end

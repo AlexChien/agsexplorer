@@ -1,0 +1,16 @@
+<h1>Unsubscribe</h1>
+<% if @notification %>
+<h4><%= @notification.email %></h4>
+
+<div class="form-actions">
+  <span class="help-block">Are you sure?  You will not receive daily AGS notification any more.</span>
+
+  <%= form_for @notification, url: notification_path(@notification), method: :delete do |f| -%>
+    <%= f.hidden_field :token, :value => @notification.token %>
+    <%= f.submit "I'm sure, unsubscribe me!", class: "btn btn-primary", :disable_with => 'Submiting...' %>
+  <% end -%>
+
+</div>
+<% else %>
+<p>Email not found or you might have been unsubscribed.</p>
+<% end %>
