@@ -25,7 +25,7 @@ every 5.minutes do
 end
 
 # fetch tickers every 1 minute
-every 5.minute do
+every 5.minutes do
   runner "Ticker.fetch_tickers"
 end
 
