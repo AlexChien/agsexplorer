@@ -12,7 +12,7 @@ class Ticker < ActiveRecord::Base
         puts "[#{Time.now.to_s(:db)}] Ticker: fetch #{ticker[:api_url]}"
         resp = RestClient.get ticker[:api_url], :timeout => 2
       rescue
-        puts "resp is nil"
+        puts "[#{Time.now.to_s(:db)}] Ticker: resp is nil"
         resp = nil
       end
 

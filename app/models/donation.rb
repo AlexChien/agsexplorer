@@ -50,6 +50,19 @@ class Donation < ActiveRecord::Base
   # daily data series
   def self.daily
     data = { btc_total:0, btc_avg:0, btc:[], pts_total:0, pts_avg:0, pts:[] }
+
+    %w(btc pts).each do |network|
+      d = Daily.send(network).asc.all
+      data[network.to_sym] = d.collect{ |record| record.as_json(only: [:date, :amount]) }
+      data["#{network}_total".to_sym] = d.inject(0){ |m,n| m+n[:amount] } + today_donated(network)
+      data["#{network}_avg".to_sym] = data["#{network}_total".to_sym] / (d.length + 1)
+    end
+
+    data
+  end
+
+  def self.daily_v1
+    data = { btc_total:0, btc_avg:0, btc:[], pts_total:0, pts_avg:0, pts:[] }
     pre_day1 = {btc:0, pts:0}
 
     date_grouping.each do |d|
@@ -360,6 +373,11 @@ class Donation < ActiveRecord::Base
       price =  Ags::ISSURANCE[network.to_sym].to_f / total_amount
 
       total_donations.update_all(["ags_amount = amount * ?, today_total_donation = ?, today_price = ?", price, total_amount, (price * Ags::COIN).round])
+
+      daily = Daily.find_or_initialize_by_network_and_date(network, date)
+      daily.price = (price * Ags::COIN).round
+      daily.amount = total_amount
+      daily.save
     end
   end
 
