@@ -25,6 +25,13 @@ namespace :donation do
     end
   end
 
+  desc "daily tasks"
+  task :daily => :environment do
+    Donation.calculate_ags_reward
+    Wallet.calculate_ags_sum
+    # daily stuff
+  end
+
   desc "reset: delete all data and rebuild"
   task :reset => :environment do
     # wipe db data

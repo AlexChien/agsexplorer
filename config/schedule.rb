@@ -33,16 +33,18 @@ end
 every 1.day, :at => '8:01 am' do
   # calculate each donation obtained ags reward for yesterday
   # re-calculate each wallet's total ags amount obtained from its all addresses
-  runner "Donation.calculate_ags_reward; Wallet.calculate_ags_sum"
+  # runner "Donation.calculate_ags_reward; Wallet.calculate_ags_sum"
+  rake "Donation:daily"
 end
 
+# re-calculate ags_reward
+# because data parse happens every 1 minute, donschoe's data refreshing frequence might
+# be bigger than 1 minute, therefore donation happen within the last minute might be fetched
+# later than expected, therefore reward calculation might happen before it
+# To be safe, re-run it 15 minutes later again
 every 1.day, :at => '8:15 am' do
-  # re-calculate ags_reward
-  # because data parse happens every 1 minute, donschoe's data refreshing frequence might
-  # be bigger than 1 minute, therefore donation happen within the last minute might be fetched
-  # later than expected, therefore reward calculation might happen before it
-  # To be safe, re-run it 15 minutes later again
-  runner "Donation.calculate_ags_reward; Wallet.calculate_ags_sum"
+  # runner "Donation.calculate_ags_reward; Wallet.calculate_ags_sum"
+  rake "Donation:daily"
 end
 
 # every day at 5am, 3 hours before end of day
