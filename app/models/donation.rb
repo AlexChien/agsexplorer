@@ -100,7 +100,7 @@ class Donation < ActiveRecord::Base
     # v0.3
     # url ||= "http://q39.qhor.net/ags/3/{network}.csv.txt?#{Time.now.to_i}".gsub('{network}', network)
     # v0.4
-    # url ||= "http://q39.qhor.net/ags/4/{network}.csv.txt?#{Time.now.to_i}".gsub('{network}', network)
+    url ||= "http://cryptoseed.cloudapp.net:81/ags/4/{network}.csv.txt?#{Time.now.to_i}".gsub('{network}', network)
     # v0.5
     url ||= "http://q39.qhor.net/ags/5/{network}.csv.txt?#{Time.now.to_i}".gsub('{network}', network)
 
@@ -122,7 +122,7 @@ class Donation < ActiveRecord::Base
   end
 
   def self.parse_response(response, network = 'btc')
-    self.parse_response_v5(response, network)
+    self.parse_response_v4(response, network)
   end
 
   # parse v0.2 api
@@ -188,6 +188,56 @@ class Donation < ActiveRecord::Base
         amount = (amount.to_f * 100_000_000).round #store in satoshi
         total = (total.to_f * 100_000_000).round #store in satoshi
         rate = (rate.to_f * 100_000_000).round #store in satoshi
+
+        if height.to_i >= highest_block and !Donation.exists?(block_height: height, time: time, address: addr, amount: amount, network: network, rate: rate, total: total)
+
+          # assign wallet_id
+          if txbits == otxbits
+            brother_addr = oaddr
+
+            wallet_id = Donation.where(network: network, address: brother_addr).limit(1).first.try(:wallet_id)
+            my_addr_wallet_id = Donation.where(network: network, address: addr).limit(1).first.try(:wallet_id)
+
+            if my_addr_wallet_id
+              Donation.where(network: network, wallet_id: my_addr_wallet_id).update_all(wallet_id: wallet_id)
+            end
+          end
+
+          wallet_id ||= Donation.where(network: network, address: addr).limit(1).first.try(:wallet_id)
+          if wallet_id.nil?
+            wallet_id = SecureRandom.hex(30)
+          end
+
+          Donation.create(block_height: height, time: time, address: addr, amount: amount, network: network, rate: rate, total: total, ags_amount: 0, wallet_id: wallet_id, txbits: txbits)
+
+          # update wallet
+          wallet = Wallet.find_or_initialize_by_wallet_id(wallet_id)
+          unless wallet.addresses.include?(addr)
+            wallet.addresses = wallet.addresses.push(addr)
+            wallet.network = network
+            wallet.save
+          end
+
+          otxbits, oaddr = txbits, addr
+
+        end
+      end
+    end
+  end
+
+  # parse v0.4 api
+  def self.parse_response_v4(response, network = 'btc')
+    highest_block = Donation.where(network: @network).maximum(:block_height).to_i
+
+    otxbits, oaddr = nil, nil
+    response.each_line do |line|
+      # if line =~ /^\d+/ #v1
+      if line =~ /^"{0,1}\d+/
+        # height, time, addr, amount, total, rate = line.split(';') #v1
+        height, time, txbits, addr, amount, total, rate = line.gsub("\"","").split(';')
+        amount = (amount.to_f * 100_000_000).to_i #store in satoshi
+        total = (total.to_f * 100_000_000).to_i #store in satoshi
+        rate = (rate.to_f * 100_000_000).to_i #store in satoshi
 
         if height.to_i >= highest_block and !Donation.exists?(block_height: height, time: time, address: addr, amount: amount, network: network, rate: rate, total: total)
 
