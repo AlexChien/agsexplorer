@@ -9,7 +9,7 @@ Agsexplorer::Application.configure do
   config.action_controller.perform_caching = true
 
   # Don't care if the mailer can't send
-  config.action_controller.asset_host = "agsexplorer.com"
+  config.action_controller.asset_host = "asset.agsexplorer.com"
 
   config.action_mailer.raise_delivery_errors = false
   config.action_mailer.default_url_options = { :host => config.action_controller.asset_host }
