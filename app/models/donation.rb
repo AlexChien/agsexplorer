@@ -100,22 +100,31 @@ class Donation < ActiveRecord::Base
     # v0.3
     # url ||= "http://q39.qhor.net/ags/3/{network}.csv.txt?#{Time.now.to_i}".gsub('{network}', network)
     # v0.4
-    url ||= "http://cryptoseed.cloudapp.net:81/ags/4/{network}.csv.txt?#{Time.now.to_i}".gsub('{network}', network)
+    # url ||= "http://cryptoseed.cloudapp.net:81/ags/4/{network}.csv.txt?#{Time.now.to_i}".gsub('{network}', network)
     # v0.5
-    url ||= "http://q39.qhor.net/ags/5/{network}.csv.txt?#{Time.now.to_i}".gsub('{network}', network)
+    # url ||= "http://q39.qhor.net/ags/5/{network}.csv.txt?#{Time.now.to_i}".gsub('{network}', network)
+
+    # local data
+    url ||= File.join(Rails.root, 'data', "{network}.csv.txt".gsub('{network}', network))
 
     puts "[#{Time.now.to_s(:db)}] Donation: parse network #{url}"
 
     begin
-      RestClient.get(url){ |response, request, result, &block|
-        case response.code
-        when 200
-          parse_response(response, network)
-          # check_total(response, network)
-        else
-          response.return!(request, result, &block)
-        end
-      }
+      uri = URI.parse(url)
+      if uri.scheme =~ /^http/
+        RestClient.get(url){ |response, request, result, &block|
+          case response.code
+          when 200
+            parse_response(response, network)
+            # check_total(response, network)
+          else
+            response.return!(request, result, &block)
+          end
+        }
+      else
+        parse_response(File.read(url), network) if File.exists?(url)
+      end
+
     rescue => e
       puts e
     end
