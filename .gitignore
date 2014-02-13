@@ -68,3 +68,6 @@ vendor/assets/javascripts/extjs*
 *.rdb
 
 pickle-email-*.html
+
+# data
+data/

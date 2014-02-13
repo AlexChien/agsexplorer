@@ -49,6 +49,7 @@ namespace :deploy do
 
     # link bundle path
     run "ln -s #{shared_path}/bundle #{current_release}/vendor/bundle"
+    run "ln -s #{shared_path}/ags-parser/output #{current_release}/data"
 
     # migrate db schema
     migrate
