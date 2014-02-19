@@ -10,7 +10,6 @@ describe Wallet do
 
         Donation.parse_response(data, 'btc')
         Donation.calculate_ags_reward('2014-01-03')
-        Wallet.calculate_ags_sum
 
         @wallet = Donation.find_by_address("a3").try(:wallet)
       end
@@ -50,7 +49,6 @@ describe Wallet do
         (day1..to_date).each do |date|
           Donation.calculate_ags_reward(date)
         end
-        Wallet.calculate_ags_sum
 
         @wallet = Donation.find_by_address("a3").try(:wallet)
       end
@@ -89,7 +87,6 @@ describe Wallet do
         (day1..to_date).each do |date|
           Donation.calculate_ags_reward(date)
         end
-        Wallet.calculate_ags_sum
 
         @wallet = Donation.find_by_address("a3").try(:wallet)
       end

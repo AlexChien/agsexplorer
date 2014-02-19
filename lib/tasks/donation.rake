@@ -28,7 +28,6 @@ namespace :donation do
   desc "daily tasks"
   task :daily => :environment do
     Donation.calculate_ags_reward
-    Wallet.calculate_ags_sum
     # daily stuff
   end
 
@@ -44,8 +43,5 @@ namespace :donation do
 
     # re-calculate each donation's confirmed ags_amount
     Rake::Task["donation:calculate_ags_reward_till"].invoke
-
-    # re-calculate each wallet's ags_amount sum
-    Wallet.calculate_ags_sum
   end
 end
