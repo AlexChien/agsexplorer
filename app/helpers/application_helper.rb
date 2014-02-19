@@ -84,7 +84,7 @@ module ApplicationHelper
   end
 
   def cent2coin(cent)
-    cent / Bitcoin::COIN.to_f
+    cent / Ags::COIN.to_f
   end
 
   def small(num, symbol)

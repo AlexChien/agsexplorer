@@ -47,11 +47,6 @@ $(function(){
     $('#utc_now').html(utcNow());
   },1000);
 
-  // draw charts
-  if ($('body').attr('id').match(/^home/)) {
-    drawChart('#chart-container', []);
-  }
-
   // calculate donation efficiency
   // calculateEfficiency(); setInterval(calculateEfficiency, 250000);
 
@@ -216,7 +211,7 @@ function calculatePtsUsd(){
 }
 
 function drawChart(container, data){
-  $(container).highcharts({
+  $(container).highcharts('StockChart', {
     chart: {
       zoomType: 'xy'
     },
@@ -228,7 +223,7 @@ function drawChart(container, data){
       text: 'BTC vs PTS'
     },
     xAxis: {
-      categories: ags.s_date
+      categories: data.s_date
     },
     yAxis: [{
       title: {
@@ -272,7 +267,7 @@ function drawChart(container, data){
       tooltip: {
         valueSuffix: ' BTC'
       },
-      data: ags.s_btc
+      data: data.s_btc
     },
     {
       name: 'Daily BTC Average',
@@ -283,7 +278,7 @@ function drawChart(container, data){
       tooltip: {
         valueSuffix: ' BTC'
       },
-      data: ags.s_btc_avg
+      data: data.s_btc_avg
     },
     {
       name: 'Daily PTS Donation',
@@ -293,7 +288,7 @@ function drawChart(container, data){
       tooltip: {
         valueSuffix: ' PTS'
       },
-      data: ags.s_pts
+      data: data.s_pts
     },
     {
       name: 'Daily PTS Average',
@@ -305,7 +300,7 @@ function drawChart(container, data){
       tooltip: {
         valueSuffix: ' PTS'
       },
-      data: ags.s_pts_avg
+      data: data.s_pts_avg
     }]
   });
 }

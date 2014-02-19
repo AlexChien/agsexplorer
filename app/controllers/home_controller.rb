@@ -15,4 +15,14 @@ class HomeController < ApplicationController
 
   def ags101
   end
+
+  def daily_series(networks = nil, start_date = nil, end_date = nil)
+    @daily_data = Daily.series(networks, start_date, end_date)
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @daily_data.as_json }
+      format.xml { render xml: @daily_data.to_xml(only: [:date, :amount]) }
+    end
+  end
 end

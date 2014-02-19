@@ -448,6 +448,7 @@ class Donation < ActiveRecord::Base
 
       total_donations.update_all(["ags_amount = amount * ?, today_total_donation = ?, today_price = ?", price, total_amount, (price * Ags::COIN).round])
 
+      # update daily cache table
       daily = Daily.find_or_initialize_by_network_and_date(network, date)
       daily.price = (price * Ags::COIN).round
       daily.amount = total_amount

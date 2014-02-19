@@ -17,6 +17,9 @@ Agsexplorer::Application.routes.draw do
   get "masterbook(/:network)" => 'balances#masterbook', as: :masterbook
   match 'balances/:address' => 'balances#show', as: :balance
 
+  # data series
+  get "series/daily" => 'home#daily_series'
+
   # ags101
   get 'ags101(/:panel)' => 'home#ags101'
 

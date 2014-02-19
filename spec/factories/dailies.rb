@@ -2,9 +2,8 @@
 
 FactoryGirl.define do
   factory :daily do
-    network "MyString"
+    network "btc"
     date "2014-02-04"
-    volume 1
     price 1
     amount 1
   end
