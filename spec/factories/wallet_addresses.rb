@@ -1,7 +1,6 @@
 # Read about factories at https://github.com/thoughtbot/factory_girl
 
 FactoryGirl.define do
-  factory :notification do
-    email "sample@sample.com"
+  factory :wallet_address do
   end
 end

@@ -23,7 +23,7 @@ if (chart_data.btc.length < chart_data.pts.length) {
   l_data_c = 'pts';
 }
 for (var i = 0; i < chart_data[l_date_c].length; i++) {
-  ags.s_date.push( chart_data[l_date_c][i].date );
+  ags.s_date.push( chart_data[l_date_c][i].date.split('-').slice(1).join('-') );
 }
 
 $(function(){
@@ -113,3 +113,45 @@ $(function(){
   </div>
 </div>
 <% end %>
+
+<div id="donate_btc" class="modal hide fade" role="dialog">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Donate BTC</h3>
+  </div>
+  <div class="modal-body">
+    <div class="media">
+        <img src="http://blockchain.info/qr?data=1ANGELwQwWxMmbdaSWhWLqBEtPTkWb8uDc&amp;size=200" class="pull-left">
+        <div class="media-body">
+        <h4>AngelShares BTC Donation Address</h4>
+        <p>1ANGELwQwWxMmbdaSWhWLqBEtPTkWb8uDc</p>
+        <p>&nbsp;</p>
+        <p>Source: <br /><a href="https://bitsharestalk.org/index.php?topic=1863.0" target="_blank">Invictus Innovations Inc Announcement Post</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn btn-primary" data-dismiss="modal">Done</a>
+  </div>
+</div>
+
+<div id="donate_pts" class="modal hide fade" role="dialog">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Donate PTS</h3>
+  </div>
+  <div class="modal-body">
+    <div class="media">
+        <img src="https://chart.googleapis.com/chart?cht=qr&amp;chs=200x200&amp;chl=protoshares:PaNGELmZgzRQCKeEKM6ifgTqNkC4ceiAWw&amp;chld=L|1" alt="protoshares:PaNGELmZgzRQCKeEKM6ifgTqNkC4ceiAWw" class="pull-left">
+        <div class="media-body">
+        <h4>AngelShares PTS Donation Address</h4>
+        <p>PaNGELmZgzRQCKeEKM6ifgTqNkC4ceiAWw</p>
+        <p>&nbsp;</p>
+        <p>Source: <br /><a href="https://bitsharestalk.org/index.php?topic=1863.0" target="_blank">Invictus Innovations Inc Announcement Post</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn btn-primary" data-dismiss="modal">Done</a>
+  </div>
+</div>

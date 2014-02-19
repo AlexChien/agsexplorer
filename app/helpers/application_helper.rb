@@ -107,6 +107,18 @@ module ApplicationHelper
     end
   end
 
+  def donation_with_related_addrs(donation)
+    output = donation.address
+    if donation.related_addresses.size > 0
+      output = "#{output}<ul class=''>"
+      donation.related_addresses.each do |addr|
+        output = "#{output}<li><small>#{addr}</small></li>"
+      end
+      output = "#{output}</ul>"
+    end
+    output
+  end
+
   def is_btc?(network)
     network_short_name(network) == "BTC"
   end

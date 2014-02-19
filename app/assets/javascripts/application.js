@@ -19,7 +19,7 @@
 // require scrollUp/jquery.scrollUp.js
 // require_tree .
 
-var ags = { s_date:[], neworks: ['btc', 'pts'] };
+var ags = { s_date:[], neworks: ['btc', 'pts'], color_pts: '#4572A7', color_btc: '#99443E' };
 var comify_re = /(\d{1,3})(?=(\d{3})+(?:$|\.))/g;
 
 $(function(){
@@ -237,7 +237,7 @@ function drawChart(container, data){
       labels: {
         format: '{value} BTC',
         style: {
-          color: '#99443E'
+          color: ags.color_btc
         }
       }
     },
@@ -248,7 +248,7 @@ function drawChart(container, data){
       labels: {
         format: '{value} PTS',
         style: {
-          color: '#4572A7'
+          color: ags.color_pts
         }
       },
       opposite: true
@@ -267,7 +267,7 @@ function drawChart(container, data){
     },
     series: [{
       name: 'Daily BTC Donation',
-      color: '#99443E',
+      color: ags.color_btc,
       type: 'column',
       tooltip: {
         valueSuffix: ' BTC'
@@ -276,7 +276,7 @@ function drawChart(container, data){
     },
     {
       name: 'Daily BTC Average',
-      color: '#99443E',
+      color: ags.color_btc,
       type: 'spline',
       marker: { enabled: false },
       dashStyle: 'shortdot',
@@ -287,7 +287,7 @@ function drawChart(container, data){
     },
     {
       name: 'Daily PTS Donation',
-      color: '#4572A7',
+      color: ags.color_pts,
       type: 'column',
       yAxis: 1,
       tooltip: {
@@ -297,7 +297,7 @@ function drawChart(container, data){
     },
     {
       name: 'Daily PTS Average',
-      color: '#4572A7',
+      color: ags.color_pts,
       type: 'spline',
       yAxis: 1,
       marker: { enabled: false },

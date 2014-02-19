@@ -2,7 +2,7 @@
 <% rate = Ags.daily_issue(network.to_sym).to_f * Ags::COIN / @today_total_donated %>
 <tr>
   <td><%= display_time donation.time %></td>
-  <td><%= donation.address %></td>
+  <td><%= donation_with_related_addrs(donation).html_safe %></td>
   <td><%= link_to 'tx', external_tx_path(donation.txbits, network), :target => "_blank" %></td>
   <td><%= dcp(donation.amount, network) %></td>
   <td><%= dcp(@today_total_donated, network) %></td>
@@ -12,7 +12,7 @@
 <% else %>
 <tr>
   <td><%= display_time donation.time %></td>
-  <td><%= donation.address %></td>
+  <td><%= donation_with_related_addrs(donation).html_safe %></td>
   <td><%= link_to 'tx', external_tx_path(donation.txbits, network), :target => "_blank" %></td>
   <td><%= dcp(donation.amount, network) %></td>
   <td><%= dcp(donation.today_total_donation, network) %></td>

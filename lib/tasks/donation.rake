@@ -37,6 +37,7 @@ namespace :donation do
     # wipe db data
     Donation.delete_all
     Wallet.delete_all
+    WalletAddress.delete_all
 
     # re-parse
     Donation.parse_all

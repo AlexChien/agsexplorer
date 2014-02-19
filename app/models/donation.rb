@@ -1,5 +1,7 @@
 class Donation < ActiveRecord::Base
-  attr_accessible :address, :amount, :block_height, :network, :time, :rate, :total, :ags_amount, :wallet_id, :txbits
+  attr_accessible :address, :amount, :block_height, :network, :time, :rate, :total, :ags_amount, :wallet_id, :txbits, :related_addresses
+  serialize :related_addresses, Array
+
 
   belongs_to :wallet, primary_key: :wallet_id
 
@@ -117,7 +119,7 @@ class Donation < ActiveRecord::Base
     # v0.5
     # url ||= "http://q39.qhor.net/ags/5/{network}.csv.txt?#{Time.now.to_i}".gsub('{network}', network)
 
-    # local data
+    # local data vin0
     url ||= File.join(Rails.root, 'data', "{network}.csv.txt".gsub('{network}', network))
 
     puts "[#{Time.now.to_s(:db)}] Donation: parse network #{url}"
@@ -144,7 +146,7 @@ class Donation < ActiveRecord::Base
   end
 
   def self.parse_response(response, network = 'btc')
-    self.parse_response_v4(response, network)
+    self.parse_response_vin0(response, network)
   end
 
   # parse v0.2 api
@@ -341,6 +343,78 @@ class Donation < ActiveRecord::Base
           end
 
           otxbits, oaddr = txbits, addr
+
+        end
+      end
+    end
+  end
+
+
+  # parse v0.4 api
+  def self.parse_response_vin0(response, network = 'btc')
+    highest_block = Donation.where(network: @network).maximum(:block_height).to_i
+
+    # add 5 blocks tolerence
+    # sometimes new block's time is older than highest_block
+    # https://bitsharestalk.org/index.php?topic=2869.msg36543#msg36543
+    highest_block -= 5
+
+    response.each_line do |line|
+      # binding.pry
+      if line =~ /^"{0,1}\d+/
+        # height, time, addr, amount, total, rate = line.split(';') #v1
+        height, time, txbits, addr, amount, total, rate, related_addrs = line.strip.gsub('"','').split(';')
+        amount = (amount.to_f * 100_000_000).to_i #store in satoshi
+        total = (total.to_f * 100_000_000).to_i #store in satoshi
+        rate = (rate.to_f * 100_000_000).to_i #store in satoshi
+        related_addrs = related_addrs.nil? ? [] : related_addrs.split(',')
+        (related_addrs.unshift addr).uniq!
+
+        if height.to_i >= highest_block and !Donation.exists?(txbits: txbits)
+
+          # find wallet id for existed donation address
+          wallet_id = Donation.where(network: network, address: addr).limit(1).first.try(:wallet_id)
+
+          # if donation wallet is found directly
+          if not wallet_id.nil?
+            # update any newly linked addresses's wallet_id
+            [WalletAddress, Donation].each do |mod|
+              mod.where(address: related_addrs)
+                  .where("wallet_id != ?", wallet_id)
+                  .update_all(wallet_id: wallet_id)
+            end
+          else
+            # looking for indirectly related wallet by wallet addresses
+            wallet_ids = WalletAddress.where(address: related_addrs).map(&:wallet_id).uniq
+
+            if not wallet_ids.empty?
+              wallet_id = wallet_ids.first
+
+              # only update wallet_id when there were multiple wallets
+              # they get a chance to link up
+              if wallet_ids.size > 1
+                WalletAddress.where(address: related_addrs).update_all(wallet_id: wallet_id)
+              end
+            end
+          end
+
+          # nothing found, new wallet
+          if wallet_id.nil?
+            wallet_id = SecureRandom.hex(30)
+          end
+
+          # store the donation
+          Donation.create(block_height: height, time: time, address: addr, amount: amount, network: network, rate: rate, total: total, ags_amount: 0, wallet_id: wallet_id, txbits: txbits, related_addresses: related_addrs-[addr])
+
+          # update wallet
+          wallet = Wallet.find_or_initialize_by_wallet_id(wallet_id)
+          wallet.network = network
+          wallet_addresses = wallet.addresses.map(&:address)
+          new_addresses = (related_addrs - wallet_addresses).uniq
+          new_addresses.each do |new_addr|
+            WalletAddress.create(address: new_addr, wallet_id: wallet_id)
+          end
+          wallet.save if wallet.changed?
 
         end
       end

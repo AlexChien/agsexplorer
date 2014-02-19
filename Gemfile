@@ -51,7 +51,7 @@ group :development, :test do
   gem "rspec"#, "~> 2.7"
   gem "rspec-rails"#, "~> 2.7"
   gem "pry"
-  gem 'pry-rails'
+  # gem 'pry-rails'
 end
 
 group :development do
@@ -80,7 +80,6 @@ group :test do
   # http://ruby.railstutorial.org/chapters/static-pages#top
   gem "factory_girl_rails", "~> 1.4"
   gem "faker"
-  gem 'rb-readline'
   gem "guard-rspec"
   gem "spork"#, "~> 0.9"
   gem "guard-spork"#, "~> 0.8"

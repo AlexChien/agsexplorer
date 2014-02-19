@@ -59,6 +59,10 @@ server {
     error_page 404 /404.html;
   }
 
+  location /data/ {
+    alias <%= "#{deploy_to}/shared/ags-parser-vin0/output/" %>;
+  }
+
   # Block bots who like track urls (php usually)
   # location ~ \.php$ {
   #   deny  all;

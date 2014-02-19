@@ -18,7 +18,7 @@ Agsexplorer::Application.routes.draw do
   match 'balances/:address' => 'balances#show', as: :balance
 
   # ags101
-  get 'ags101' => 'home#ags101'
+  get 'ags101(/:panel)' => 'home#ags101'
 
   resources :notifications, only: [:create, :destroy]
   get 'unsubscribe/:token' => 'notifications#unsubscribe', as: :unsubscribe

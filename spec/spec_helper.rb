@@ -67,8 +67,10 @@ Spork.prefork do
     #     --seed 1234
     config.order = "random"
 
-    # config.before(:suite) do
-    # end
+    config.before(:suite) do
+      DatabaseCleaner.strategy = :truncation
+      DatabaseCleaner.clean_with(:truncation)
+    end
 
     # config.before(:each) do
     #   if example.metadata[:js]

@@ -1,3 +1,10 @@
+<% if params[:panel] %>
+<% content_for :footer_js do -%>
+<script type="text/javascript" charset="utf-8">
+$(function(){ $('#<%= params[:panel] %>').collapse('show'); });
+</script>
+<% end -%>
+<% end %>
 <h1>AngelShares 101 <small>frequently asked questions</small></h1>
   <div class="accordion" id="ags101">
 
@@ -19,7 +26,7 @@
           <p>
             BitShares AGS, or Angelshares, represent a way to gain a stake in this new and exciting industry without mining coins.
             Just as technologist contribute to the launch of a new industry by mining and trading BitShares PTS, or Protoshares, investors can partake by investing in BitShares AGS, or Angelshares.
-            AngelShares are created to acknowledge the equally important financial contribution to the development of an open, distributed, crypto-equity product called <a href="http://invictus-innovations.com/bitshares2" target="_blank">Bitshares</a>
+            AngelShares are created to acknowledge the equally important financial contribution to the development of an open, distributed, crypto-equity product called <a href="http://invictus.io/bitshares.php" target="_blank">Bitshares</a>
           </p>
           <h3>Take part in new products</h3>
           <p>
@@ -91,8 +98,42 @@
             <li>PTS: http://coinplorer.com/PTS/Transactions/[your transation id]</li>
           </ul>
          <p> The addresses shown in the "Inputs" section is actual address(es) your donation is sent from.  </p>
-         <p>Note: sometimes it has multiple input addresses, they will be credited AGS proportionally by AGSExplorer.com.  When AngelShares genesis block is generated, 3I will randomly pick one of these addresses to credit AGS <a href="https://bitsharestalk.org/index.php?topic=1841.msg21823#msg21823" target="_blank"><cite>[?]</cite></a>. To redeem AGS in the future, it's safe to import the whole wallet that contains all these addresses.</p>
         </div>
+      </div>
+    </div>
+
+    <div class="accordion-group">
+      <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#ags101" href="#algorithm">
+          What is the algorithm to determine donar address if there are multiple inputs?
+        </a>
+      </div>
+      <div id="algorithm" class="accordion-body collapse">
+        <div class="accordion-inner">
+          <p>Note: sometimes there are multiple input addresses within one transaction, <span class="deleted">they will be credited AGS proportionally by AGSExplorer.com.  When AngelShares genesis block is generated, 3I will randomly pick one of these addresses to credit AGS <a href="https://bitsharestalk.org/index.php?topic=1841.msg21823#msg21823" target="_blank"><cite>[?]</cite></a></span> we will use the first input address (<a href="#vin0" data-toggle="modal">vin[0]</a>). To redeem AGS in the future, it's safe to import the whole wallet that contains all these addresses.</p>
+          <p>In the balance view, addresses that are <span class="label label-success">Highlighted</span> are your Donar Addresses that will be embedded within Gensis Blocks of future Invictus DACs.  Other related addresses are found in your transactions, they are used only to virtually combine your addresses together as a "Wallet" for easy lookup.</p>
+          <p>For regular user, just make sure you have full control of your whole wallet and import it using Import Tools (in progress) and you will have your shares claimed.  For advanced users, just make sure you have full control of the private keys of those highlighted donar addresses, and import them will give you full balance.</p>
+        </div>
+
+        <div id="vin0" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">Code Demo</h3>
+          </div>
+          <div class="modal-body">
+            <p>Pesudocode Example</p>
+            <pre>
+# tx_id = '5c0738d5966b86e7d984392b7fcb164cfdd16fb062dd01ff0ed70c2475df7e90'
+jsontx = `bitcoind getrawtransaction #{tx_id} 1`
+donar_input = jsontx["vin"][0]
+donar_address = get_address(donar_input)
+            </pre>
+          </div>
+          <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -104,11 +145,11 @@
       </div>
       <div id="coincontroll" class="accordion-body collapse">
         <div class="accordion-inner">
-          <p>Some wallet clients don't support "Coin Control" yet.  For BTC, blockchain.info's online wallet has good coin control feature.  Next release of Bitcoin 0.9 might have coin control integrated.</p>
+          <p>Some wallet clients don't support "Coin Control" yet.  For BTC, blockchain.info's online wallet has good coin control feature.  Next release of Bitcoin 0.9 might have coin control integrated.  A modified PTS wallet with Coin Control ability can be found <a href="https://bitsharestalk.org/index.php?topic=1986.0" target="_blank">here</a>. </p>
 
-          <p>You can manually create raw transaction to define which unspent outputs as your transaction's inputs.  But this is somewhat complicated and inexperienced user might make mistake and result in losing coins.  Highly not recommended for average users.</p>
+          <p>You can manually create raw transaction to define which unspent outputs as your transaction's inputs.  But this is somewhat complicated and inexperienced user might make mistakes and result in losing coins.  Highly not recommended for average users.</p>
 
-          <p>At the moment, you can just send donation as usual, and don't worry about the multiple addresses being credited.  3I has bounty set up for tools that can display AGS balance given a BTC or PTS wallet <a href="https://bitsharestalk.org/index.php?topic=1963.0" target="_blank">[?]</a>.</p>
+          <p>At the moment, you can just send donation as usual, and don't worry about the multiple addresses being used.  3I has bounty set up for tools that can display AGS balance given a BTC or PTS wallet <a href="https://bitsharestalk.org/index.php?topic=1963.0" target="_blank">[?]</a>.</p>
         </div>
       </div>
     </div>

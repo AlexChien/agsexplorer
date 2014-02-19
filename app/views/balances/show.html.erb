@@ -1,3 +1,79 @@
+<% content_for :footer_js do -%>
+<script type="text/javascript" charset="utf-8">
+var chart_data = <%= @donations.reverse.to_json(only: [:time, :amount]).html_safe %>;
+var span = chart_data.length;
+
+var c = '<%= @network %>';
+
+ags['s_'+c] = [];
+for (var i = 0; i < span; i++) {
+  ags['s_'+c].push(chart_data[i].amount/100000000);
+  ags.s_date.push( chart_data[i].time.split('T')[0] );
+}
+
+// current price
+ags['price_'+c] = 45.121;
+
+
+$('#chart-container').highcharts({
+  chart: {
+    zoomType: 'xy'
+  },
+  title: {
+    text: 'Donation History',
+    x: -20 //center
+  },
+  xAxis: {
+    categories: ags.s_date
+  },
+  yAxis: [{
+    title: {
+      text: 'Amount Donated (BTC)'
+    },
+    labels: {
+      format: '{value} BTC',
+      style: {
+        color: ags['color_'+c]
+      }
+    }
+  }],
+  tooltip: {
+    shared: true
+  },
+  legend: {
+    layout: 'vertical',
+    align: 'left',
+    x: 90,
+    verticalAlign: 'top',
+    y: 30,
+    floating: true,
+    backgroundColor: '#FFFFFF'
+  },
+  series: [{
+    name: 'Daily BTC Donation',
+    color: ags['color_'+c],
+    type: 'column',
+    tooltip: {
+      valueSuffix: ' BTC'
+    },
+    data: ags['s_'+c]
+  },
+  {
+    name: 'Daily BTC Average',
+    color: ags['color_'+c],
+    type: 'spline',
+    marker: { enabled: false },
+    dashStyle: 'shortdot',
+    tooltip: {
+      valueSuffix: ' BTC'
+    },
+    data: ags['price_'+c]
+  }]
+});
+</script>
+<% end -%>
+
+
 <h1>Balance</h1>
 <h4>
   <%= @address %>
@@ -33,13 +109,16 @@
         <tr>
           <td>Related Addresses</td>
           <td>
-            <% @addresses.each do |address| %>
-              <%= link_to address, balance_path(address, view: @view) %><br />
+            <% @related_addresses.each do |address| %>
+              <%= link_to balance_path(address, view: @view) do
+              @addresses.include?(address) ? "<span class='label label-success'>#{address}</span>".html_safe : address
+              end%><br />
             <% end %>
           </td>
         </tr>
       </tbody>
     </table>
+    <p><span class="label label-success">Highlighted</span> addresses are recognized as DONAR ADDRESSES.  These are the addresses that will be embedded within Genesis Blocks of future Invictus DAC chains. <a href="/ags101/algorithm" target="_blank">Check out more here</a>.</p>
     <% else %>
     <p>no donations found</p>
     <% end %>
@@ -56,6 +135,13 @@
     </script>
   </div>
 </div>
+
+<% if !@donations.empty? && @donations.size > 1 %>
+<h1>Charts </h1>
+<div class="row-fluid">
+  <div id="chart-container" class="span12"></div>
+</div>
+<% end %>
 
 <h1>Donation History</h1>
 <div class="row-fluid">
