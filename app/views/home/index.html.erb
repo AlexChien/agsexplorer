@@ -1,6 +1,11 @@
 <% content_for :footer_js do -%>
 <script type="text/javascript" charset="utf-8">
 $(function(){
+  // current price
+  ags['price_btc'] = <%= Donation.current_price(:btc) %>;
+  ags['price_pts'] = <%= Donation.current_price(:pts) %>;
+
+  // chart data
   $.get('/series/daily.json', function (chart_data) {
     // Today's ongoing data
     chart_data["btc"].push({
