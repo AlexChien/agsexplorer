@@ -2,23 +2,6 @@
 <script type="text/javascript" charset="utf-8">
 $(function(){
   $.get('/series/daily.json', function (chart_data) {
-    // var span = Math.max(chart_data["btc"].length, chart_data["pts"].length);
-    //
-    // for (var i = 0; i < ags.neworks.length; i++) {
-    //   var c = ags.neworks[i];
-    //
-    //   var avg = 's_' + c + '_avg';
-    //   var data = 's_' + c;
-    //
-    //   ags[avg] = chart_data[c+"_avg"]/100000000;
-    //
-    //   ags[data] = [];
-    //   for (var j = 0; j < chart_data[c].length; j++) {
-    //     var d = chart_data[c][j];
-    //     ags[data].push([Date.parse(d["date"]),d["amount"]/100000000]);
-    //   }
-    // }
-
     // Today's ongoing data
     chart_data["btc"].push({
       color: '#ff0000',
@@ -32,8 +15,7 @@ $(function(){
       y: <%= cent2coin(@data[:"today_pts_donated"]) %>
     });
 
-    var sum_btc = 0, sum_pts = 0,
-        avg_btc = 0, avg_pts = 0;
+    var sum_btc = 0, sum_pts = 0;
 
     for (var i = 0; i < chart_data["btc"].length; i++) {
       sum_btc += chart_data["btc"][i][1];
@@ -43,149 +25,15 @@ $(function(){
       sum_pts += chart_data["pts"][i][1];
     }
 
-    avg_btc = sum_btc / chart_data["btc"].length;
-    avg_pts = sum_pts / chart_data["pts"].length;
+    chart_data["btc_avg"] = sum_btc / chart_data["btc"].length;
+    chart_data["pts_avg"] = sum_pts / chart_data["pts"].length;
 
-    // drawChart('#chart-container', ags);
-    $('#chart-container').highcharts('StockChart', {
-      chart: {
-        type: 'column'
-      },
-
-      rangeSelector : {
-        buttons: [
-        {
-          type: 'week',
-          count: 1,
-          text: '1w'
-        }, {
-          type: 'month',
-          count: 1,
-          text: '1m'
-        }, {
-          type: 'month',
-          count: 3,
-          text: '3m'
-        }, {
-          type: 'year',
-          count: 1,
-          text: '1y'
-        }, {
-          type: 'all',
-          text: 'All'
-        }],
-        selected : 0
-      },
-
-      title : {
-        text : 'Daily Donation'
-      },
-
-      subtitle: {
-        text: 'BTC vs PTS'
-      },
-
-      legend: {
-        enabled: true
-      },
-
-      xAxis: {
-        type: 'datetime',
-        dateTimeLabelFormats: {
-          second: '%Y-%m-%d<br/>%H:%M:%S',
-          minute: '%Y-%m-%d<br/>%H:%M',
-          hour: '%Y-%m-%d<br/>%H:%M',
-          day: '%Y<br/>%m-%d',
-          week: '%Y<br/>%m-%d',
-          month: '%Y-%m',
-          year: '%Y'
-        }
-      },
-
-      yAxis: [{
-          title: {
-              text: 'BTC'
-          },
-          plotLines: [{
-            value: avg_btc,
-            width: 1,
-            color: ags.color_btc,
-            dashStyle: 'dash',
-            label: {
-              text: 'BTC Avg.',
-              align: 'left',
-              x: 20
-            }
-          }]
-      }, {
-          title: {
-              text: 'PTS'
-          },
-          plotLines: [{
-            value: avg_pts,
-            width: 1,
-            color: ags.color_pts,
-            dashStyle: 'dash',
-            label: {
-              text: 'PTS Avg.',
-              align: 'right',
-              x: -20
-            }
-          }],
-          opposite: true
-      }],
-
-      series : [{
-        name : 'BTC',
-        yAxis: 0,
-        data : chart_data['btc'],
-        color: ags.color_btc
-      },{
-        name : 'PTS',
-        yAxis: 1,
-        data : chart_data['pts'],
-        color: ags.color_pts
-      }],
-
-      tooltip: {
-        valueDecimals: 8
-      }
-    });
+    drawChart('#chart-container', chart_data);
   });
 
   // ticker
   loadTickers(); setInterval(loadTickers, 60000);
 });
-
-// var chart_data = <%= @daily_data.to_json.html_safe %>;
-// var span = Math.max(chart_data.btc.length, chart_data.pts.length)
-//
-// for (var i = 0; i < ags.neworks.length; i++) {
-//   var c = ags.neworks[i];
-//
-//   ags['s_'+c+'_avg'] = Array(span+1).join(chart_data[c+'_avg']+'/').split('/').map(function(c){return Number(c/100000000);});
-//   ags['s_'+c+'_avg'].pop();
-//   ags['s_'+c] = [];
-//   for (var j = 0; j < chart_data[c].length; j++) {
-//     ags['s_'+c].push(chart_data[c][j].amount/100000000);
-//   }
-//
-//   // current price
-//   ags['price_btc'] = <%= @data[:btc_current_price] %>;
-//   ags['price_pts'] = <%= @data[:pts_current_price] %>;
-// }
-//
-// var l_date_c = 'btc';
-// if (chart_data.btc.length < chart_data.pts.length) {
-//   l_data_c = 'pts';
-// }
-// for (var i = 0; i < chart_data[l_date_c].length; i++) {
-//   ags.s_date.push( chart_data[l_date_c][i].date.split('-').slice(1).join('-') );
-// }
-
-// $(function(){
-//   loadTickers(); setInterval(loadTickers, 60000);
-// });
 
 </script>
 

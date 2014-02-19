@@ -210,98 +210,110 @@ function calculatePtsUsd(){
   }
 }
 
-function drawChart(container, data){
+function drawChart(container, chart_data){
   $(container).highcharts('StockChart', {
     chart: {
-      zoomType: 'xy'
+      type: 'column'
     },
-    title: {
-      text: 'Daily Donation',
-      x: -20 //center
+
+    rangeSelector : {
+      buttons: [
+      {
+        type: 'week',
+        count: 1,
+        text: '1w'
+      }, {
+        type: 'month',
+        count: 1,
+        text: '1m'
+      }, {
+        type: 'month',
+        count: 3,
+        text: '3m'
+      }, {
+        type: 'year',
+        count: 1,
+        text: '1y'
+      }, {
+        type: 'all',
+        text: 'All'
+      }],
+      selected : 0
     },
+
+    title : {
+      text : 'Daily Donation'
+    },
+
     subtitle: {
       text: 'BTC vs PTS'
     },
-    xAxis: {
-      categories: data.s_date
+
+    legend: {
+      enabled: true
     },
-    yAxis: [{
-      title: {
-        text: 'Amount Donated (BTC)'
-      },
-      labels: {
-        format: '{value} BTC',
-        style: {
-          color: ags.color_btc
-        }
+
+    xAxis: {
+      type: 'datetime',
+      dateTimeLabelFormats: {
+        second: '%Y-%m-%d<br/>%H:%M:%S',
+        minute: '%Y-%m-%d<br/>%H:%M',
+        hour: '%Y-%m-%d<br/>%H:%M',
+        day: '%Y<br/>%m-%d',
+        week: '%Y<br/>%m-%d',
+        month: '%Y-%m',
+        year: '%Y'
       }
     },
-    {
-      title: {
-        text: 'Amount Donated (PTS)'
-      },
-      labels: {
-        format: '{value} PTS',
-        style: {
-          color: ags.color_pts
-        }
-      },
-      opposite: true
+
+    yAxis: [{
+        title: {
+            text: 'BTC'
+        },
+        plotLines: [{
+          value: chart_data["btc_avg"],
+          width: 1,
+          color: ags.color_btc,
+          dashStyle: 'dash',
+          label: {
+            text: 'BTC Avg.',
+            align: 'left',
+            x: 20
+          }
+        }]
+    }, {
+        title: {
+            text: 'PTS'
+        },
+        plotLines: [{
+          value: chart_data["pts_avg"],
+          width: 1,
+          color: ags.color_pts,
+          dashStyle: 'dash',
+          label: {
+            text: 'PTS Avg.',
+            align: 'right',
+            x: -20
+          }
+        }],
+        opposite: true
     }],
+
+    series : [{
+      name : 'BTC',
+      yAxis: 0,
+      data : chart_data['btc'],
+      color: ags.color_btc
+    },{
+      name : 'PTS',
+      yAxis: 1,
+      data : chart_data['pts'],
+      color: ags.color_pts
+    }],
+
     tooltip: {
-      shared: true
-    },
-    legend: {
-      layout: 'vertical',
-      align: 'left',
-      x: 90,
-      verticalAlign: 'top',
-      y: 30,
-      floating: true,
-      backgroundColor: '#FFFFFF'
-    },
-    series: [{
-      name: 'Daily BTC Donation',
-      color: ags.color_btc,
-      type: 'column',
-      tooltip: {
-        valueSuffix: ' BTC'
-      },
-      data: data.s_btc
-    },
-    {
-      name: 'Daily BTC Average',
-      color: ags.color_btc,
-      type: 'spline',
-      marker: { enabled: false },
-      dashStyle: 'shortdot',
-      tooltip: {
-        valueSuffix: ' BTC'
-      },
-      data: data.s_btc_avg
-    },
-    {
-      name: 'Daily PTS Donation',
-      color: ags.color_pts,
-      type: 'column',
-      yAxis: 1,
-      tooltip: {
-        valueSuffix: ' PTS'
-      },
-      data: data.s_pts
-    },
-    {
-      name: 'Daily PTS Average',
-      color: ags.color_pts,
-      type: 'spline',
-      yAxis: 1,
-      marker: { enabled: false },
-      dashStyle: 'shortdot',
-      tooltip: {
-        valueSuffix: ' PTS'
-      },
-      data: data.s_pts_avg
-    }]
+      valueDecimals: 8
+    }
   });
 }
 
