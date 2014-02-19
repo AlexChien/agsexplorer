@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe Donation do
   context "v0.5" do
-    before do
+    before(:each) do
       Donation.parse_response(File.open(File.join(Rails.root, 'spec/factories/btc_data_5.txt')), 'btc')
     end
 
