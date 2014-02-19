@@ -18,11 +18,13 @@ $(function(){
     var sum_btc = 0, sum_pts = 0;
 
     for (var i = 0; i < chart_data["btc"].length; i++) {
-      sum_btc += chart_data["btc"][i][1];
+      d = chart_data["btc"][i];
+      sum_btc += (d instanceof Array) ? d[1] : d["y"];
     }
 
     for (var i = 0; i < chart_data["pts"].length; i++) {
-      sum_pts += chart_data["pts"][i][1];
+      d = chart_data["pts"][i];
+      sum_pts += (d instanceof Array) ? d[1] : d["y"];
     }
 
     chart_data["btc_avg"] = sum_btc / chart_data["btc"].length;
