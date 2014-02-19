@@ -220,8 +220,8 @@ function drawChart(container, chart_data){
       buttons: [
       {
         type: 'week',
-        count: 1,
-        text: '1w'
+        count: 2,
+        text: '2w'
       }, {
         type: 'month',
         count: 1,
