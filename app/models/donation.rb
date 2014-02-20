@@ -364,9 +364,10 @@ class Donation < ActiveRecord::Base
       if line =~ /^"{0,1}\d+/
         # height, time, addr, amount, total, rate = line.split(';') #v1
         height, time, txbits, addr, amount, total, rate, related_addrs = line.strip.gsub('"','').split(';')
-        amount = (amount.to_f * 100_000_000).to_i #store in satoshi
-        total = (total.to_f * 100_000_000).to_i #store in satoshi
-        rate = (rate.to_f * 100_000_000).to_i #store in satoshi
+
+        amount = (amount.to_f * 100_000_000).round #store in satoshi
+        total = (total.to_f * 100_000_000).round #store in satoshi
+        rate = (rate.to_f * 100_000_000).round #store in satoshi
         related_addrs = related_addrs.nil? ? [] : related_addrs.split(',')
         (related_addrs.unshift addr).uniq!
 

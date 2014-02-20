@@ -1,12 +1,36 @@
 require "spec_helper"
 
 describe Donation do
-  context "v0.5" do
+  context "rounding issue" do
+    before(:each) do
+      data = <<-EOF
+280366;2014-01-14 00:01:22 UTC;45a058af825b63f268f6604a1d93d81c3ade23ad81e6e3e85c362f3c1952c24e;178rwCzpPPAcA14WdiCCRsJZLYgVwSrwSy;0.2779;2.3379;2138.67145729
+280382;2014-01-14 02:19:11 UTC;1ffe22f97eff02c031096a12ec00968add552a3bb4f79a02763db0e02510bdc5;16GJTU4FFu5oNBJhXG7iYAf6DMAjeKiH8d;0.29450816;17.26490816;289.60478409;
+280399;2014-01-14 04:33:24 UTC;0b6a0314da083369ef43fcb2eec5bb20e5144fde8b9c223a88abc86415452c3a;1JmSAD7dzJjFasH7Qc3ePQACyAGbodyHry;0.00029047;17.50267091;285.67068567
+280452;2014-01-14 12:58:34 UTC;26f1b67a23eb9310c7d8e836b1d1a99484f015e06d52d2232676dd9cc93c1042;1NHAuW1Wt3DmiAxDLcK9kYw9NkeapAZ6oV;0.009;38.89707091;128.5443835
+      EOF
+
+      Donation.parse_response(data, 'btc')
+    end
+
+    it "check each" do
+      Donation.find_by_address('178rwCzpPPAcA14WdiCCRsJZLYgVwSrwSy').amount.should == 27790000
+      Donation.find_by_address('16GJTU4FFu5oNBJhXG7iYAf6DMAjeKiH8d').amount.should == 29450816
+      Donation.find_by_address('1JmSAD7dzJjFasH7Qc3ePQACyAGbodyHry').amount.should == 29047
+      Donation.find_by_address('1NHAuW1Wt3DmiAxDLcK9kYw9NkeapAZ6oV').amount.should == 900000
+    end
+
+    it "check amount" do
+      Donation.sum(:amount).should == 27790000 + 29450816 + 29047 + 900000
+    end
+  end
+
+  context "v0.5", :skip  do
     before(:each) do
       Donation.parse_response(File.open(File.join(Rails.root, 'spec/factories/btc_data_5.txt')), 'btc')
     end
 
-    it "check total", :skip do
+    it "check total"do
       # baseline data
       # {"BTC":[
       # [2013-01-01: 61.861694286294],
@@ -31,7 +55,7 @@ describe Donation do
   end
 
   context "total" do
-    before(:all) do
+    before do
       Donation.parse_response(File.open(File.join(Rails.root, 'spec/factories/btc_data.txt')), 'btc')
     end
 
@@ -41,18 +65,18 @@ describe Donation do
       end
 
       it "total btc donation amount" do
-        Donation.btc.sum(:amount).should == 29399704887
+        Donation.btc.sum(:amount).should == 29399704897
       end
 
       it "today should be initial donated" do
         d0105 = Date.parse('2014-01-05').to_time(:utc)
-        Donation.btc.by_date(d0105).first.total.should == 5587367100
+        Donation.btc.by_date(d0105).first.total.should == 5587367103
 
         d0104 = Date.parse('2014-01-04')
-        Donation.btc.by_date(d0104).first.total.should == 6920674633
+        Donation.btc.by_date(d0104).first.total.should == 6920674634
 
         d0103 = Date.parse('2014-01-03')
-        Donation.btc.by_date(d0103).first.total.should == 5274281878
+        Donation.btc.by_date(d0103).first.total.should == 5274281880
 
         d0102 = Date.parse('2014-01-02')
         Donation.btc.by_date(d0102).first.total.should == 5431211888
@@ -60,7 +84,7 @@ describe Donation do
         d0101 = Date.parse('2014-01-01')
         day1 = Donation.btc.by_date(d0101).first.total
         day1 += Donation.btc.date_grouping.where("time < ?", d0101).map(&:total).sum
-        day1.should == 6186169388
+        day1.should == 6186169392
       end
     end
 
@@ -98,8 +122,8 @@ describe Donation do
 
         ags_amount = Donation.btc.where(address: preday1_addr).first.ags_amount
         ags_amount.should_not == 0
-        #1237875385 #15000000.to_f / 6058768186 * 5000 * 100000000
-        ags_amount.should == 1237875385
+        #1212381932 #15000000.to_f / 6186169392 * 5000 * 100000000
+        ags_amount.should == 1212381932
       end
 
       it "day1" do
@@ -108,19 +132,19 @@ describe Donation do
 
         ags_amount = Donation.btc.where(address: day1_addr).first.ags_amount
         ags_amount.should_not == 0
-        #82525026 #1000000.to_f / 6058768186 * 5000 * 100000000
-        ags_amount.should == 82525026
+        #80825462 #1000000.to_f / 6186169392 * 5000 * 100000000
+        ags_amount.should == 80825462
       end
 
       it "normal day" do
         d0104 = Date.parse('2014-01-04').to_time(:utc)
         Donation.calculate_ags_reward(d0104, ['btc'])
 
-        Donation.btc.by_date(d0104).first.total.should == 6920674633
+        Donation.btc.by_date(d0104).first.total.should == 6920674634
         ags_amount = Donation.btc.where(address: normal_addr).first.ags_amount
         ags_amount.should_not == 0
-        # 5.0 / 6920674633 * 5_000 * 100_000_000
-        ags_amount.should == 36123645924
+        # 5.0 * 100_000_000 / 6920674634 * 5_000 * 100_000_000
+        ags_amount.should == 36123645919
       end
     end
 
@@ -130,8 +154,8 @@ describe Donation do
       Factory.create(:donation, amount: 1 * Ags::COIN, time: d0105, network: 'btc')
 
       Donation.btc.count.should == 443
-      Donation.btc.by_date(d0105).first.total.should == 5687367100
-      Donation.btc.sum(:amount).should == 29499704887
+      Donation.btc.by_date(d0105).first.total.should == 5687367103
+      Donation.btc.sum(:amount).should == 29499704897
     end
 
   end
