@@ -1,5 +1,6 @@
 class HomeController < ApplicationController
   def index
+    @date = Time.zone.now.to_date
     @daily_data = Donation.daily
     @today = Donation.by_date
 
@@ -11,6 +12,30 @@ class HomeController < ApplicationController
       btc_current_price:   Donation.current_price(:btc),
       pts_current_price:   Donation.current_price(:pts)
     }
+  end
+
+  def by_date
+    @date = begin
+      Date.parse(params[:date])
+    rescue
+      Time.zone.now.to_date
+    end
+
+    redirect_to root_path and return if @date == Time.zone.now.to_date
+
+    @daily_data = Donation.daily
+    @today = Donation.by_date(@date.beginning_of_day)
+
+    @data = {
+      today_btc_donations: Donation.btc.today_donations(@date),
+      today_pts_donations: Donation.pts.today_donations(@date),
+      today_btc_donated:   Donation.today_donated(:btc, @date),
+      today_pts_donated:   Donation.today_donated(:pts, @date),
+      btc_current_price:   Donation.current_price(:btc, @date),
+      pts_current_price:   Donation.current_price(:pts, @date)
+    }
+
+    render :index
   end
 
   def ags101

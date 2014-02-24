@@ -2,8 +2,8 @@
 <script type="text/javascript" charset="utf-8">
 $(function(){
   // current price
-  ags['price_btc'] = <%= Donation.current_price(:btc) %>;
-  ags['price_pts'] = <%= Donation.current_price(:pts) %>;
+  ags['price_btc'] = <%= Donation.current_price(:btc, @date) %>;
+  ags['price_pts'] = <%= Donation.current_price(:pts, @date) %>;
 
   // chart data
   $.get('/series/daily.json', function (chart_data) {
@@ -113,7 +113,7 @@ $(function(){
   <p>Donations made before 2014 are counted as day 1 (2014-01-01) donation.</p>
 </div>
 
-<h1>Today's Donation</h1>
+<h1><%= today(@date) %>'s Donation</h1>
 <div class="row-fluid">
   <%= render :partial => 'today_donation_table', :locals => { :network => :btc, :donations => @data[:today_btc_donations] } %>
   <%= render :partial => 'today_donation_table', :locals => { :network => :pts, :donations => @data[:today_pts_donations] } %>

@@ -1,5 +1,8 @@
 Agsexplorer::Application.routes.draw do
 
+  # by_dat
+  get 'by_date/:date' => 'home#by_date'
+
   # blocks
   get ':network/block/:hash' => 'blocks#show_by_hash', as: :block
   get ':network/block-height/:height' => 'blocks#show_by_height', as: :height_block

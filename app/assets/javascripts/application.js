@@ -299,6 +299,21 @@ function drawChart(container, chart_data){
         opposite: true
     }],
 
+    plotOptions: {
+      series: {
+        cursor: 'pointer',
+        point: {
+          events: {
+            click: function(){
+              ts = this.category;
+              date = new Date(ts);
+              window.location = '/by_date/' + (date.getUTCFullYear()+'-'+(date.getUTCMonth()+1)+'-'+date.getUTCDate())
+            }
+          }
+        }
+      }
+    },
+
     series : [{
       name : 'BTC',
       yAxis: 0,

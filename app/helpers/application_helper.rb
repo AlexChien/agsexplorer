@@ -119,6 +119,14 @@ module ApplicationHelper
     output
   end
 
+  def today(date)
+    if date == Time.zone.now.to_date
+      "Today"
+    else
+      date.to_s(:db)
+    end
+  end
+
   def is_btc?(network)
     network_short_name(network) == "BTC"
   end

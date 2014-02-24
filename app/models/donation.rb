@@ -21,19 +21,18 @@ class Donation < ActiveRecord::Base
     Donation.where(address: addr).order('time desc')
   end
 
-  def self.today_donations
-    today = Time.zone.now.to_date
+  def self.today_donations(today = Time.zone.now.to_date)
     where("time >= ? and time < ?", today, today.tomorrow).order("time desc")
   end
 
-  def self.current_price(network)
+  def self.current_price(network, date = Time.zone.now.to_date)
     # if no one has donated yet, you can all of it
     # @@current_price ||= {}
     # @@current_price[network.to_sym] ||=
-    if today_donated(network) == 0 || today_donated(network).nil?
+    if today_donated(network, date) == 0 || today_donated(network, date).nil?
       Ags.daily_issue.to_f
     else
-      Ags.daily_issue.to_f / today_donated(network) * Ags::COIN
+      Ags.daily_issue.to_f / today_donated(network, date) * Ags::COIN
     end
   end
 
@@ -43,10 +42,10 @@ class Donation < ActiveRecord::Base
     date_grouping.where("time >= ? and time < ?", date, date.tomorrow)
   end
 
-  def self.today_donated(network)
+  def self.today_donated(network, date = Time.zone.now.to_date)
     # @@today_donated ||= {}
     # @@today_donated[network.to_sym] ||=
-    date_grouping.by_date.where(network: network).try(:first).try(:total) || 0
+    date_grouping.by_date(date).where(network: network).try(:first).try(:total) || 0
   end
 
   # daily data series
