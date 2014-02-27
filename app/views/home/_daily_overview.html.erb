@@ -20,7 +20,7 @@
         </span> / <span class="symolizable" data-type="<%= network %>" data-cur="<%= network %>" data-value="<%= @daily_data["#{network}_avg".to_sym] %>">
         <%= dcp(@daily_data["#{network}_avg".to_sym], network) %>
         </span>
-        <abbr title="<%= (slowness - 100).abs %>% <%= slowness < 100 ? "favorable" : "unfavorable" %> to donor against average day">[?]</abbr>
+        <abbr title="<%= (slowness - 100).abs %>% <%= slowness < 100 ? "favorable" : "unfavorable" %> to donator against average day">[?]</abbr>
     </td>
     </tr>
     <tr>

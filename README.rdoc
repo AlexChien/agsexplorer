@@ -1,6 +1,6 @@
 == Welcome to AGSExplorer
 
-AGSExplorer (http://agsexplorer.com) is an blockchain based AngelShares explorer.  It's created to help donor to view real-time donation in BTC and PTS, help decide when and what amount to donate and check AGS balance.  If you don't know what AngelShares is, please visit http://invictus-innovations.com/angelshares for more information.
+AGSExplorer (http://agsexplorer.com) is an blockchain based AngelShares explorer.  It's created to help donator to view real-time donation in BTC and PTS, help decide when and what amount to donate and check AGS balance.  If you don't know what AngelShares is, please visit http://invictus-innovations.com/angelshares for more information.
 
 == Dependency
 

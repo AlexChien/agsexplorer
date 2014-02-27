@@ -5,7 +5,7 @@ Current Rate: <%= cent2coin(@data[:"#{network}_current_price"]).round(2) %> <%= 
 
 Donated Today / Average: <%= cent2coin(@data[:"today_#{network}_donated"]).round(2) %> <%= network.upcase %> / <%= cent2coin(@data[:daily_data]["#{network}_avg".to_sym]).round(2) %> <%= network.upcase %>
 <% slowness = (100.0 * @data[:"today_#{network}_donated"] / @data[:daily_data]["#{network}_avg".to_sym]).round() %>
-<%= (slowness - 100).abs %>% <%= slowness < 100 ? "favorable" : "unfavorable" %> to donor against average day
+<%= (slowness - 100).abs %>% <%= slowness < 100 ? "favorable" : "unfavorable" %> to donator against average day
 
 
 Donation Efficiency: <%= (@data[:"#{network}e"] * 100).round %>%
