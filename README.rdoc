@@ -25,7 +25,9 @@ This is a typical Rails application, it follows many conventions of Rails. Requi
 
 4.Parse Data
 
-Blockchain data is currently powered by @Donschoe's AGS-PARSE v0.5 (https://github.com/donSchoe/ags-parser)
+Blockchain data is previously powered by @Donschoe's AGS-PARSE v0.5 (https://github.com/donSchoe/ags-parser)
+
+Now it's using optimized version of ags-parser, check it out at https://github.com/AlexChien/ags-parser
 
   # wipe out db data and re-parse data from day1
   bundle exec rake donation:reset
