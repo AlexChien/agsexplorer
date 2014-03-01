@@ -6,6 +6,8 @@ var chart_data = <%= @donations.reverse.to_json(only: [:time, :amount]).html_saf
 var span = chart_data.length;
 
 var c = '<%= @network %>';
+// pts => PTS, btc => BTC
+var C = c.toUpperCase();
 
 ags['s_'+c] = [];
 for (var i = 0; i < span; i++) {
@@ -30,10 +32,10 @@ $('#chart-container').highcharts({
   },
   yAxis: [{
     title: {
-      text: 'Amount Donated (BTC)'
+      text: 'Amount Donated (' + C + ')'
     },
     labels: {
-      format: '{value} BTC',
+      format: '{value} ' + C,
       style: {
         color: ags['color_'+c]
       }
@@ -52,22 +54,22 @@ $('#chart-container').highcharts({
     backgroundColor: '#FFFFFF'
   },
   series: [{
-    name: 'Daily BTC Donation',
+    name: 'Daily ' + C + ' Donation',
     color: ags['color_'+c],
     type: 'column',
     tooltip: {
-      valueSuffix: ' BTC'
+      valueSuffix: ' ' + C
     },
     data: ags['s_'+c]
   },
   {
-    name: 'Daily BTC Average',
+    name: 'Daily ' + C + ' Average',
     color: ags['color_'+c],
     type: 'spline',
     marker: { enabled: false },
     dashStyle: 'shortdot',
     tooltip: {
-      valueSuffix: ' BTC'
+      valueSuffix: ' ' + C
     },
     data: ags['price_'+c]
   }]
