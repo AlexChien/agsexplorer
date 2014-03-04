@@ -88,11 +88,13 @@
         $('#addr_'+d.address).append($(' <span class="label label-info">'+display_currency(d.amount/100000000,'bts')+'</span>').slideDown());
       }
 
-      // update total bts balance
-      $('#ags_amount_total').append(' <span class="label label-info">'+display_currency(total/100000000,'bts')+'</span>');
+      if (total > 0) {
+        // update total bts balance
+        $('#ags_amount_total').append(' <span class="label label-info">'+display_currency(total/100000000,'bts')+'</span>');
 
-      // show/hide bts notice
-      if (total > 0) $('.bts-notice').slideDown();
+        // show/hide bts notice
+        $('.bts-notice').slideDown();
+      }
     }
   });
 </script>
