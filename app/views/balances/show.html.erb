@@ -1,7 +1,7 @@
-<% if !@donations.blank? && @donations.size > 1 %>
-
+<% if !@donations.blank? %>
 <% content_for :footer_js do -%>
 <script type="text/javascript" charset="utf-8">
+  <% if @donations.size > 1 %>
   var chart_data = <%= @donations.reverse.to_json(only: [:time, :amount]).html_safe %>;
   var span = chart_data.length;
 
@@ -74,11 +74,12 @@
       data: ags['s_'+c]
     }]
   });
+  <% end %>
 
   // fetch BTS snapshot balance
   var address_spans = $('.donator-address');
   var addresses = $.map(address_spans, function(n,i){ return $(n).attr('data');});
-  $.getJSON('/genesis/bts/balance/'+addresses.join('_')+'.json',{}, function(data){
+  $.getJSON('/genesis/bts/balance/'+addresses.join('_')+'.json', {}, function(data){
     if (data) {
       var total = 0;
       for (var i = 0; i < data.length; i++) {
@@ -149,6 +150,8 @@
     </table>
     <p><span class="label label-success">Highlighted</span> addresses are recognized as DONATOR ADDRESSES.  These are the addresses that will be embedded within Genesis Blocks of future Invictus DAC chains. <a href="/ags101/algorithm" target="_blank">Check out more here</a>.</p>
 
+    <p><span class="label label-warning">Unconfirmed</span> AGS amount is about your donation made today.  AGS amount rewared is settled each day, until then the amount is about to change while total donation keeps increasing.</p>
+
     <p class="bts-notice hide"><span class="label label-info">BTS Highlighted</span> are BTS initial balance of your address after Feb 28, 2014 snapshot.  BTS balance originates from AGS donations and PTS holdings.  Data extracted from <a href="https://bitsharestalk.org/index.php?topic=3330.0" target="_blank">here</a>. (BTS reward for Keyhotee Founder keys are not included yet.)</p>
 
     <% else %>
@@ -157,11 +160,11 @@
   </div>
   <div class="span5" style="text-align:right;">
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <!-- ags_balance_page3 -->
+    <!-- ags_balance_page_higher -->
     <ins class="adsbygoogle"
-         style="display:inline-block;width:320px;height:100px"
+         style="display:inline-block;width:336px;height:280px"
          data-ad-client="ca-pub-8968072988518706"
-         data-ad-slot="5634664487"></ins>
+         data-ad-slot="4798779280"></ins>
     <script>
     (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
