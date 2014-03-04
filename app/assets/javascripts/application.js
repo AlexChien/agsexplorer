@@ -108,7 +108,7 @@ function changeSymbol(){
         new_val = $(this).data('value') / 100000000;
       }
 
-      $(this).html(display_currency(new_val)).data('cur', new_cur);
+      $(this).html(display_currency(new_val,new_cur)).data('cur', new_cur);
     }
 
     // pts
@@ -122,7 +122,7 @@ function changeSymbol(){
         new_val = $(this).data('value') / 100000000;
       }
 
-      $(this).html(display_currency(new_val)).data('cur', new_cur);
+      $(this).html(display_currency(new_val,new_cur)).data('cur', new_cur);
     }
 
     // ags_btc
@@ -136,7 +136,7 @@ function changeSymbol(){
         new_val = $(this).data('value') / 100000000;
       }
 
-      $(this).html(display_currency(new_val)).data('cur', new_cur);
+      $(this).html(display_currency(new_val,new_cur)).data('cur', new_cur);
     }
 
     // ags_btc
@@ -150,12 +150,12 @@ function changeSymbol(){
         new_val = $(this).data('value') / 100000000;
       }
 
-      $(this).html(display_currency(new_val)).data('cur', new_cur);
+      $(this).html(display_currency(new_val,new_cur)).data('cur', new_cur);
     }
   });
 }
 
-function display_currency(val){
+function display_currency(val,new_cur){
   parts = val.toString().split('.');
   return parts[0].replace(comify_re, "$1,") + '<small class="num">.'+max8(parts[1])+' '+String(new_cur).split('_').join(' / ').toUpperCase()+'</small>'
 }
