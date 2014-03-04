@@ -1,5 +1,8 @@
 Agsexplorer::Application.routes.draw do
 
+  # dac check genesis balance
+  get "genesis/:dac/balance/:address" => 'genesis#balance'
+
   # by_dat
   get 'by_date/:date' => 'home#by_date'
 

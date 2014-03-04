@@ -2,7 +2,6 @@
 
 <% content_for :footer_js do -%>
 <script type="text/javascript" charset="utf-8">
-$(function(){
   var chart_data = <%= @donations.reverse.to_json(only: [:time, :amount]).html_safe %>;
   var span = chart_data.length;
 
@@ -76,7 +75,26 @@ $(function(){
     }]
   });
 
-});
+  // fetch BTS snapshot balance
+  var address_spans = $('.donator-address');
+  var addresses = $.map(address_spans, function(n,i){ return $(n).attr('data');});
+  $.getJSON('/genesis/bts/balance/'+addresses.join('_')+'.json',{}, function(data){
+    if (data) {
+      var total = 0;
+      for (var i = 0; i < data.length; i++) {
+        var d = data[i];
+        total += d.amount;
+        // update each address's bts balance
+        $('#addr_'+d.address).append($(' <span class="label label-info">'+display_currency(d.amount/100000000,'bts')+'</span>').slideDown());
+      }
+
+      // update total bts balance
+      $('#ags_amount_total').append(' <span class="label label-info">'+display_currency(total/100000000,'bts')+'</span>');
+
+      // show/hide bts notice
+      if (total > 0) $('.bts-notice').slideDown();
+    }
+  });
 </script>
 <% end -%>
 <% end %>
@@ -93,7 +111,7 @@ $(function(){
 </h4>
 
 <div class="row-fluid">
-  <div class="span6">
+  <div class="span7">
     <% if @total_donated %>
     <table class="table table-striped table-condensed table-hover" data-network="<%= @network %>">
       <tbody>
@@ -103,7 +121,7 @@ $(function(){
         </tr>
         <tr>
           <td>AGS Amount (Confirmed)</td>
-          <td><span class="label label-success"><%= dcp(@total_ags_confirmed, :ags) %></span></td>
+          <td id="ags_amount_total"><span class="label label-success"><%= dcp(@total_ags_confirmed, :ags) %></span></td>
         </tr>
         <tr>
           <td>AGS Amount (Unconfirmed)</td>
@@ -117,20 +135,25 @@ $(function(){
           <td>Related Addresses</td>
           <td>
             <% @related_addresses.each do |address| %>
+            <div id='addr_<%= address %>'>
               <%= link_to balance_path(address, view: @view) do
-              @addresses.include?(address) ? "<span class='label label-success'>#{address}</span>".html_safe : address
-              end%><br />
+              @addresses.include?(address) ? "<span class='label label-success donator-address' data='#{address}'>#{address}</span>".html_safe : address
+              end%>
+            </div>
             <% end %>
           </td>
         </tr>
       </tbody>
     </table>
     <p><span class="label label-success">Highlighted</span> addresses are recognized as DONATOR ADDRESSES.  These are the addresses that will be embedded within Genesis Blocks of future Invictus DAC chains. <a href="/ags101/algorithm" target="_blank">Check out more here</a>.</p>
+
+    <p class="bts-notice hide"><span class="label label-info">BTS Highlighted</span> are BTS initial balance of your address after Feb 28, 2014 snapshot.  BTS balance originates from AGS donations and PTS holdings.  Data extracted from <a href="https://bitsharestalk.org/index.php?topic=3330.0" target="_blank">here</a>. (BTS reward for Keyhotee Founder keys are not included yet.)</p>
+
     <% else %>
     <p>no donations found</p>
     <% end %>
   </div>
-  <div class="span6" style="text-align:right;">
+  <div class="span5" style="text-align:right;">
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <!-- ags_balance_page3 -->
     <ins class="adsbygoogle"

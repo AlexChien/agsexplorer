@@ -25,4 +25,17 @@ namespace :dev do
       puts "total: #{db_total} vs #{gtotal}"
     end
   end
+
+  namespace :dac do
+    namespace :bts do
+      task :import_genesis => :environment do
+        genesis_file = File.join(Rails.root, 'data', 'bts_genesis.json')
+
+        g = JSON.parse(File.read(genesis_file))
+        g["balances"].each do |r|
+          DacGenesis.create(dac: 'BTS', address: r.first, amount: r.last)
+        end
+      end
+    end
+  end
 end
