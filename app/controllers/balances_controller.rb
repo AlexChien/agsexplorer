@@ -25,6 +25,7 @@ class BalancesController < ApplicationController
       @donations = Donation.where(address: @view == 'seperate' ? @address : @addresses).order('time desc') unless @addresses.blank?
 
       @network = @donations.try(:first).try(:network) || :btc
+      @avg_donation_amount = Donation.avg_donation(@network.to_sym)
 
       unless @donations.blank?
         @total_donated = @donations.map(&:amount).sum

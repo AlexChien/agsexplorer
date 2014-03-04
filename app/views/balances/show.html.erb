@@ -2,77 +2,80 @@
 
 <% content_for :footer_js do -%>
 <script type="text/javascript" charset="utf-8">
-var chart_data = <%= @donations.reverse.to_json(only: [:time, :amount]).html_safe %>;
-var span = chart_data.length;
+$(function(){
+  var chart_data = <%= @donations.reverse.to_json(only: [:time, :amount]).html_safe %>;
+  var span = chart_data.length;
 
-var c = '<%= @network %>';
-// pts => PTS, btc => BTC
-var C = c.toUpperCase();
+  var c = '<%= @network %>';
+  // pts => PTS, btc => BTC
+  var C = c.toUpperCase();
 
-ags['s_'+c] = [];
-for (var i = 0; i < span; i++) {
-  ags['s_'+c].push(chart_data[i].amount/100000000);
-  ags.s_date.push( chart_data[i].time.split('T')[0] );
-}
+  ags['s_'+c] = [];
+  for (var i = 0; i < span; i++) {
+    ags['s_'+c].push(chart_data[i].amount/100000000);
+    ags.s_date.push( chart_data[i].time.split('T')[0] );
+  }
 
-// current price
-ags['price_'+c] = 45.121;
+  // current price
+  ags['price_'+c] = <%= @avg_donation_amount %>/100000000;
 
 
-$('#chart-container').highcharts({
-  chart: {
-    zoomType: 'xy'
-  },
-  title: {
-    text: 'Donation History',
-    x: -20 //center
-  },
-  xAxis: {
-    categories: ags.s_date
-  },
-  yAxis: [{
+  $('#chart-container').highcharts({
+    chart: {
+      zoomType: 'xy'
+    },
     title: {
-      text: 'Amount Donated (' + C + ')'
+      text: 'Donation History',
+      x: -20 //center
     },
-    labels: {
-      format: '{value} ' + C,
-      style: {
-        color: ags['color_'+c]
+    xAxis: {
+      categories: ags.s_date
+    },
+    yAxis: [{
+      title: {
+        text: 'Amount Donated (' + C + ')'
+      },
+      plotLines: [{
+        value: ags["price_"+c],
+        width: 1,
+        color: ags['color_'+c],
+        dashStyle: 'dash',
+        label: {
+          text: 'Avg.',
+          align: 'left',
+          x: 20
+        }
+      }],
+      labels: {
+        format: '{value} ' + C,
+        style: {
+          color: ags['color_'+c]
+        }
       }
-    }
-  }],
-  tooltip: {
-    shared: true
-  },
-  legend: {
-    layout: 'vertical',
-    align: 'left',
-    x: 90,
-    verticalAlign: 'top',
-    y: 30,
-    floating: true,
-    backgroundColor: '#FFFFFF'
-  },
-  series: [{
-    name: 'Daily ' + C + ' Donation',
-    color: ags['color_'+c],
-    type: 'column',
+    }],
     tooltip: {
-      valueSuffix: ' ' + C
+      shared: true
     },
-    data: ags['s_'+c]
-  },
-  {
-    name: 'Daily ' + C + ' Average',
-    color: ags['color_'+c],
-    type: 'spline',
-    marker: { enabled: false },
-    dashStyle: 'shortdot',
-    tooltip: {
-      valueSuffix: ' ' + C
+    legend: {
+      layout: 'vertical',
+      align: 'left',
+      x: 90,
+      verticalAlign: 'top',
+      y: 30,
+      floating: true,
+      backgroundColor: '#FFFFFF'
     },
-    data: ags['price_'+c]
-  }]
+    series: [{
+      name: 'Daily ' + C + ' Donation',
+      color: ags['color_'+c],
+      type: 'column',
+      tooltip: {
+        valueSuffix: ' ' + C
+      },
+      data: ags['s_'+c]
+    }]
+  });
+
 });
 </script>
 <% end -%>

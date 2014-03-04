@@ -25,6 +25,17 @@ class Donation < ActiveRecord::Base
     where("time >= ? and time < ?", today, today.tomorrow).order("time desc")
   end
 
+  # get average price till date
+  def self.avg_donation(network=nil, end_date=Time.zone.now.to_date)
+    networks = %w(btc pts)
+    if !network.nil? && network.is_a?(String)
+      network = [network]
+      networks = networks & network.to_a.collect{ |n| n.downcase.to_s }
+    end
+
+    Donation.where(network: network).where('time <= ?', end_date.tomorrow).average(:amount).try(:to_i)
+  end
+
   def self.current_price(network, date = Time.zone.now.to_date)
     # if no one has donated yet, you can all of it
     # @@current_price ||= {}
