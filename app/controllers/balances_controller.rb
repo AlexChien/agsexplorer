@@ -37,6 +37,12 @@ class BalancesController < ApplicationController
         @total_ags_confirmed = @donations.select{ |d| d.time < today }.map(&:ags_amount).sum
         @total_ags_pending = @donations.select{ |d| d.time >= today }.map(&:amount).sum.to_f / @today_total_donated * Ags.daily_issue(@network.to_sym)
       end
+    else
+      # non-ags address
+      @related_addresses = [@address]
+      @addresses = []
+      @total_donated = @total_ags_pending = @total_ags_confirmed = 0
+      @network = @address =~ /^P/ ? :pts : :btc
     end
 
   end
