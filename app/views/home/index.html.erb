@@ -11,13 +11,13 @@ $(function(){
     chart_data["btc"].push({
       color: '#ff0000',
       x: Date.parse('<%= DateTime.now.utc.to_date.to_s %>'),
-      y: <%= cent2coin(@data[:"today_btc_donated"]) %>
+      y: <%= cent2coin(@data[:"current_btc_donated"] || @data[:"today_btc_donated"]) %>
     });
 
     chart_data['pts'].push({
       color: '#0000ff',
       x: Date.parse('<%= DateTime.now.utc.to_date.to_s %>'),
-      y: <%= cent2coin(@data[:"today_pts_donated"]) %>
+      y: <%= cent2coin(@data[:"current_pts_donated"] || @data[:"today_pts_donated"]) %>
     });
 
     var sum_btc = 0, sum_pts = 0;

@@ -32,7 +32,9 @@ class HomeController < ApplicationController
       today_btc_donated:   Donation.today_donated(:btc, @date),
       today_pts_donated:   Donation.today_donated(:pts, @date),
       btc_current_price:   Donation.current_price(:btc, @date),
-      pts_current_price:   Donation.current_price(:pts, @date)
+      pts_current_price:   Donation.current_price(:pts, @date),
+      current_btc_donated: Donation.today_donated(:btc),
+      current_pts_donated: Donation.today_donated(:btc)
     }
 
     render :index

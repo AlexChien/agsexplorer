@@ -280,7 +280,8 @@ function drawChart(container, chart_data){
             align: 'left',
             x: 20
           }
-        }]
+        }],
+        opposite: false
     }, {
         title: {
             text: 'PTS'
