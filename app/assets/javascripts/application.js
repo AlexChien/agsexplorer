@@ -17,6 +17,7 @@
 // require bootstrap-affix
 // require scrollUp/lib/jquery.easing.min.js
 // require scrollUp/jquery.scrollUp.js
+//= require jquery.countdown.js
 // require_tree .
 
 var ags = { s_date:[], neworks: ['btc', 'pts'], color_pts: '#4572A7', color_btc: '#99443E' };

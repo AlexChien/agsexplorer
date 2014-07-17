@@ -1,6 +1,15 @@
 <% content_for :footer_js do -%>
 <script type="text/javascript" charset="utf-8">
 $(function(){
+  // count down
+  $('#timer').countdown({
+    stepTime: 60,
+    continuous: true,
+    format: 'dd:hh:mm:ss',
+    image: '/assets/countdown/digits.png',
+    startTime: '<%= count_down_start_time %>'
+  });
+
   // current price
   ags['price_btc'] = <%= Donation.current_price(:btc, @date) %>;
   ags['price_pts'] = <%= Donation.current_price(:pts, @date) %>;
@@ -46,12 +55,17 @@ $(function(){
 
 <% end -%>
 
+<div class="alert alert-error">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <strong>NOTICE:</strong> AngelShares donation period is coming to an end.  After the count down clock reaches zero, please DO NOT send any donations to AngelShares donation addresses (Bitcoin and Protoshare).
+</div>
+
+<% if false %>
 <div class="alert alert-success">
   <button type="button" class="close" data-dismiss="alert">&times;</button>
   <strong>ANN:</strong> BTS initial balance for AGS donator address is now shown in balance page.
 </div>
 
-<% if false %>
 <div class="alert alert-success">
   <button type="button" class="close" data-dismiss="alert">&times;</button>
   <strong>ANN:</strong> Donator Address algorithm has been updated check <a href="/ags101/algorithm">details</a> here.
@@ -89,9 +103,16 @@ $(function(){
   </tr>
 </table>
 
-<div class="row" style="text-align:center; width:600px; margin:1em auto;">
+<!-- <div class="row" style="text-align:center; width:600px; margin:1em auto;">
   <iframe width="600px" scrolling="no" height="205px" frameborder="0" src="http://ags.lodo.net/counter.php"></iframe>
-</div>
+</div> -->
+
+  <div class="countdown">
+    <div class="ags-logo"><%= image_tag "ags-sm-logo.png" %></div>
+    <div class="title">Countdown to last day of AGS donations (UTC):</div>
+    <div class="timer"><span id="timer"><%#= image_tag "2014/timer.png" %></span></div>
+  </div>
+
 
 <h1>Overview</h1>
 <div class="row-fluid">
