@@ -22,4 +22,18 @@ namespace :email do
       sleep 2
     end
   end
+
+  desc "summary"
+  task :summary => :environment do
+    @summary = {}
+    Donation.summary.all.each do |summary|
+      @summary[summary.network.to_sym] = {total: summary.total, count: summary.count}
+    end
+
+    Notification.find_each do |n|
+      puts "send > #{n.email}"
+      NotificationMailer.daily(n, @summary).deliver
+      sleep 2
+    end
+  end
 end

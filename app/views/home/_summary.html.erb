@@ -1,0 +1,42 @@
+<h3 class="<%= network.to_s == 'pts' ? 'pull-right' : '' %>"><%= network.upcase %></h3>
+<table class="table table-striped table-condensed table-hover overview" data-network="<%= network %>">
+  <tbody>
+    <th>Donations</th>
+    <th>&nbsp;</th>
+    <tr>
+      <td>Total Donated</td>
+      <td><%= dcp(@summary[network][:total], network) %></td>
+    </tr>
+    <tr>
+      <td>Total Transactions</td>
+      <td><%= number_with_delimiter @summary[network][:count] %></td>
+    </tr>
+    <tr>
+      <td>Average Donation</td>
+      <td><%= dcp(@summary[network][:total].to_i / @summary[network][:count].to_i, network) %></td>
+    </tr>
+    <th>Issuance</th>
+    <th>&nbsp;</th>
+    <tr>
+      <td>Total Donation Days</td>
+      <td>199</td>
+    </tr>
+    <tr>
+      <td>Daily AGS Issued</td>
+      <td><%= dcp(Ags.daily_issue(network), "ags") %></td>
+    </tr>
+    <tr>
+      <td>Keyhotee Founder Allocation</td>
+      <td><%= dcp(Ags.daily_issue(network), "ags") %></td>
+    </tr>
+    <tr>
+      <td>Total Bitshares AGS Issued</td>
+      <td><%= dcp(Ags.daily_issue(network) * 200, "ags") %></td>
+    </tr>
+
+    <tr>
+      <th>Fund Usage</th>
+      <td><%= link_to "view google doc", donation_usage_link(network), :target => "_blank" %></td>
+    </tr>
+  </tbody>
+</table>

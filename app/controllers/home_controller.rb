@@ -12,6 +12,13 @@ class HomeController < ApplicationController
       btc_current_price:   Donation.current_price(:btc),
       pts_current_price:   Donation.current_price(:pts)
     }
+
+    @summary = {}
+    Donation.summary.all.each do |summary|
+      @summary[summary.network.to_sym] = {total: summary.total, count: summary.count}
+    end if donation_finished?
+
+    render :index_after_donation_finished and return if donation_finished?
   end
 
   def by_date

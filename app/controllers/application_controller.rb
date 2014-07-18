@@ -80,4 +80,9 @@ class ApplicationController < ActionController::Base
     false
   end
   helper_method :mobile_device?
+
+  def donation_finished?
+    Time.now.utc > Ags::END_DATE
+  end
+  helper_method :donation_finished?
 end

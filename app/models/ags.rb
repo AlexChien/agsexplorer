@@ -6,6 +6,8 @@ module Ags
     pts: 5_000 * COIN
   }
 
+  END_DATE = Time.utc('2014','07','19')
+
   def self.daily_issue(network = "btc")
     ISSURANCE[network.to_sym]
   end

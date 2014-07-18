@@ -8,6 +8,7 @@ class Donation < ActiveRecord::Base
   scope :btc, where(network: 'btc')
   scope :pts, where(network: 'pts')
   scope :date_grouping, select("network, date(time) as day, sum(amount) as total").group("network, date(time)").order("network, date(time)")
+  scope :summary, select("network, sum(amount) as total, count(*) as count").group("network").where("time < ?", Ags::END_DATE)
 
   def confirmed?
     time < Time.zone.now.to_date.beginning_of_day
