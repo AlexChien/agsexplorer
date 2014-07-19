@@ -50,5 +50,5 @@ end
 # every day at 5am, 3 hours before end of day
 every 1.day, :at => '5:00 am' do
   # send daily email
-  rake 'email:daily'
+  # rake 'email:daily'
 end

@@ -14,8 +14,8 @@ class NotificationMailer < ActionMailer::Base
   def summary(notification, summary = nil)
     return false if summary.nil?
 
-    @summary = data
+    @summary = summary
     @token = notification.token
-    mail to: notification.email, subject: "#{Time.now.utc} AGSExplorer Daily Notification: Bitshares AGS donation has finished successfully."
+    mail to: notification.email, subject: "Bitshares AGS donation has finished successfully at UTC 2014-07-19 00:00:00."
   end
 end

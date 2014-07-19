@@ -30,9 +30,9 @@ namespace :email do
       @summary[summary.network.to_sym] = {total: summary.total, count: summary.count}
     end
 
-    Notification.find_each do |n|
+    Notification.where(email: 'alexchien97@gmail.com').find_each do |n|
       puts "send > #{n.email}"
-      NotificationMailer.daily(n, @summary).deliver
+      NotificationMailer.summary(n, @summary).deliver
       sleep 2
     end
   end
