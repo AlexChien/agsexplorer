@@ -50,7 +50,7 @@ class HomeController < ApplicationController
   def ags101
   end
 
-  def daily_series(networks = nil, start_date = nil, end_date = nil)
+  def daily_series(networks = nil, start_date = nil, end_date = (Ags::END_DATE).to_date.to_s)
     @daily_data = Daily.series(networks, start_date, end_date)
 
     respond_to do |format|

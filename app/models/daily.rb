@@ -13,7 +13,7 @@ class Daily < ActiveRecord::Base
   # @example:
   # Daily.series([btc,pts], '2014-01-03', '2014-01-04')
   #
-  def self.series(network=nil, start_date=nil, end_date=Ags::END_DATE)
+  def self.series(network = nil, start_date = nil, end_date = nil)
     networks = %w(btc pts)
     if !network.nil? && network.is_a?(String)
       network = [network]
