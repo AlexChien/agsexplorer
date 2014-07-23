@@ -18,6 +18,7 @@ $(function(){
 
   // chart data
   $.get('/series/daily.json', function (chart_data) {
+    <% unless donation_finished? %>
     // Today's ongoing data
     chart_data["btc"].push({
       color: '#ff0000',
@@ -30,6 +31,7 @@ $(function(){
       x: Date.parse('<%= DateTime.now.utc.to_date.to_s %>'),
       y: <%= cent2coin(@data[:"current_pts_donated"] || @data[:"today_pts_donated"]) %>
     });
+    <% end %>
 
     var sum_btc = 0, sum_pts = 0;
 
