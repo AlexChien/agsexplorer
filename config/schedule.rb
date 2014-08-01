@@ -20,9 +20,9 @@ set :output, "/home/mongrel/agsexplorer/shared/log/cron_log.log"
 # Learn more: http://github.com/javan/whenever
 
 # fetch new blockchain data every 1 minutes
-every 5.minutes do
-  runner "Donation.parse_all"
-end
+# every 5.minutes do
+#   runner "Donation.parse_all"
+# end
 
 # fetch tickers every 1 minute
 every 5.minutes do
@@ -30,25 +30,24 @@ every 5.minutes do
 end
 
 # update past day's ags amount actually accquired
-every 1.day, :at => '8:01 am' do
-  # calculate each donation obtained ags reward for yesterday
-  # re-calculate each wallet's total ags amount obtained from its all addresses
-  # runner "Donation.calculate_ags_reward; "
-  rake "donation:daily"
-end
+# every 1.day, :at => '8:01 am' do
+  # # calculate each donation obtained ags reward for yesterday
+  # # re-calculate each wallet's total ags amount obtained from its all addresses
+  # rake "donation:daily"
+# end
 
 # re-calculate ags_reward
 # because data parse happens every 1 minute, donschoe's data refreshing frequence might
 # be bigger than 1 minute, therefore donation happen within the last minute might be fetched
 # later than expected, therefore reward calculation might happen before it
 # To be safe, re-run it 15 minutes later again
-every 1.day, :at => '8:15 am' do
-  # runner "Donation.calculate_ags_reward; "
-  rake "donation:daily"
-end
+# every 1.day, :at => '8:15 am' do
+#   # runner "Donation.calculate_ags_reward; "
+#   rake "donation:daily"
+# end
 
 # every day at 5am, 3 hours before end of day
-every 1.day, :at => '5:00 am' do
+# every 1.day, :at => '5:00 am' do
   # send daily email
   # rake 'email:daily'
-end
+# end
