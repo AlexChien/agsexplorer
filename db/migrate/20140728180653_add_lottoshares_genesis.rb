@@ -3,7 +3,8 @@ class AddLottosharesGenesis < ActiveRecord::Migration
   def import_data(addresses)
     addresses.each { |data| data.push('LTS') }
 
-    DacGenesis.import [:address, :amount, :dac], addresses, validate: false
+    # DacGenesis.import [:address, :amount, :dac], addresses, validate: false
+    DacGenesis.bulk_insert( addresses, [:address, :amount, :dac] )
   end
 
   def up

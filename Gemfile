@@ -30,7 +30,8 @@ gem "em-dns"
 
 gem 'rest-client', :require => 'restclient'
 
-gem 'activerecord-import'
+# gem 'activerecord-import'
+gem 'bulk-insert-active-record'
 
 # Gems used only for assets and not required
 # in production environments by default.
