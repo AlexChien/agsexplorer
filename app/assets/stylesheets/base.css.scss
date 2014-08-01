@@ -37,3 +37,10 @@ small.num { font-size:10px; opacity:0.5; }
 {
   body { padding-top:0px; }
 }
+
+.allocation-group {
+  display:list-item; list-style:none; margin-bottom:1em;
+  position:relative; overflow:hidden;
+  span { display:block; width:auto; float:left; clear:left; margin-bottom:5px;}
+  &:first-child { margin-top:1em; }
+}

@@ -9,15 +9,20 @@ class GenesisController < ApplicationController
       address = addrs
     end
 
-    @balance = DacGenesis.where(dac:dac, address:address)
+    @balance = DacGenesis.where(dac:dac, address:address).group(:dac, :address).sum(:amount)
     # if not found, return 0 amount
     if @balance.nil?
-      @balance = {dac:dac, address:address, amount:0}
+      @result = { dac: dac, address: address, amount: 0 }
+    else
+      @result = []
+      @balance.each do |k,v|
+        @result.push({ dac: k[0], address: k[1], amount: v })
+      end
     end
 
     respond_to do |format|
-      format.json { render json: @balance.as_json(only: [:dac, :address, :amount]) }
-      format.xml { render xml: @balance.to_xml(only: [:dac, :address, :amount]) }
+      format.json { render json: @result.as_json(only: [:dac, :address, :amount]) }
+      format.xml { render xml: @result.to_xml(only: [:dac, :address, :amount]) }
     end
 
   end

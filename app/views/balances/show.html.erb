@@ -75,29 +75,33 @@
   });
   <% end %>
 
-  // fetch BTS snapshot balance
+  // fetch BTSX snapshot balance
+  var snapshots = ['btsx','LTS'];
   var address_spans = $('.donator-address');
   var addresses = $.map(address_spans, function(n,i){ return $(n).attr('data');});
   if (addresses.length > 0) {
-    $.getJSON('/genesis/bts/balance/'+addresses.join('_')+'.json', {}, function(data){
-      if (data) {
-        var total = 0;
-        for (var i = 0; i < data.length; i++) {
-          var d = data[i];
-          total += d.amount;
-          // update each address's bts balance
-          $('#addr_'+d.address).append($(' <span class="label label-info">'+display_currency(d.amount/100000000,'bts')+'</span>').slideDown());
-        }
+    for (var i = 0; i < snapshots.length; i++) {
+      var dac = snapshots[i];
+      $.getJSON('/genesis/'+dac+'/balance/'+addresses.join('_')+'.json', {}, function(data){
+        if (data) {
+          var total = 0;
+          for (var i = 0; i < data.length; i++) {
+            var d = data[i];
+            total += d.amount;
+            // update each address's bts balance
+            $('#addr_'+d.address).append($(' <span class="label label-info">'+display_currency(d.amount/100000000,d.dac)+'</span>').slideDown());
+          }
 
-        if (total > 0) {
-          // update total bts balance
-          $('#ags_amount_total').append(' <span class="label label-info">'+display_currency(total/100000000,'bts')+'</span>');
+          if (total > 0) {
+            // update total bts balance
+            $('#ags_amount_total').append(' <span class="label label-info">'+display_currency(total/100000000,d.dac)+'</span>');
 
-          // show/hide bts notice
-          $('.bts-notice').slideDown();
+            // show/hide bts notice
+            $('.bts-notice').slideDown();
+          }
         }
-      }
-    });
+      });
+    }
   }
 </script>
 <% end -%>
@@ -124,7 +128,7 @@
         </tr>
         <tr>
           <td>AGS Amount (Confirmed)</td>
-          <td id="ags_amount_total"><span class="label label-success"><%= dcp(@total_ags_confirmed, :ags) %></span></td>
+          <td id="ags_amount_total" class="allocation-group"><span class="label label-success"><%= dcp(@total_ags_confirmed, :ags) %></span></td>
         </tr>
         <tr>
           <td>AGS Amount (Unconfirmed)</td>
@@ -140,14 +144,14 @@
             <% #allow non-ags donator address to lookup bts balance %>
             <% if @addresses.empty? %>
               <% @related_addresses.each do |address| %>
-              <div id='addr_<%= address %>'>
+              <div id='addr_<%= address %>' class="allocation-group">
                 <span class='label donator-address' data='<%= address %>'><%= address %></span>
               </div>
               <% end %>
             <% else %>
               <% #ags donator address %>
               <% @related_addresses.each do |address| %>
-              <div id='addr_<%= address %>'>
+              <div id='addr_<%= address %>' class="allocation-group">
                 <%= link_to balance_path(address, view: @view) do
                 @addresses.include?(address) ? "<span class='label label-success donator-address' data='#{address}'>#{address}</span>".html_safe : address
                 end%>
@@ -171,6 +175,7 @@
     <% end %>
   </div>
   <div class="span5" style="text-align:right;">
+    <% if Rails.env.production? %>
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <!-- ags_balance_page_higher -->
     <ins class="adsbygoogle"
@@ -180,6 +185,7 @@
     <script>
     (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
+    <% end %>
   </div>
 </div>
 
