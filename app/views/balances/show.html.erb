@@ -78,6 +78,7 @@
   // fetch BTSX snapshot balance
   var snapshots = ['btsx','LTS','DNS'];
   var address_spans = $('.donator-address');
+  var cur_address = $('#current_address').data('address');
   var addresses = $.map(address_spans, function(n,i){ return $(n).attr('data');});
   if (addresses.length > 0) {
     for (var i = 0; i < snapshots.length; i++) {
@@ -85,16 +86,26 @@
       $.getJSON('/genesis/'+dac+'/balance/'+addresses.join('_')+'.json', {}, function(data){
         if (data) {
           var total = 0;
+          var current_address_balance = 0;
           for (var i = 0; i < data.length; i++) {
             var d = data[i];
             total += d.amount;
+            // current address balance
+            if (d.address == cur_address)
+              current_address_balance = d.amount;
+
             // update each address's bts balance
             $('#addr_'+d.address).append($(' <span class="label label-info">'+display_currency(d.amount/100000000,d.dac)+'</span>').slideDown());
+
           }
 
           if (total > 0) {
             // update total bts balance
-            $('#ags_amount_total').append(' <span class="label label-info">'+display_currency(total/100000000,d.dac)+'</span>');
+            <% if @view == "merged"  %>
+              $('#ags_amount_total').append(' <span class="label label-info">'+display_currency(total/100000000,d.dac)+'</span>');
+            <% else %>
+              $('#ags_amount_total').append(' <span class="label label-info">'+display_currency(current_address_balance/100000000,d.dac)+'</span>');
+            <% end %>
 
             // show/hide bts notice
             $('.bts-notice').slideDown();
@@ -107,7 +118,7 @@
 <% end -%>
 
 <h1>Balance</h1>
-<h4>
+<h4 id="current_address" data-address="<%= @address %>">
   <%= @address %>
   <% if @addresses && @addresses.size > 1 %>
   <small class="pull-right">
