@@ -37,5 +37,16 @@ namespace :dev do
         end
       end
     end
+
+    namespace :dns do
+      task :import_genesis => :environment do
+        genesis_file = File.join(Rails.root, 'data', 'dns_genesis.json')
+
+        g = JSON.parse(File.read(genesis_file))
+        g["balances"].each do |r|
+          DacGenesis.create(dac: 'DNS', address: r.first, amount: r.last)
+        end
+      end
+    end
   end
 end
