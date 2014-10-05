@@ -55,6 +55,10 @@ group :development, :test do
   gem "rspec-rails"#, "~> 2.7"
   gem "pry"
   gem 'pry-rails'
+  gem "pry-nav"
+  gem "pry-doc"
+  gem "factory_girl_rails", "~> 1.4"
+  gem "faker"
 end
 
 group :development do
@@ -66,8 +70,6 @@ group :development do
   gem 'capistrano-nginx', :git => "git@github.com:AlexChien/capistrano-nginx.git", :require => false
   gem 'rvm-capistrano'
   gem 'rails-footnotes', '~> 3.7.8'
-  gem "factory_girl_rails", "~> 1.4"
-  gem "faker"
   gem "bullet"
   gem "magic_encoding"
   gem "thin"
@@ -81,16 +83,11 @@ group :test do
 
   # speed up rspec
   # http://ruby.railstutorial.org/chapters/static-pages#top
-  gem "factory_girl_rails", "~> 1.4"
-  gem "faker"
   gem "guard-rspec"
   gem "spork"#, "~> 0.9"
   gem "guard-spork"#, "~> 0.8"
   gem "guard-livereload"
   gem "growl"
-  gem "pry"
-  gem "pry-nav"
-  gem "pry-doc"
   gem "database_cleaner", "0.7.1"
 
   gem "timecop"

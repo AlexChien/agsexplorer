@@ -73,7 +73,7 @@ $(function(){
   }
 
   // symbolizable
-  $('.overview .symolizable').click(changeSymbol);
+  // $('.overview .symolizable').click(changeSymbol);
 
   // balance form
   $('#balance_search_frm').submit(function( event ){
@@ -140,7 +140,7 @@ function changeSymbol(){
       $(this).html(display_currency(new_val,new_cur)).data('cur', new_cur);
     }
 
-    // ags_btc
+    // ags_pts
     else if ($(this).data('type') == 'ags_pts' && $('#pts_usd').data('value') != 0) {
       var cur = $(this).data('cur');
       if (cur == 'ags_pts') {
@@ -148,6 +148,20 @@ function changeSymbol(){
         new_val = $('#pts_usd').data('value') / $(this).data('value') / 100000000;
       } else if (cur == 'usd_ags'){
         new_cur = 'ags_pts';
+        new_val = $(this).data('value') / 100000000;
+      }
+
+      $(this).html(display_currency(new_val,new_cur)).data('cur', new_cur);
+    }
+
+    // note_btc
+    else if ($(this).data('type') == 'note_btc' && $('#btc_usd').data('value') != 0) {
+      var cur = $(this).data('cur');
+      if (cur == 'note_btc') {
+        new_cur = 'usd_note';
+        new_val = $('#btc_usd').data('value') / $(this).data('value') / 100000000;
+      } else if (cur == 'usd_note'){
+        new_cur = 'note_btc';
         new_val = $(this).data('value') / 100000000;
       }
 

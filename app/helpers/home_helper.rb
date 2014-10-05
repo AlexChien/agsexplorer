@@ -1,10 +1,15 @@
 module HomeHelper
   def count_down_start_time
-    def dd(d,p=2)
-      d < 10**(p-1) ? "#{"0"*(p-d.to_s.length)}#{d}" : d
-    end
+    d = Ags::END_DATE
+    output_time(d)
+  end
 
-    d = Time.utc('2014','7','19')
+  def music_count_down_start_time
+    d = MusicPresale::END_DATE
+    output_time(d)
+  end
+
+  def output_time(d)
     n = Time.now
     offset = d - n
     offset = 0 if offset < 0
@@ -15,5 +20,9 @@ module HomeHelper
     seconds = (offset - minutes * 60).to_i
 
     "#{dd(days,2)}:#{dd(hours)}:#{dd(minutes)}:#{dd(seconds)}"
+  end
+
+  def dd(d,p=2)
+    d < 10**(p-1) ? "#{"0"*(p-d.to_s.length)}#{d}" : d
   end
 end

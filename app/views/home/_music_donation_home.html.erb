@@ -1,0 +1,82 @@
+<% content_for :footer_js do -%>
+<script type="text/javascript" charset="utf-8">
+$(function(){
+  <% unless music_donation_finished? %>
+  // count down
+  $('#music_timer').countdown({
+    stepTime: 60,
+    continuous: true,
+    format: 'dd:hh:mm:ss',
+    image: '/assets/countdown/digits.png',
+    startTime: '<%= music_count_down_start_time %>'
+  });
+  <% end %>
+
+
+});
+
+</script>
+
+<% end -%>
+
+<div class="countdown">
+  <h1 class="ags-logo" style="margin-bottom:0.2em; padding-bottom:0.2em;">Bitshares Music</h1>
+  <div class="title">Countdown to last day of Bitshares Music pre-sale (UTC):</div>
+  <div class="timer"><span id="music_timer"><%#= image_tag "2014/timer.png" %></span></div>
+</div>
+
+<div class="clearfix"></div>
+
+<h1>Summary</h1>
+<div class="row-fluid">
+  <div class="span6">
+    <% if music_donation_finished? %>
+      <%= render :partial => 'music_summary', :locals => { :network => :btc } %>
+    <% else %>
+      <%= render :partial => 'music_daily_overview', :locals => { :network => :btc } %>
+    <% end %>
+
+    <div class="alert alert-warn">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>NOTICE:</strong> Charts and address-based pre-sale lookup features will be online shortly.
+    </div>
+  </div>
+  <div class="span6">
+    <h3>BitShares Music DAC</h3>
+    <p>
+      As for the NOTE allocation at Genesis block:
+      <ul>
+        <li>35% PTS</li>
+        <li>35% AGS</li>
+        <li>20% upcoming pre-sale</li>
+        <li>10% BitShares Music Foundation</li>
+      </ul>
+    </p>
+    <p>The AGS style pre-sale will last for 60 days, starting from 6th, Oct (UTC) with issurance of 5 million NOTEs daily. Visit <a href="http://www.bitsharesmusicfoundation.org/" target="_blank">Bitshares Music Foundation</a> for details</p>
+    <div style="text-align:center;margin-top:1.5em;clear:both;">
+    <a href="#presale_music_btc" data-toggle="modal" class="btn btn-primary">Send fund to pre-sale address Now</a>
+    </div>
+  </div>
+</div>
+
+
+<div id="presale_music_btc" class="modal hide fade" role="dialog">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Send BTC</h3>
+  </div>
+  <div class="modal-body">
+    <div class="media">
+        <img src="http://blockchain.info/qr?data=37X8DHpfiimB7PU5y35rfBcg5Vxj2R6umL&amp;size=200" class="pull-left">
+        <div class="media-body">
+        <h4>Bitshares Music Pre-sale Address</h4>
+        <p>37X8DHpfiimB7PU5y35rfBcg5Vxj2R6umL</p>
+        <p>&nbsp;</p>
+        <p>Source: <br /><a href="http://www.bitsharesmusicfoundation.org/" target="_blank">Pre-sale Announcement Post</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn btn-primary" data-dismiss="modal">Done</a>
+  </div>
+</div>

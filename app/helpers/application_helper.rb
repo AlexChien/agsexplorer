@@ -104,6 +104,8 @@ module ApplicationHelper
       "PTS"
     when :ags, :angelshare
       "AGS"
+    when :note
+      "NOTE"
     end
   end
 

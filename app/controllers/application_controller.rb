@@ -85,4 +85,9 @@ class ApplicationController < ActionController::Base
     Time.now.utc > Ags::END_DATE
   end
   helper_method :donation_finished?
+
+  def music_donation_finished?
+    Time.now.utc > MusicPresale::END_DATE
+  end
+  helper_method :music_donation_finished?
 end

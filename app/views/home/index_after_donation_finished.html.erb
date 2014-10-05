@@ -8,6 +8,7 @@ $(function(){
 
   // chart data
   $.get('/series/daily.json', function (chart_data) {
+    <% if false %>
     // Today's ongoing data
     // chart_data["btc"].push({
     //   color: '#ff0000',
@@ -20,6 +21,7 @@ $(function(){
     //   x: Date.parse('<%= DateTime.now.utc.to_date.to_s %>'),
     //   y: <%= cent2coin(@data[:"current_pts_donated"] || @data[:"today_pts_donated"]) %>
     // });
+    <% end %>
 
     var sum_btc = 0, sum_pts = 0;
 
@@ -63,10 +65,15 @@ $(function(){
 </table>
 <div class="clearfix"></div>
 
-  <div class="countdown">
-    <div class="ags-logo"><%= image_tag "ags-sm-logo.png" %></div>
-    <div class="title">The BitShares AGS Campaign has successfully ended at <br /> UTC 2014-07-19 00:00:00</div>
-  </div>
+<%= render :partial => 'music_donation_home' %>
+
+
+<div class="clearfix" style="margin-top:3em;"></div>
+
+<div class="countdown">
+  <div class="ags-logo"><%= image_tag "ags-sm-logo.png" %></div>
+  <div class="title">The BitShares AGS Campaign has successfully ended at <br /> UTC 2014-07-19 00:00:00</div>
+</div>
 
 <div class="clearfix"></div>
 

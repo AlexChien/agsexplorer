@@ -1,0 +1,44 @@
+<h3 class="<%= network.to_s == 'pts' ? 'pull-right' : '' %>"><%= network.upcase %></h3>
+<table class="table table-striped table-condensed table-hover overview" data-network="<%= network %>">
+  <tbody>
+    <tr>
+      <th colspan="2"><%= today(@date) %></th>
+    </tr>
+    <tr>
+      <td>Current Rate <small>est.</small></td>
+      <td style="font-size:1.5em;"><span class="symolizable" data-type="note_<%= network %>" data-cur="note_<%= network %>" data-value="<%= @music_data[:"#{network}_current_price"] %>">
+        <%= dcp(@music_data[:"#{network}_current_price"], network).gsub(network.to_s.upcase, "note / #{network.to_s.upcase}").html_safe %>
+      </span></td>
+    </tr>
+    <tr>
+      <td>Donated Today / Average</td>
+      <% slowness = (100.0 * @music_data[:"today_#{network}_donated"] / @music_daily_data["#{network}_avg".to_sym]).round() rescue slowness = 100 %>
+      <td>
+        <span class="symolizable label label-<%= slowness < 100 ? "success" : "important" %>"
+          data-type="<%= network %>" data-cur="<%= network %>" data-value="<%= @music_data[:"today_#{network}_donated"] %>">
+        <%= dcp(@music_data[:"today_#{network}_donated"], network) %>
+        </span> / <span class="symolizable" data-type="<%= network %>" data-cur="<%= network %>" data-value="<%= @music_daily_data["#{network}_avg".to_sym] %>">
+        <%= dcp(@music_daily_data["#{network}_avg".to_sym], network) %>
+        </span>
+        <abbr title="<%= (slowness - 100).abs %>% <%= slowness < 100 ? "favorable" : "unfavorable" %> to donator against average day">[?]</abbr>
+    </td>
+    </tr>
+    <tr>
+      <td>AGS to Issue</td>
+      <td><%= dcp(MusicPresale.daily_issue(network), "note") %></td>
+    </tr>
+    <tr>
+      <th colspan="2">Summary</th>
+    </tr>
+    <tr>
+      <td>Total Donated</td>
+      <td><span class="symolizable" data-type="<%= network %>" data-cur="<%= network %>" data-value="<%= @music_daily_data["#{network}_total".to_sym] %>">
+        <%= dcp(@music_daily_data["#{network}_total".to_sym], network) %>
+      </span></td>
+    </tr>
+    <tr>
+      <td>Total AGS Rewarded</td>
+      <td><%= dcp(MusicPresale.issued(network), "note") %></td>
+    </tr>
+  </tbody>
+</table>

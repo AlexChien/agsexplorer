@@ -18,6 +18,20 @@ class HomeController < ApplicationController
       @summary[summary.network.to_sym] = {total: summary.total, count: summary.count}
     end if donation_finished?
 
+    @music_daily_data = MusicDonation.daily
+    @music_today = MusicDonation.by_date
+    @music_data = {
+      today_btc_donations: MusicDonation.btc.today_donations,
+      today_btc_donated:   MusicDonation.today_donated(:btc),
+      btc_current_price:   MusicDonation.current_price(:btc),
+    }
+
+    @music_summary = {}
+    MusicDonation.summary.all.each do |summary|
+      @music_summary[summary.network.to_sym] = {total: summary.total, count: summary.count}
+    end if donation_finished?
+
+
     render :index_after_donation_finished and return if donation_finished?
   end
 
