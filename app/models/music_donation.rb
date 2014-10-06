@@ -93,7 +93,7 @@ class MusicDonation < ActiveRecord::Base
     # url ||= "http://q39.qhor.net/ags/5/{network}.csv.txt?#{Time.now.to_i}".gsub('{network}', network)
 
     # local data vin0
-    url ||= File.join(Rails.root, 'data', "music.csv.txt".gsub('{network}', network))
+    url ||= File.join(Rails.root, 'data', "music.v2.csv.txt".gsub('{network}', network))
 
     puts "[#{Time.now.to_s(:db)}] Pre-sale: parse network #{url}"
 
