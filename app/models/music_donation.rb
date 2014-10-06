@@ -208,6 +208,13 @@ class MusicDonation < ActiveRecord::Base
     puts "[#{Time.now.to_s(:db)}] Donation calculate_music_reward #{date.to_s(:ymd)}"
 
     ns.each do |network|
+      # day1 should include all before jan 1st
+      if date < Date.parse('2014-10-07')
+        total_donations = self.send(network).where("time < '2014-10-07'")
+      else
+        total_donations = self.send(network).where('time >= ? and time < ?', date, date.tomorrow)
+      end
+
       total_donations = self.send(network).where('time >= ? and time < ?', date, date.tomorrow)
 
       total_amount = total_donations.sum(:amount)
