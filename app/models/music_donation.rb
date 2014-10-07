@@ -215,8 +215,6 @@ class MusicDonation < ActiveRecord::Base
         total_donations = self.send(network).where('time >= ? and time < ?', date, date.tomorrow)
       end
 
-      total_donations = self.send(network).where('time >= ? and time < ?', date, date.tomorrow)
-
       total_amount = total_donations.sum(:amount)
       return false if total_amount <= 0
       price =  MusicPresale::ISSURANCE[network.to_sym].to_f / total_amount
