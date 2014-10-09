@@ -67,6 +67,12 @@ class MusicDonation < ActiveRecord::Base
     data
   end
 
+  def self.music_presale_finished?(time)
+    Time.parse(time) > MusicPresale::END_DATE
+  rescue
+    true
+  end
+
   def self.parse_all
     parse('btc')
   end
@@ -136,6 +142,9 @@ class MusicDonation < ActiveRecord::Base
       if line =~ /^"{0,1}\d+/
         # height, time, addr, amount, total, rate = line.split(';') #v1
         height, time, txbits, addr, amount, total, rate, related_addrs = line.strip.gsub('"','').split(';')
+
+        # if donation comes in after ags is finished, skip it
+        next if music_presale_finished?(time)
 
         amount = (amount.to_f * 100_000_000).round #store in satoshi
         total = (total.to_f * 100_000_000).round #store in satoshi
