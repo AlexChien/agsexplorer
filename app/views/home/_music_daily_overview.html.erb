@@ -11,7 +11,7 @@
       </span></td>
     </tr>
     <tr>
-      <td>Donated Today / Average</td>
+      <td>Pre-saled Today / Average</td>
       <% slowness = (100.0 * @music_data[:"today_#{network}_donated"] / @music_daily_data["#{network}_avg".to_sym]).round() rescue slowness = 100 %>
       <td>
         <span class="symolizable label label-<%= slowness < 100 ? "success" : "important" %>"
@@ -24,20 +24,20 @@
     </td>
     </tr>
     <tr>
-      <td>AGS to Issue</td>
+      <td>NOTEs to Issue</td>
       <td><%= dcp(MusicPresale.daily_issue(network), "note") %></td>
     </tr>
     <tr>
       <th colspan="2">Summary</th>
     </tr>
     <tr>
-      <td>Total Donated</td>
+      <td>Total Pre-saled</td>
       <td><span class="symolizable" data-type="<%= network %>" data-cur="<%= network %>" data-value="<%= @music_daily_data["#{network}_total".to_sym] %>">
         <%= dcp(@music_daily_data["#{network}_total".to_sym], network) %>
       </span></td>
     </tr>
     <tr>
-      <td>Total AGS Rewarded</td>
+      <td>Total NOTEs Pre-saled</td>
       <td><%= dcp(MusicPresale.issued(network), "note") %></td>
     </tr>
   </tbody>

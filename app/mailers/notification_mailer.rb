@@ -16,6 +16,6 @@ class NotificationMailer < ActionMailer::Base
 
     @summary = summary
     @token = notification.token
-    mail to: notification.email, subject: "Bitshares AGS donation has finished successfully at UTC 2014-07-19 00:00:00."
+    mail to: notification.email, subject: "BitShares AGS donation has finished successfully at UTC 2014-07-19 00:00:00."
   end
 end

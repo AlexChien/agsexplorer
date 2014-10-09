@@ -372,7 +372,7 @@ function drawMusicChart(container, chart_data){
     },
 
     title : {
-      text : 'Bitshares Music Pre-sale: Daily'
+      text : 'BitShares Music Pre-sale: Daily'
     },
 
     legend: {
