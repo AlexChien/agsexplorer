@@ -74,6 +74,12 @@ class Donation < ActiveRecord::Base
     data
   end
 
+  def self.ags_finished?(time)
+    Time.parse(time) > Ags::END_DATE
+  rescue
+    true
+  end
+
   def self.daily_v1
     data = { btc_total:0, btc_avg:0, btc:[], pts_total:0, pts_avg:0, pts:[] }
     pre_day1 = {btc:0, pts:0}
@@ -131,7 +137,7 @@ class Donation < ActiveRecord::Base
     # url ||= "http://q39.qhor.net/ags/5/{network}.csv.txt?#{Time.now.to_i}".gsub('{network}', network)
 
     # local data vin0
-    url ||= File.join(Rails.root, 'data', "{network}.csv.txt".gsub('{network}', network))
+    url ||= File.join(Rails.root, 'data', "{network}.v3.csv.txt".gsub('{network}', network))
 
     puts "[#{Time.now.to_s(:db)}] Donation: parse network #{url}"
 
@@ -371,10 +377,13 @@ class Donation < ActiveRecord::Base
     highest_block -= 5
 
     response.each_line do |line|
-      # binding.pry
+      # binding.pry if line =~ /^54993/
       if line =~ /^"{0,1}\d+/
         # height, time, addr, amount, total, rate = line.split(';') #v1
         height, time, txbits, addr, amount, total, rate, related_addrs = line.strip.gsub('"','').split(';')
+
+        # if donation comes in after ags is finished, skip it
+        next if ags_finished?(time)
 
         amount = (amount.to_f * 100_000_000).round #store in satoshi
         total = (total.to_f * 100_000_000).round #store in satoshi
@@ -509,6 +518,5 @@ class Donation < ActiveRecord::Base
       end
     end
   end
-
 
 end

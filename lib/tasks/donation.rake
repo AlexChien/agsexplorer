@@ -44,4 +44,39 @@ namespace :donation do
     # re-calculate each donation's confirmed ags_amount
     Rake::Task["donation:calculate_ags_reward_till"].invoke
   end
+
+  desc "check ags address allocation against external quisquis data source"
+  task :check_with_quisquis, [:network] => :environment do |t, args|
+    network = args[:network] || 'btc'
+    quis_json = File.join(Rails.root, "data", "#{network.downcase}_ags-2014-07-18.json")
+
+    begin
+      data = JSON.parse(File.read(quis_json))
+    rescue
+      data = nil
+    end
+
+    puts "data source error" and return false if data.nil?
+
+    count = 0
+    data["balances"].each do |addr|
+      ags_total = Donation.where(network: network, address: addr.first).sum(:ags_amount)
+      diff = ags_total - addr.second
+      if diff > 5
+        puts "UNMATCH: #{addr.first}: #{ags_total} vs #{addr.second} (#{diff})"
+        count += 1
+      end
+    end
+
+    puts "#{count} unmatches found"
+
+    ags_addresses_total = Donation.where(network: network).select(:address).uniq.count
+    quis_addresses_total = data["balances"].size
+    if ags_addresses_total != quis_addresses_total
+      puts "total entry count unmatch: #{ags_addresses_total} vs #{quis_addresses_total}"
+
+      puts Donation.where(network: network).select(:address).uniq.map(&:address). - data["balances"].map(&:first).flatten
+    end
+
+  end
 end

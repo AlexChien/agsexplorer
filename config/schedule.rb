@@ -31,7 +31,7 @@ every 5.minutes do
 end
 
 # update past day's ags amount actually accquired
-every 1.day, :at => '8:01 am' do
+every 1.day, :at => '8:10 am' do
   # calculate each donation obtained ags reward for yesterday
   # re-calculate each wallet's total ags amount obtained from its all addresses
   # rake "donation:daily"
