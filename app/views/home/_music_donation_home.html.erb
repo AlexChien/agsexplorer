@@ -12,7 +12,26 @@ $(function(){
   });
   <% end %>
 
+  // chart data
+  $.get('/series/daily.json?networks=music', function (chart_data) {
+    // Today's ongoing data
+    chart_data["btc"].push({
+      color: '#ff0000',
+      x: Date.parse('<%= DateTime.now.utc.to_date.to_s %>'),
+      y: <%= cent2coin(@music_data[:"current_btc_donated"] || @music_data[:"today_btc_donated"]) %>
+    });
 
+    var sum_btc = 0;
+
+    for (var i = 0; i < chart_data["btc"].length; i++) {
+      d = chart_data["btc"][i];
+      sum_btc += (d instanceof Array) ? d[1] : d["y"];
+    }
+
+    chart_data["btc_avg"] = sum_btc / chart_data["btc"].length;
+
+    drawMusicChart('#music-chart-container', chart_data);
+  });
 });
 
 </script>
@@ -57,6 +76,12 @@ $(function(){
     <a href="#presale_music_btc" data-toggle="modal" class="btn btn-primary">Send fund to pre-sale address Now</a>
     </div>
   </div>
+</div>
+
+<h1>Charts </h1>
+<div class="row-fluid">
+  <div id="music-chart-container" class="span12"></div>
+  <p>Pre-sale made before 2014-10-06 are counted as day 1 (2014-10-06) pre-sale.</p>
 </div>
 
 

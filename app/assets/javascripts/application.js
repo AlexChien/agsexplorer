@@ -348,6 +348,96 @@ function drawChart(container, chart_data){
   });
 }
 
+function drawMusicChart(container, chart_data){
+  $(container).highcharts('StockChart', {
+    chart: {
+      type: 'column'
+    },
+
+    rangeSelector : {
+      buttons: [
+      {
+        type: 'week',
+        count: 2,
+        text: '2w'
+      }, {
+        type: 'month',
+        count: 1,
+        text: '1m'
+      }, {
+        type: 'all',
+        text: 'All'
+      }],
+      selected : 0
+    },
+
+    title : {
+      text : 'Bitshares Music Pre-sale: Daily'
+    },
+
+    legend: {
+      enabled: true
+    },
+
+    xAxis: {
+      type: 'datetime',
+      dateTimeLabelFormats: {
+        second: '%Y-%m-%d<br/>%H:%M:%S',
+        minute: '%Y-%m-%d<br/>%H:%M',
+        hour: '%Y-%m-%d<br/>%H:%M',
+        day: '%Y<br/>%m-%d',
+        week: '%Y<br/>%m-%d',
+        month: '%Y-%m',
+        year: '%Y'
+      }
+    },
+
+    yAxis: [{
+        title: {
+            text: 'BTC'
+        },
+        plotLines: [{
+          value: chart_data["btc_avg"],
+          width: 1,
+          color: ags.color_btc,
+          dashStyle: 'dash',
+          label: {
+            text: 'BTC Avg.',
+            align: 'left',
+            x: 20
+          }
+        }],
+        opposite: false
+    }],
+
+    plotOptions: {
+      series: {
+        cursor: 'pointer',
+        point: {
+          events: {
+            click: function(){
+              ts = this.category;
+              date = new Date(ts);
+              window.location = '/by_date/' + (date.getUTCFullYear()+'-'+(date.getUTCMonth()+1)+'-'+date.getUTCDate())
+            }
+          }
+        }
+      }
+    },
+
+    series : [{
+      name : 'BTC',
+      yAxis: 0,
+      data : chart_data['btc'],
+      color: ags.color_btc
+    }],
+
+    tooltip: {
+      valueDecimals: 8
+    }
+  });
+}
+
 function dd(d){
   return d > 9 ? d : "0"+d;
 }
