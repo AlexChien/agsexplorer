@@ -1,7 +1,8 @@
 class BalancesController < ApplicationController
   def show
     @address = params[:address].try(:strip)
-    @view = params[:view] || "merged"
+    # @view = params[:view] || "merged"
+    @view = "merged"
 
     # try to find donating address
     if (@donation = Donation.where(address: @address).limit(1).first).nil?
@@ -14,6 +15,7 @@ class BalancesController < ApplicationController
       @wallet = Donation.where(address: @address).limit(1).first.try(:wallet)
     end
 
+    # find a wallet
     unless @wallet.nil?
       # donation addresses
       @addresses = Donation.where(wallet_id: @wallet.try(:wallet_id)).pluck("distinct address")
@@ -22,7 +24,7 @@ class BalancesController < ApplicationController
       @related_addresses = @wallet.addresses.map(&:address)
 
       # decide view
-      @donations = Donation.where(address: @view == 'seperate' ? @address : @addresses).order('time desc') unless @addresses.blank?
+      @donations = Donation.where(address: seperate_view? ? @address : @addresses).order('time desc') unless @addresses.blank?
 
       @network = @donations.try(:first).try(:network) || :btc
       @avg_donation_amount = Donation.avg_donation(@network.to_sym)
@@ -35,13 +37,13 @@ class BalancesController < ApplicationController
         today = Time.zone.now.to_date.beginning_of_day
 
         @total_ags_confirmed = @donations.select{ |d| d.time < today }.map(&:ags_amount).sum
-        @total_ags_pending = @donations.select{ |d| d.time >= today }.map(&:amount).sum.to_f / @today_total_donated * Ags.daily_issue(@network.to_sym)
+        # @total_ags_pending = @donations.select{ |d| d.time >= today }.map(&:amount).sum.to_f / @today_total_donated * Ags.daily_issue(@network.to_sym)
       end
     else
       # non-ags address
       @related_addresses = [@address]
       @addresses = []
-      @total_donated = @total_ags_pending = @total_ags_confirmed = 0
+      @total_donated = @total_ags_confirmed = 0
       @network = @address =~ /^P/ ? :pts : :btc
     end
 
@@ -71,5 +73,10 @@ class BalancesController < ApplicationController
       format.json { render json: @donations.as_json(only: [:address, :ags_amount]) }
       format.xml { render xml: @donations.to_xml(only: [:address, :ags_amount]) }
     end
+  end
+
+  protected
+  def seperate_view?
+    @view == "seperate"
   end
 end

@@ -1,6 +1,6 @@
 <% content_for :footer_js do -%>
 <script type="text/javascript" charset="utf-8">
-  <% if !@donations.blank? && @donations.size > 1 %>
+  <% if !@donations.blank? && @donations.size > 0 %>
   var chart_data = <%= @donations.reverse.to_json(only: [:time, :amount]).html_safe %>;
   var span = chart_data.length;
 
@@ -17,7 +17,7 @@
   // current price
   ags['price_'+c] = <%= @avg_donation_amount %>/100000000;
 
-
+  // draw charts
   $('#chart-container').highcharts({
     chart: {
       zoomType: 'xy'
@@ -76,9 +76,19 @@
   <% end %>
 
   // fetch BTSX snapshot balance
-  var snapshots = ['btsx','LTS','DNS'];
+  var snapshots = ['BTSX','LTS','DNS'];
   var address_spans = $('.donator-address');
   var cur_address = $('#current_address').data('address');
+
+  // highlight current address
+  $( '.addr-' + cur_address ).addClass('current-address');
+
+  // grey out non-ags-donator addresses
+  var non_donator_addresses = <%= (@related_addresses - @addresses).to_json.html_safe %>;
+  for (var i = 0; i < non_donator_addresses.length; i++)
+    $( '.addr-' + non_donator_addresses[i] + ' a').addClass('muted');
+
+  // fetch dac data
   var addresses = $.map(address_spans, function(n,i){ return $(n).attr('data');});
   if (addresses.length > 0) {
     for (var i = 0; i < snapshots.length; i++) {
@@ -94,18 +104,24 @@
             if (d.address == cur_address)
               current_address_balance = d.amount;
 
-            // update each address's bts balance
-            $('#addr_'+d.address).append($(' <span class="label label-info">'+display_currency(d.amount/100000000,d.dac)+'</span>').slideDown());
-
+            // update each address's dac balance
+            $( '.addr-' + d.address + ' .dac.dac-' + d.dac.toLowerCase() )
+              .html( display_currency(d.amount/100000000,d.dac) );
           }
 
           if (total > 0) {
-            // update total bts balance
+            // update total ags balance
+            // /*
             <% if @view == "merged"  %>
-              $('#ags_amount_total').append(' <span class="label label-info">'+display_currency(total/100000000,d.dac)+'</span>');
+              $('#ags_amount_total').append(display_currency(total/100000000,d.dac));
             <% else %>
-              $('#ags_amount_total').append(' <span class="label label-info">'+display_currency(current_address_balance/100000000,d.dac)+'</span>');
+              $('#ags_amount_total').append(display_currency(current_address_balance/100000000,d.dac));
             <% end %>
+            // */
+
+            // update total for dac
+            $( '.sub-total .dac.dac-'+d.dac.toLowerCase() )
+              .html( ' <span class="label label-info">' + display_currency(total/100000000,d.dac) + '</span>' );
 
             // show/hide bts notice
             $('.bts-notice').slideDown();
@@ -114,77 +130,136 @@
       });
     }
   }
+
+  // /*
+  // calculate music ags reward total
+  // should be removed when snap shots generated
+  var dac_music_rewarded_subtotal = 0;
+  $('.addr .dac.dac-music-rewarded').each(function(){
+      dac_music_rewarded_subtotal += parseInt($(this).data('val'));
+  });
+
+  $('.sub-total .dac.dac-music-rewarded').html(
+    display_currency(' <span class="label label-info">' + dac_music_rewarded_subtotal/100000000, 'note') + '</span'
+  );
+  //*/
 </script>
 <% end -%>
 
 <h1>Balance</h1>
 <h4 id="current_address" data-address="<%= @address %>">
   <%= @address %>
-  <% if @addresses && @addresses.size > 1 %>
+
+<!--
+  <% if false && @addresses && @addresses.size > 1 %>
   <small class="pull-right">
     <%= link_to "Change to Seperate View", balance_path(@address, view: 'seperate') if @view == "merged" %>
     <%= link_to "Change to Merged View", balance_path(@address, view: 'merged') if @view == "seperate" %>
   </small>
   <% end %>
+-->
 </h4>
 
 <div class="row-fluid">
-  <div class="span7">
+  <div class="span12">
     <% if @total_donated %>
-    <table class="table table-striped table-condensed table-hover" data-network="<%= @network %>">
+    <table class="table table-striped table-condensed table-hover balance-table" data-network="<%= @network %>">
+      <thead>
+        <tr>
+          <th rowspan="2" class="text-left">Address</th>
+          <th colspan="2">AngelShares</th>
+          <th rowspan="2">BitSharesX</th>
+          <th rowspan="2">LottoShares</th>
+          <th rowspan="2">BitShares DNS</th>
+          <th colspan="2">BitShares Music</th>
+        </tr>
+        <tr>
+          <th>Donated</th>
+          <th>Rewarded</th>
+          <th>AGS Reward</th>
+          <th>Pre-sale</th>
+        </tr>
+      </thead>
+
       <tbody>
-        <tr>
-          <td>Total Donated</td>
-          <td><%= dcp(@total_donated, @network) %></td>
-        </tr>
-        <tr>
-          <td>AGS Amount (Confirmed)</td>
-          <td id="ags_amount_total" class="allocation-group"><span class="label label-success"><%= dcp(@total_ags_confirmed, :ags) %></span></td>
-        </tr>
-        <tr>
-          <td>AGS Amount (Unconfirmed)</td>
-          <td><span class="label label-warning"><%= dcp(@total_ags_pending, :ags) %></span></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>Related Addresses</td>
-          <td>
-            <% #allow non-ags donator address to lookup bts balance %>
-            <% if @addresses.empty? %>
-              <% @related_addresses.each do |address| %>
-              <div id='addr_<%= address %>' class="allocation-group">
+
+        <% #allow non-ags donator address to lookup bts balance %>
+        <% if @addresses.empty? %>
+          <% @related_addresses.each do |address| %>
+            <tr class="addr addr-<%= address %>">
+              <td>
                 <span class='label donator-address' data='<%= address %>'><%= address %></span>
-              </div>
-              <% end %>
-            <% else %>
-              <% #ags donator address %>
-              <% @related_addresses.each do |address| %>
-              <div id='addr_<%= address %>' class="allocation-group">
+              </td>
+              <td class="dac dac-ags-donated">...</td>
+              <td class="dac dac-ags-rewarded">...</td>
+              <td class="dac dac-btsx">...</td>
+              <td class="dac dac-lts">...</td>
+              <td class="dac dac-dns">...</td>
+              <td class="dac dac-music-rewarded">...</td>
+              <td class="dac dac-music-presale">...</td>
+            </tr>
+          <% end %>
+
+        <% else %>
+
+          <% #ags donator address %>
+          <% @related_addresses.each do |address| %>
+            <tr class="addr addr-<%= address %>">
+              <td>
                 <%= link_to balance_path(address, view: @view) do
-                @addresses.include?(address) ? "<span class='label label-success donator-address' data='#{address}'>#{address}</span>".html_safe : address
-                end%>
-              </div>
-              <% end %>
-            <% end %>
+                  @addresses.include?(address) ? "<span class='label label-success donator-address' data='#{address}'>#{address}</span>".html_safe : address
+                end %>
+              </td>
+              <td class="dac dac-ags-donated"><%= dcp(donation_amount_by_address(@donations, address), @network) %></td>
+              <td class="dac dac-ags-rewarded"><%= dcp(ags_amount_by_address(@donations, address), :ags) %></td>
+              <td class="dac dac-btsx">...</td>
+              <td class="dac dac-lts">...</td>
+              <td class="dac dac-dns">...</td>
+              <td class="dac dac-music-rewarded"
+                  data-val='<%= music_ags_reward_amount = ags_amount_by_address(@donations, address) * 262.5 %>'>
+                <%= dcp(music_ags_reward_amount, :note) %>
+              </td>
+              <td class="dac dac-music-presale">coming</td>
+            </tr>
+          <% end %>
+
+        <% end %>
+
+
+        <!--sub-total -->
+        <tr class="sub-total" style="border-top:2px solid #aaa;">
+          <td><strong>Total</strong></td>
+          <td class="dac dac-ags-donated"><%= dcp(@total_donated, @network) %></td>
+          <td class="dac dac-ags-rewarded">
+            <span class="label label-success"><%= dcp(@total_ags_confirmed, :ags) %></span>
           </td>
+          <td class="dac dac-btsx">...</td>
+          <td class="dac dac-lts">...</td>
+          <td class="dac dac-dns">...</td>
+          <td class="dac dac-music-rewarded">...</td>
+          <td class="dac dac-music-presale">coming</td>
         </tr>
+
+
       </tbody>
     </table>
-    <p><span class="label label-success">Highlighted</span> addresses are recognized as DONATOR ADDRESSES.  These are the addresses that will be embedded within Genesis Blocks of future Invictus DAC chains. <a href="/ags101/algorithm" target="_blank">Check out more here</a>.</p>
 
-    <p><span class="label label-warning">Unconfirmed</span> AGS amount is about your donation made today.  AGS amount rewared is settled each day, until then the amount is about to change while total donation keeps increasing.</p>
 
-    <p class="bts-notice hide"><span class="label label-info">BTS Highlighted</span> are BTS initial balance of your address after Feb 28, 2014 snapshot.  BTS balance originates from AGS donations and PTS holdings.  Data extracted from <a href="https://bitsharestalk.org/index.php?topic=3330.0" target="_blank">here</a>. (BTS reward for Keyhotee Founder keys are not included yet.)</p>
 
-    <p><span class="label">Non-AGS Donator Address</span> is shown here for BTS lookup.  Since it has no AGS donation records, AGS amount is always zero.</p>
+    <p><span class="label label-success">Highlighted</span> addresses are recognized as AGS DONATOR ADDRESSES.  These are the addresses that will be embedded within Genesis Blocks of future Invictus DAC chains. <a href="/ags101/algorithm" target="_blank">Check out more here</a>.</p>
+
+    <p><span class="label label-warning">Unconfirmed</span> reward amount is supposed to change because total donation/pre-sale is calculated daily.</p>
+
+    <p class="bts-notice hide"><span class="label label-info">DAC Rewarded</span> Each DAC has different strategies for shares allocation in genesis block.  These amount are extracted from DAC final snapshot.</p>
+
+    <p><span class="muted">Non-AGS Donator Addresses</span> are the change addresses detected from your donate transactions.</p>
 
     <% else %>
     <p>no donations found</p>
     <% end %>
   </div>
+
+  <% if false %>
   <div class="span5" style="text-align:right;">
     <% if Rails.env.production? %>
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -198,16 +273,17 @@
     </script>
     <% end %>
   </div>
+  <% end %>
 </div>
 
-<% if !@donations.blank? && @donations.size > 1 %>
+<% if !@donations.blank? && @donations.size > 0 %>
 <h1>Charts </h1>
 <div class="row-fluid">
   <div id="chart-container" class="span12"></div>
 </div>
 <% end %>
 
-<h1>Donation History</h1>
+<h1>AngelShares Donation History</h1>
 <div class="row-fluid">
   <% unless @donations.blank? %>
   <%= render :partial => 'home/today_donation_table_with_ags',

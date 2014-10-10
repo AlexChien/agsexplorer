@@ -44,3 +44,10 @@ small.num { font-size:10px; opacity:0.5; }
   span { display:block; width:auto; float:left; clear:left; margin-bottom:5px;}
   &:first-child { margin-top:1em; }
 }
+
+.table.balance-table {
+  td.dac { text-align:right; }
+  th { text-align:center; }
+  th.text-left { text-align:left; }
+  tr.current-address td { background-color:lightyellow; }
+}
