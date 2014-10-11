@@ -172,11 +172,12 @@ function changeSymbol(){
 
 function display_currency(val,new_cur){
   parts = val.toString().split('.');
-  return parts[0].replace(comify_re, "$1,") + '<small class="num">.'+max8(parts[1])+' '+String(new_cur).split('_').join(' / ').toUpperCase()+'</small>'
+  return parts[0].replace(comify_re, "$1,") + '<small class="num">.'+max_digit(parts[1])+' '+String(new_cur).split('_').join(' / ').toUpperCase()+'</small>'
 }
 
-function max8(d){
-  return String(d).substring(0,8);
+function max_digit(d, precision){
+  var p = precision || 2;
+  return String(d).substring(0,p);
 }
 
 function calculateEfficiency(data){

@@ -87,12 +87,12 @@ module ApplicationHelper
     cent / Ags::COIN.to_f
   end
 
-  def small(num, symbol)
+  def small(num, symbol, precision = 2)
     parts = num.to_s.split('.')
     if parts.size == 2
-      "#{number_with_delimiter(parts.first.to_i)}<small class='num'>.#{parts.last.first(8)} #{symbol}</small>"
+      "#{number_with_delimiter(parts.first.to_i)}<small class='num'>.#{parts.last.first(precision)} #{symbol}</small>"
     else
-      "#{number_with_delimiter(parts.first.to_i)}<small class='num'>.0 #{symbol}</small>"
+      "#{number_with_delimiter(parts.first.to_i)}<small class='num'>.00 #{symbol}</small>"
     end
   end
 
