@@ -25,6 +25,7 @@ Agsexplorer::Application.routes.draw do
 
   # data series
   get "series/daily" => 'home#daily_series'
+  get "ticker/:campaign/:network" => 'home#ticker'
 
   # ags101
   get 'ags101(/:panel)' => 'home#ags101'

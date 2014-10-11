@@ -477,6 +477,40 @@ class Donation < ActiveRecord::Base
     end
   end
 
+
+  def self.ticker(network = nil, start_date = nil, end_date = nil)
+    networks = %w(btc pts)
+    if !network.nil? && network.is_a?(String)
+      network = [network]
+      networks = networks & network.to_a.collect{ |n| n.downcase.to_s }
+    end
+
+    data = {}
+
+    networks.each do |network|
+      # initial data strucutre
+      data = {}
+      data[:"#{network}_total"] = 0
+      data[:"#{network}_avg"] = 0
+      data[:"#{network}"] = []
+
+      # day 1
+      day1_amount = self.btc.where('time < ?', '2014-01-02 00:00:00 UTC').sum(:amount)
+
+      # rest of the days
+      data[network.to_sym] =
+        self.btc.where('time > ?', '2014-01-02').group("date(time)").sum(:amount).to_a.unshift(['2014-01-01', day1_amount]).sort
+          .collect{ |t,v|
+            data[:"#{network}_total"] += v
+            [DateTime.parse(t).to_i, (v / Ags::COIN.to_f).round(8)]
+          }
+
+      data[:"#{network}_avg"] = data[:"#{network}_total"] / data[network.to_sym].size
+    end
+
+    data
+  end
+
   # baseline data
   # {"BTC":[
   # [2013-01-01: 61.861694286294],

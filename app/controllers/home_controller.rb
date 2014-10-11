@@ -83,4 +83,23 @@ class HomeController < ApplicationController
       format.xml { render xml: @daily_data.to_xml(only: [:date, :amount]) }
     end
   end
+
+  def ticker(campaign = nil, network = nil)
+    campaign ||= params[:campaign].try(:downcase) || 'music'
+    network ||= campaign == 'music' ? 'btc' : (params[:network] || 'btc')
+
+    if campaign == 'music'
+      @daily_data = MusicDonation.ticker(network)
+    elsif campaign == 'ags'
+      @daily_data = Donation.ticker(network)
+    else
+      render :text => "" and return
+    end
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @daily_data.as_json }
+      format.xml { render xml: @daily_data.to_xml(only: [:date, :amount]) }
+    end
+  end
 end

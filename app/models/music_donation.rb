@@ -238,6 +238,29 @@ class MusicDonation < ActiveRecord::Base
     end
   end
 
+  def self.ticker(network = nil, start_date = nil, end_date = nil)
+    # initial data strucutre
+    data = {}
+    data[:"#{network}_total"] = 0
+    data[:"#{network}_avg"] = 0
+    data[:"#{network}"] = []
+
+    # day 1
+    day1_amount = self.btc.where('time < ?', '2014-10-07 00:00:00 UTC').sum(:amount)
+
+    # rest of the days
+    data[network.to_sym] =
+      self.btc.where('time > ?', '2014-10-07').group("date(time)").sum(:amount).to_a.unshift(['2014-10-06', day1_amount]).sort
+        .collect{ |t,v|
+          data[:"#{network}_total"] += v
+          [DateTime.parse(t).to_i, (v / MusicPresale::COIN.to_f).round(8)]
+        }
+
+    data[:"#{network}_avg"] = data[:"#{network}_total"] / data[network.to_sym].size
+
+    data
+  end
+
   # baseline data
   # {"BTC":[
   # [2013-01-01: 61.861694286294],

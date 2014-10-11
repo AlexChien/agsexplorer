@@ -42,4 +42,5 @@ class Daily < ActiveRecord::Base
 
     data
   end
+
 end
