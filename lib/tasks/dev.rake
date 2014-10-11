@@ -48,5 +48,29 @@ namespace :dev do
         end
       end
     end
+
+    namespace :music do
+      # snapshot taken on 2014-10-10, pts holder will be granted 35% of total supply (1,500,000,000)
+      task :import_genesis_pts => :environment do
+        genesis_file = File.join(Rails.root, 'data', 'pts-2014-10-09.json')
+        dac_name = 'MUSIC-PTS'
+
+        # wipe out old entries
+        DacGenesis.where(dac: dac_name).delete_all
+
+        g = JSON.parse(File.read(genesis_file))
+        total_supply = g["balances"].inject(0){ |m,n| m + n.second }
+        rate = 525_000_000.0 / total_supply
+        g["balances"].each do |r|
+          p "#{r.first}: #{r.second} - #{(r.second.to_f * MusicPresale::COIN * rate).to_i}"
+          DacGenesis.create(dac: dac_name,
+                            address: r.first,
+                            amount: (r.second.to_f * MusicPresale::COIN * rate).to_i)
+        end
+        p total_supply
+        p rate
+      end
+    end
+
   end
 end

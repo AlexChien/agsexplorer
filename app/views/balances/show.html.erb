@@ -76,7 +76,15 @@
   <% end %>
 
   // fetch BTSX snapshot balance
-  var snapshots = ['BTSX','LTS','DNS'];
+  var dacs = {
+    'BTSX': 'BTSX',
+    'LTS': 'LTS',
+    'VOTE': 'VOTE',
+    'DNS': 'DNS',
+    'MUSIC': 'NOTE',
+    'MUSIC-PTS': 'NOTE'
+  }
+  var snapshots = Object.keys(dacs);
   var address_spans = $('.donator-address');
   var cur_address = $('#current_address').data('address');
 
@@ -95,33 +103,32 @@
       var dac = snapshots[i];
       $.getJSON('/genesis/'+dac+'/balance/'+addresses.join('_')+'.json', {}, function(data){
         if (data) {
-          var total = 0;
-          var current_address_balance = 0;
+          var total = 0,
+              current_address_balance = 0,
+              unit = '';
           for (var i = 0; i < data.length; i++) {
             var d = data[i];
+            unit = dacs[d.dac];
             total += d.amount;
+
+
             // current address balance
             if (d.address == cur_address)
               current_address_balance = d.amount;
 
             // update each address's dac balance
-            $( '.addr-' + d.address + ' .dac.dac-' + d.dac.toLowerCase() )
-              .html( display_currency(d.amount/100000000,d.dac) );
+            var tr = '.addr-' + d.address + ' .dac.dac-' + d.dac.toLowerCase();
+            if (d.dac == 'MUSIC') tr += '-presale';
+
+            $( tr ).html( display_currency( d.amount/100000000, unit ) );
           }
 
           if (total > 0) {
-            // update total ags balance
-            // /*
-            <% if @view == "merged"  %>
-              $('#ags_amount_total').append(display_currency(total/100000000,d.dac));
-            <% else %>
-              $('#ags_amount_total').append(display_currency(current_address_balance/100000000,d.dac));
-            <% end %>
-            // */
-
             // update total for dac
-            $( '.sub-total .dac.dac-'+d.dac.toLowerCase() )
-              .html( ' <span class="label label-info">' + display_currency(total/100000000,d.dac) + '</span>' );
+            var total_tr = '.sub-total .dac.dac-'+d.dac.toLowerCase();
+            if (d.dac == 'MUSIC') total_tr += '-presale';
+            $( total_tr )
+              .html( ' <span class="label label-info">' + display_currency(total/100000000, unit) + '</span>' );
 
             // show/hide bts notice
             $('.bts-notice').slideDown();
@@ -135,13 +142,15 @@
   // calculate music ags reward total
   // should be removed when snap shots generated
   var dac_music_rewarded_subtotal = 0;
-  $('.addr .dac.dac-music-rewarded').each(function(){
+  $('.addr .dac.dac-music-ags').each(function(){
       dac_music_rewarded_subtotal += parseInt($(this).data('val'));
   });
 
-  $('.sub-total .dac.dac-music-rewarded').html(
-    display_currency(' <span class="label label-info">' + dac_music_rewarded_subtotal/100000000, 'note') + '</span'
-  );
+  if (dac_music_rewarded_subtotal > 0){
+    $('.sub-total .dac.dac-music-ags').html(
+      display_currency(' <span class="label label-info">' + dac_music_rewarded_subtotal/100000000, 'note') + '</span'
+    );
+  }
   //*/
 </script>
 <% end -%>
@@ -162,7 +171,7 @@
 
 <div class="row-fluid">
   <div class="span12">
-    <% if @total_donated %>
+    <% if true || @total_donated %>
     <table class="table table-striped table-condensed table-hover balance-table" data-network="<%= @network %>">
       <thead>
         <tr>
@@ -171,12 +180,13 @@
           <th rowspan="2">BitSharesX</th>
           <th rowspan="2">LottoShares</th>
           <th rowspan="2">BitShares DNS</th>
-          <th colspan="2">BitShares Music</th>
+          <th colspan="3">BitShares Music</th>
         </tr>
         <tr>
           <th>Donated</th>
           <th>Rewarded</th>
-          <th>AGS Reward</th>
+          <th>AGS</th>
+          <th>PTS</th>
           <th>Pre-sale</th>
         </tr>
       </thead>
@@ -195,7 +205,8 @@
               <td class="dac dac-btsx">...</td>
               <td class="dac dac-lts">...</td>
               <td class="dac dac-dns">...</td>
-              <td class="dac dac-music-rewarded">...</td>
+              <td class="dac dac-music-ags">...</td>
+              <td class="dac dac-music-pts">...</td>
               <td class="dac dac-music-presale">...</td>
             </tr>
           <% end %>
@@ -215,11 +226,12 @@
               <td class="dac dac-btsx">...</td>
               <td class="dac dac-lts">...</td>
               <td class="dac dac-dns">...</td>
-              <td class="dac dac-music-rewarded"
+              <td class="dac dac-music-ags"
                   data-val='<%= music_ags_reward_amount = ags_amount_by_address(@donations, address) * 262.5 %>'>
                 <%= dcp(music_ags_reward_amount, :note) %>
               </td>
-              <td class="dac dac-music-presale">coming</td>
+              <td class="dac dac-music-pts">...</td>
+              <td class="dac dac-music-presale">...</td>
             </tr>
           <% end %>
 
@@ -236,8 +248,9 @@
           <td class="dac dac-btsx">...</td>
           <td class="dac dac-lts">...</td>
           <td class="dac dac-dns">...</td>
-          <td class="dac dac-music-rewarded">...</td>
-          <td class="dac dac-music-presale">coming</td>
+          <td class="dac dac-music-ags">...</td>
+          <td class="dac dac-music-pts">...</td>
+          <td class="dac dac-music-presale">...</td>
         </tr>
 
 
@@ -252,7 +265,7 @@
 
     <p class="bts-notice hide"><span class="label label-info">DAC Rewarded</span> Each DAC has different strategies for shares allocation in genesis block.  These amount are extracted from DAC final snapshot.</p>
 
-    <p><span class="muted">Non-AGS Donator Addresses</span> are the change addresses detected from your donate transactions.</p>
+    <!-- <p><span class="muted">Non-AGS Donator Addresses</span> are the change addresses detected from your donate transactions.</p> -->
 
     <% else %>
     <p>no donations found</p>

@@ -15,13 +15,22 @@ class BalancesController < ApplicationController
       @wallet = Donation.where(address: @address).limit(1).first.try(:wallet)
     end
 
+    # add music donation address
+    if (@music_donation = MusicDonation.where(address: @address).limit(1).first).nil?
+      @music_wallet = WalletAddress.where(address: @address).first.try(:wallet)
+    else
+      @music_wallet = MusicDonation.where(address: @address).limit(1).first.try(:wallet)
+    end
+
+    @wallets = [@wallet, @music_wallet].uniq.compact
+
     # find a wallet
     unless @wallet.nil?
       # donation addresses
-      @addresses = Donation.where(wallet_id: @wallet.try(:wallet_id)).pluck("distinct address")
+      @addresses = Donation.where(wallet_id: @wallets.map(&:wallet_id)).pluck("distinct address")
 
       # related_addresses
-      @related_addresses = @wallet.addresses.map(&:address)
+      @related_addresses = @wallets.map(&:addresses).flatten.map(&:address)
 
       # decide view
       @donations = Donation.where(address: seperate_view? ? @address : @addresses).order('time desc') unless @addresses.blank?
