@@ -68,26 +68,26 @@ module ApplicationHelper
   end
 
   # amount in satoshi unit
-  def display_currency(amount = 0, currency = "bitcoin", pretty = false)
+  def display_currency(amount = 0, currency = "bitcoin", pretty = false, precision = 8)
     amount = 0 if amount.nil?
     symbol = network_short_name(currency)
     if pretty
-      small(amount / Bitcoin::COIN.to_f, symbol)
+      small(amount / Bitcoin::COIN.to_f, symbol, precision)
     else
       amount == 0 ? "0 #{symbol}" : "#{amount / Bitcoin::COIN.to_f} #{symbol}"
     end
   end
 
   # display_currency with pretty
-  def dcp(amount, currency = "bitcoin")
-    display_currency(amount, currency, true).html_safe
+  def dcp(amount, currency = "bitcoin", precision = 8)
+    display_currency(amount, currency, true, precision).html_safe
   end
 
   def cent2coin(cent)
     cent / Ags::COIN.to_f
   end
 
-  def small(num, symbol, precision = 2)
+  def small(num, symbol, precision = 8)
     parts = num.to_s.split('.')
     if parts.size == 2
       "#{number_with_delimiter(parts.first.to_i)}<small class='num'>.#{parts.last.first(precision)} #{symbol}</small>"

@@ -120,7 +120,7 @@
             var tr = '.addr-' + d.address + ' .dac.dac-' + d.dac.toLowerCase();
             if (d.dac == 'MUSIC') tr += '-presale';
 
-            $( tr ).html( display_currency( d.amount/100000000, unit ) );
+            $( tr ).html( display_currency( d.amount/100000000, unit, 2 ) );
           }
 
           if (total > 0) {
@@ -128,7 +128,7 @@
             var total_tr = '.sub-total .dac.dac-'+d.dac.toLowerCase();
             if (d.dac == 'MUSIC') total_tr += '-presale';
             $( total_tr )
-              .html( ' <span class="label label-info">' + display_currency(total/100000000, unit) + '</span>' );
+              .html( ' <span class="label label-info">' + display_currency(total/100000000, unit, 2) + '</span>' );
 
             // show/hide bts notice
             $('.bts-notice').slideDown();
@@ -148,7 +148,7 @@
 
   if (dac_music_rewarded_subtotal > 0){
     $('.sub-total .dac.dac-music-ags').html(
-      display_currency(' <span class="label label-info">' + dac_music_rewarded_subtotal/100000000, 'note') + '</span'
+      display_currency(' <span class="label label-info">' + dac_music_rewarded_subtotal/100000000, 'note', 2) + '</span'
     );
   }
   //*/
@@ -221,14 +221,14 @@
                   @addresses.include?(address) ? "<span class='label label-success donator-address' data='#{address}'>#{address}</span>".html_safe : address
                 end %>
               </td>
-              <td class="dac dac-ags-donated"><%= dcp(donation_amount_by_address(@donations, address), @network) %></td>
-              <td class="dac dac-ags-rewarded"><%= dcp(ags_amount_by_address(@donations, address), :ags) %></td>
+              <td class="dac dac-ags-donated"><%= dcp(donation_amount_by_address(@donations, address), @network, 2) %></td>
+              <td class="dac dac-ags-rewarded"><%= dcp(ags_amount_by_address(@donations, address), :ags, 2) %></td>
               <td class="dac dac-btsx">...</td>
               <td class="dac dac-lts">...</td>
               <td class="dac dac-dns">...</td>
               <td class="dac dac-music-ags"
                   data-val='<%= music_ags_reward_amount = ags_amount_by_address(@donations, address) * 262.5 %>'>
-                <%= dcp(music_ags_reward_amount, :note) %>
+                <%= dcp(music_ags_reward_amount, :note, 2) %>
               </td>
               <td class="dac dac-music-pts">...</td>
               <td class="dac dac-music-presale">...</td>
@@ -241,9 +241,9 @@
         <!--sub-total -->
         <tr class="sub-total" style="border-top:2px solid #aaa;">
           <td><strong>Total</strong></td>
-          <td class="dac dac-ags-donated"><%= dcp(@total_donated, @network) %></td>
+          <td class="dac dac-ags-donated"><%= dcp(@total_donated, @network, 2) %></td>
           <td class="dac dac-ags-rewarded">
-            <span class="label label-success"><%= dcp(@total_ags_confirmed, :ags) %></span>
+            <span class="label label-success"><%= dcp(@total_ags_confirmed, :ags, 2) %></span>
           </td>
           <td class="dac dac-btsx">...</td>
           <td class="dac dac-lts">...</td>

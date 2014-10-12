@@ -170,13 +170,13 @@ function changeSymbol(){
   });
 }
 
-function display_currency(val,new_cur){
+function display_currency(val,new_cur,precision){
   parts = val.toString().split('.');
-  return parts[0].replace(comify_re, "$1,") + '<small class="num">.'+max_digit(parts[1])+' '+String(new_cur).split('_').join(' / ').toUpperCase()+'</small>'
+  return parts[0].replace(comify_re, "$1,") + '<small class="num">.'+max_digit(parts[1],precision)+' '+String(new_cur).split('_').join(' / ').toUpperCase()+'</small>'
 }
 
 function max_digit(d, precision){
-  var p = precision || 2;
+  var p = precision || 8;
   return String(d).substring(0,p);
 }
 
