@@ -110,7 +110,7 @@ module ApplicationHelper
   end
 
   def donation_with_related_addrs(donation)
-    output = donation.address
+    output = link_to(donation.address, balance_path(donation.address))
     if donation.related_addresses.size > 0
       output = "#{output}<ul class=''>"
       donation.related_addresses.each do |addr|

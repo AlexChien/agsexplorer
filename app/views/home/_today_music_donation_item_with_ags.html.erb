@@ -1,0 +1,22 @@
+<% unless donation.confirmed? %>
+<% rate = MusicPresale.daily_issue(network.to_sym).to_f * MusicPresale::COIN / @music_data[:today_btc_donated] %>
+<tr>
+  <td><%= display_time donation.time %></td>
+  <td><%= donation_with_related_addrs(donation).html_safe %></td>
+  <td><%= link_to 'tx', external_tx_path(donation.txbits, network), :target => "_blank" %></td>
+  <td><%= dcp(donation.amount, network) %></td>
+  <td><%= dcp(@music_data[:today_btc_donated], network) %></td>
+  <td><%= dcp(rate, network).gsub(network.to_s.upcase, "NOTE / #{network.to_s.upcase}").html_safe %></td>
+  <td><span class="label label-warning"><%= dcp(donation.amount * rate / MusicPresale::COIN, :note) %></span> ?</td>
+</tr>
+<% else %>
+<tr>
+  <td><%= display_time donation.time %></td>
+  <td><%= donation_with_related_addrs(donation).html_safe %></td>
+  <td><%= link_to 'tx', external_tx_path(donation.txbits, network), :target => "_blank" %></td>
+  <td><%= dcp(donation.amount, network) %></td>
+  <td><%= dcp(donation.today_total_donation, network) %></td>
+  <td><%= dcp(donation.today_price, network).gsub(network.to_s.upcase, "note / #{network.to_s.upcase}").html_safe %></td>
+  <td><span class="label label-success"><%= dcp(donation.ags_amount, :note) %></span></td>
+</tr>
+<% end %>

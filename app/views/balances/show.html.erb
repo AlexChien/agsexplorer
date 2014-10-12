@@ -121,6 +121,12 @@
             if (d.dac == 'MUSIC') tr += '-presale';
 
             $( tr ).html( display_currency( d.amount/100000000, unit, 2 ) );
+
+            if (d.dac == 'MUSIC' && d.unconfirmed)
+              $( tr ).append( '<br /><span class="label label-warning">'
+                              + display_currency( d.unconfirmed/100000000, unit, 2 )
+                              + '</span>'
+              );
           }
 
           if (total > 0) {

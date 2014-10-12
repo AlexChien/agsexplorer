@@ -8,7 +8,7 @@
         <th>Tx</th>
         <th>Amount</th>
       </tr>
-      <%= render :partial => 'home/today_donation_item', :collection => donations, :as => 'donation', :locals => { :network => network } %>
+      <%= render :partial => 'home/today_donation_item_with_ags', :collection => donations, :as => 'donation', :locals => { :network => network } %>
     </tbody>
   </table>
 </div>

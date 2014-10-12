@@ -172,6 +172,7 @@ function changeSymbol(){
 
 function display_currency(val,new_cur,precision){
   parts = val.toString().split('.');
+  if (parts.length < 2) parts.push("0")
   return parts[0].replace(comify_re, "$1,") + '<small class="num">.'+max_digit(parts[1],precision)+' '+String(new_cur).split('_').join(' / ').toUpperCase()+'</small>'
 }
 

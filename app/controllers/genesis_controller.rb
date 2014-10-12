@@ -9,6 +9,8 @@ class GenesisController < ApplicationController
       address = addrs
     end
 
+    render :text => "address is missing" and return if address.blank?
+
     # if music, we calculate ongoing donation
     if dac == 'MUSIC' && !music_donation_finished?
 
@@ -19,14 +21,13 @@ class GenesisController < ApplicationController
                        where('time >= ?', today).group(:address).sum(:amount)
       md_today_total = MusicDonation.where('time >= ?', today).sum(:amount)
 
-      if md_confirmed.size > 0
-        @result = []
-        md_confirmed.each do |e|
-          @result.push({ dac: "MUSIC", address: e.first, amount: e.last, unconfirmed: md_unconfirmed[e.first].to_f / md_today_total * MusicPresale::ISSURANCE[:btc] })
-        end
-
-      else
-        @result = { dac: dac, address: address, amount: 0 }
+      @result = []
+      address.each do |addr|
+        @result.push ({
+          dac: "MUSIC", address: addr,
+          amount: md_confirmed[addr] || 0,
+          unconfirmed: md_unconfirmed[addr].to_f / md_today_total * MusicPresale::ISSURANCE[:btc]
+        })
       end
 
     else
