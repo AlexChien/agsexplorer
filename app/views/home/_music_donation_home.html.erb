@@ -84,6 +84,10 @@ $(function(){
   <p>Pre-sale made before 2014-10-06 are counted as day 1 (2014-10-06) pre-sale.</p>
 </div>
 
+<h1><%= today(@date) %>'s Donation</h1>
+<div class="row-fluid">
+  <%= render :partial => 'today_music_donation_table', :locals => { :network => :btc, :donations => @music_data[:today_btc_donations] } %>
+</div>
 
 <div id="presale_music_btc" class="modal hide fade" role="dialog">
   <div class="modal-header">
