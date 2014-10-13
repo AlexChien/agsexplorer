@@ -21,6 +21,7 @@
 // require_tree .
 
 var ags = { s_date:[], neworks: ['btc', 'pts'], color_pts: '#4572A7', color_btc: '#99443E' };
+var music_ags = { s_date:[], neworks: ['btc'], color_btc: '#99443E' };
 var comify_re = /(\d{1,3})(?=(\d{3})+(?:$|\.))/g;
 
 $(function(){

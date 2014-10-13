@@ -27,16 +27,19 @@ class BalancesController < ApplicationController
     # find a wallet
     unless @wallet.nil?
       # donation addresses
-      @addresses = Donation.where(wallet_id: @wallets.map(&:wallet_id)).pluck("distinct address")
+      @addresses = Donation.where(wallet_id: @wallets.map(&:wallet_id)).pluck("distinct address") +
+                   MusicDonation.where(wallet_id: @wallets.map(&:wallet_id)).pluck("distinct address")
 
       # related_addresses
       @related_addresses = @wallets.map(&:addresses).flatten.map(&:address)
 
       # decide view
       @donations = Donation.where(address: seperate_view? ? @address : @addresses).order('time desc') unless @addresses.blank?
+      @music_donations = MusicDonation.where(address: seperate_view? ? @address : @addresses).order('time desc') unless @addresses.blank?
 
       @network = @donations.try(:first).try(:network) || :btc
       @avg_donation_amount = Donation.avg_donation(@network.to_sym)
+      @avg_music_donation_amount = MusicDonation.avg_donation(@network.to_sym)
 
       unless @donations.blank?
         @total_donated = @donations.map(&:amount).sum
@@ -47,6 +50,18 @@ class BalancesController < ApplicationController
 
         @total_ags_confirmed = @donations.select{ |d| d.time < today }.map(&:ags_amount).sum
         # @total_ags_pending = @donations.select{ |d| d.time >= today }.map(&:amount).sum.to_f / @today_total_donated * Ags.daily_issue(@network.to_sym)
+      end
+
+      unless @music_donations.blank?
+        @total_music_donated = @music_donations.map(&:amount).sum
+
+        @today_total_music_donated = MusicDonation.where(network: @network).by_date.first.try(:total) || 0
+
+        today = Time.zone.now.to_date.beginning_of_day
+
+        @total_music_ags_confirmed = @music_donations.select{ |d| d.time < today }.map(&:ags_amount).sum
+        @total_music_ags_pending = @music_donations.select{ |d| d.time >= today }.map(&:amount).sum.to_f / @today_total_music_donated * MusicPresale.daily_issue(@network.to_sym)
+
       end
     else
       # non-ags address

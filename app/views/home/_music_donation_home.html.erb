@@ -55,10 +55,12 @@ $(function(){
       <%= render :partial => 'music_daily_overview', :locals => { :network => :btc } %>
     <% end %>
 
+    <% if false %>
     <div class="alert alert-warn">
       <button type="button" class="close" data-dismiss="alert">&times;</button>
       <strong>NOTICE:</strong> Charts and address-based pre-sale lookup features will be online shortly.
     </div>
+    <% end %>
   </div>
   <div class="span6">
     <h3>BitShares Music DAC</h3>
@@ -86,7 +88,7 @@ $(function(){
 
 <h1><%= today(@date) %>'s Donation</h1>
 <div class="row-fluid">
-  <%= render :partial => 'today_music_donation_table_with_ags', :locals => { :network => :btc, :donations => @music_data[:today_btc_donations] } %>
+  <%= render :partial => 'today_music_donation_table', :locals => { :network => :btc, :donations => @music_data[:today_btc_donations] } %>
 </div>
 
 <div id="presale_music_btc" class="modal hide fade" role="dialog">

@@ -1,5 +1,79 @@
 <% content_for :footer_js do -%>
 <script type="text/javascript" charset="utf-8">
+<% if !@music_donations.blank? && @music_donations.size > 0 %>
+var music_chart_data = <%= @music_donations.reverse.to_json(only: [:time, :amount]).html_safe %>;
+var music_span = music_chart_data.length;
+
+var c = 'btc';
+var C = c.toUpperCase();
+
+music_ags['s_'+c] = [];
+for (var i = 0; i < music_span; i++) {
+  music_ags['s_'+c].push(music_chart_data[i].amount/100000000);
+  music_ags.s_date.push( music_chart_data[i].time.split('T')[0] );
+}
+
+// current price
+music_ags['price_'+c] = <%= @avg_music_donation_amount %>/100000000;
+
+// draw charts
+$('#music-chart-container').highcharts({
+  chart: {
+    zoomType: 'xy'
+  },
+  title: {
+    text: 'Donation History',
+    x: -20 //center
+  },
+  xAxis: {
+    categories: music_ags.s_date
+  },
+  yAxis: [{
+    title: {
+      text: 'Amount Donated (' + C + ')'
+    },
+    plotLines: [{
+      value: music_ags["price_"+c],
+      width: 1,
+      color: music_ags['color_'+c],
+      dashStyle: 'dash',
+      label: {
+        text: 'Avg.',
+        align: 'left',
+        x: 20
+      }
+    }],
+    labels: {
+      format: '{value} ' + C,
+      style: {
+        color: music_ags['color_'+c]
+      }
+    }
+  }],
+  tooltip: {
+    shared: true
+  },
+  legend: {
+    layout: 'vertical',
+    align: 'left',
+    x: 90,
+    verticalAlign: 'top',
+    y: 30,
+    floating: true,
+    backgroundColor: '#FFFFFF'
+  },
+  series: [{
+    name: 'Daily ' + C + ' Donation',
+    color: music_ags['color_'+c],
+    type: 'column',
+    tooltip: {
+      valueSuffix: ' ' + C
+    },
+    data: music_ags['s_'+c]
+  }]
+});
+<% end %>
+
   <% if !@donations.blank? && @donations.size > 0 %>
   var chart_data = <%= @donations.reverse.to_json(only: [:time, :amount]).html_safe %>;
   var span = chart_data.length;
@@ -294,6 +368,28 @@
   </div>
   <% end %>
 </div>
+
+<% if !@music_donations.blank? && @music_donations.size > 0 %>
+<div class="clearfix"></div>
+
+<h1>BitShares Music Pre-sale Charts </h1>
+<div class="row-fluid">
+  <div id="music-chart-container" class="span12"></div>
+</div>
+<% end %>
+
+<div class="clearfix"></div>
+
+<h1>BitShares Music Pre-sale History</h1>
+<div class="row-fluid">
+  <% unless @music_donations.blank? %>
+  <%= render :partial => 'home/today_music_donation_table_with_ags',
+      :locals => { :network => @network, :donations => @music_donations }  %>
+  <% else %>
+  <p>no donations found</p>
+  <% end %>
+</div>
+
 
 <% if !@donations.blank? && @donations.size > 0 %>
 <div class="clearfix"></div>
