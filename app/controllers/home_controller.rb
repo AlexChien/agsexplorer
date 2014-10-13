@@ -29,7 +29,7 @@ class HomeController < ApplicationController
     @music_summary = {}
     MusicDonation.summary.all.each do |summary|
       @music_summary[summary.network.to_sym] = {total: summary.total, count: summary.count}
-    end if donation_finished?
+    end if music_donation_finished?
 
 
     render :index_after_donation_finished and return if donation_finished?
@@ -58,7 +58,26 @@ class HomeController < ApplicationController
       current_pts_donated: Donation.today_donated(:btc)
     }
 
-    render :index
+    @summary = {}
+    Donation.summary.all.each do |summary|
+      @summary[summary.network.to_sym] = {total: summary.total, count: summary.count}
+    end if donation_finished?
+
+    @music_daily_data = MusicDonation.daily
+    @music_today = MusicDonation.by_date
+    @music_data = {
+      today_btc_donations: MusicDonation.btc.today_donations(@date),
+      today_btc_donated:   MusicDonation.today_donated(:btc, @date),
+      btc_current_price:   MusicDonation.current_price(:btc, @date),
+      current_btc_donated: MusicDonation.today_donated(:btc),
+    }
+
+    @music_summary = {}
+    MusicDonation.summary.all.each do |summary|
+      @music_summary[summary.network.to_sym] = {total: summary.total, count: summary.count}
+    end if music_donation_finished?
+
+    render :index_after_donation_finished
   end
 
   def ags101
