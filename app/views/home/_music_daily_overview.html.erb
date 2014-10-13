@@ -7,7 +7,7 @@
     <tr>
       <td>Current Rate <small>est.</small></td>
       <td style="font-size:1.5em;"><span class="symolizable" data-type="note_<%= network %>" data-cur="note_<%= network %>" data-value="<%= @music_data[:"#{network}_current_price"] %>">
-        <%= dcp(@music_data[:"#{network}_current_price"], network).gsub(network.to_s.upcase, "note / #{network.to_s.upcase}").html_safe %>
+        <%= dcp(@music_data[:"#{network}_current_price"], network).gsub(network.to_s.upcase, "NOTE / #{network.to_s.upcase}").html_safe %>
       </span></td>
     </tr>
     <tr>
