@@ -51,3 +51,7 @@ small.num { font-size:10px; opacity:0.5; }
   th.text-left { text-align:left; }
   tr.current-address td { background-color:lightyellow; }
 }
+
+div.tooltip-inner {
+  max-width: 350px;
+}

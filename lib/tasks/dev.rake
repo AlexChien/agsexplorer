@@ -49,6 +49,41 @@ namespace :dev do
       end
     end
 
+    namespace :vote do
+      task :import_genesis => :environment do
+        genesis_file = File.join(Rails.root, 'data', 'pts-2014-08-20.json')
+
+        dac_name = 'VOTE'
+
+        DacGenesis.where(dac: dac_name).delete_all
+
+        # process PTS allocation
+        g = JSON.parse(File.read(genesis_file))
+        total_supply = g["balances"].inject(0){ |m,n| m + n.second }
+        rate = 1_500_000_000.0 / total_supply
+        g["balances"].each do |r|
+          p "#{r.first}: #{r.second} - #{(r.second.to_f * Vote::COIN * rate).to_i}"
+
+          DacGenesis.create(dac: 'VOTE', address: r.first,
+                            amount: (r.second.to_f * Vote::COIN * rate).to_i)
+        end
+        p total_supply
+        p rate
+
+        # process AGS allocation
+        # actual total ags is 199000000000102, need to confirm with note snapshot
+        # if they use theory supply or actual supply
+        ags_supply = 2_000_000 * Vote::COIN
+        rate = 1_500_000_000.0 / ags_supply
+        Donation.select(:address).group(:address).sum(:ags_amount).each do |r|
+          DacGenesis.create(dac: 'VOTE', address: r.first,
+                            amount: (r.second.to_f * Vote::COIN * rate).to_i)
+        end
+        p ags_supply
+        p rate
+      end
+    end
+
     namespace :music do
       # snapshot taken on 2014-10-10, pts holder will be granted 35% of total supply (1,500,000,000)
       task :import_genesis_pts => :environment do

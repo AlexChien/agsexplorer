@@ -1,5 +1,7 @@
 <% content_for :footer_js do -%>
 <script type="text/javascript" charset="utf-8">
+$('.balance-table').tooltip({ selector: "[data-toggle=tooltip]" });
+
 <% if !@music_donations.blank? && @music_donations.size > 0 %>
 var music_chart_data = <%= @music_donations.reverse.to_json(only: [:time, :amount]).html_safe %>;
 var music_span = music_chart_data.length;
@@ -171,7 +173,7 @@ $('#music-chart-container').highcharts({
     $( '.addr-' + non_donator_addresses[i] + ' a').addClass('muted');
 
   // fetch dac data
-  var addresses = $.map(address_spans, function(n,i){ return $(n).attr('data');});
+  var addresses = $.map(address_spans, function(n,i){ return $(n).data('address');});
   if (addresses.length > 0) {
     for (var i = 0; i < snapshots.length; i++) {
       var dac = snapshots[i];
@@ -259,6 +261,7 @@ $('#music-chart-container').highcharts({
           <th colspan="2">AngelShares</th>
           <th rowspan="2">BitSharesX</th>
           <th rowspan="2">LottoShares</th>
+          <th rowspan="2">Bitshares Vote</th>
           <th rowspan="2">BitShares DNS</th>
           <th colspan="3">BitShares Music</th>
         </tr>
@@ -278,12 +281,13 @@ $('#music-chart-container').highcharts({
           <% @related_addresses.each do |address| %>
             <tr class="addr addr-<%= address %>">
               <td>
-                <span class='label donator-address' data='<%= address %>'><%= address %></span>
+                <span class='label donator-address' title="<%= address %>" data-toggle="tooltip" data-placement="right" data-address='<%= address %>'><%= short_address(address) %></span>
               </td>
               <td class="dac dac-ags-donated">...</td>
               <td class="dac dac-ags-rewarded">...</td>
               <td class="dac dac-btsx">...</td>
               <td class="dac dac-lts">...</td>
+              <td class="dac dac-vote">...</td>
               <td class="dac dac-dns">...</td>
               <td class="dac dac-music-ags">...</td>
               <td class="dac dac-music-pts">...</td>
@@ -297,14 +301,15 @@ $('#music-chart-container').highcharts({
           <% @related_addresses.each do |address| %>
             <tr class="addr addr-<%= address %>">
               <td>
-                <%= link_to balance_path(address, view: @view) do
-                  @addresses.include?(address) ? "<span class='label label-success donator-address' data='#{address}'>#{address}</span>".html_safe : address
+                <%= link_to balance_path(address, view: @view), title: address, data: { toggle: :tooltip, placement: :right} do
+                  @addresses.include?(address) ? "<span class='label label-success donator-address' data-address='#{address}'>#{short_address(address)}</span>".html_safe : short_address(address)
                 end %>
               </td>
               <td class="dac dac-ags-donated"><%= dcp(donation_amount_by_address(@donations, address), @network, 2) %></td>
               <td class="dac dac-ags-rewarded"><%= dcp(ags_amount_by_address(@donations, address), :ags, 2) %></td>
               <td class="dac dac-btsx">...</td>
               <td class="dac dac-lts">...</td>
+              <td class="dac dac-vote">...</td>
               <td class="dac dac-dns">...</td>
               <td class="dac dac-music-ags"
                   data-val='<%= music_ags_reward_amount = ags_amount_by_address(@donations, address) * 262.5 %>'>
@@ -327,6 +332,7 @@ $('#music-chart-container').highcharts({
           </td>
           <td class="dac dac-btsx">...</td>
           <td class="dac dac-lts">...</td>
+          <td class="dac dac-vote">...</td>
           <td class="dac dac-dns">...</td>
           <td class="dac dac-music-ags">...</td>
           <td class="dac dac-music-pts">...</td>

@@ -153,4 +153,7 @@ module ApplicationHelper
     end
   end
 
+  def short_address(addr, keep_digit = 6)
+    addr.length > (keep_digit * 2 + 3) ? "#{addr[0..keep_digit-1]}...#{addr[-keep_digit..-1]}" : addr
+  end
 end
