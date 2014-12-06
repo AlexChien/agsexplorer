@@ -85,6 +85,11 @@ namespace :dev do
     end
 
     namespace :music do
+
+      task :download_data => :environment do
+        system "wget http://www1.agsexplorer.com/data/music.v2.csv.txt -O #{Rails.root}/data/music.v2.csv.txt"
+      end
+
       # snapshot taken on 2014-10-10, pts holder will be granted 35% of total supply (1,500,000,000)
       task :import_genesis_pts => :environment do
         genesis_file = File.join(Rails.root, 'data', 'pts-2014-10-09.json')
