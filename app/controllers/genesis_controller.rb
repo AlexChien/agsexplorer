@@ -26,7 +26,7 @@ class GenesisController < ApplicationController
         @result.push ({
           dac: "MUSIC", address: addr,
           amount: md_confirmed[addr] || 0,
-          unconfirmed: md_unconfirmed[addr].to_f / md_today_total * MusicPresale::ISSURANCE[:btc]
+          unconfirmed: md_today_total == 0 ? 0 : md_unconfirmed[addr].to_f / md_today_total * MusicPresale::ISSURANCE[:btc]
         })
       end
 
