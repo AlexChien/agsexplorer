@@ -12,7 +12,7 @@ class GenesisController < ApplicationController
     render :text => "address is missing" and return if address.blank?
 
     # if music, we calculate ongoing donation
-    if dac == 'MUSIC' && !music_donation_finished?
+    if dac == 'MUSIC' #&& !music_donation_finished?
 
       today = Time.zone.now.to_date.beginning_of_day
       md_confirmed   = MusicDonation.where(address: address).

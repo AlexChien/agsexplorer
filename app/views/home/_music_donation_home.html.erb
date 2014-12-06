@@ -15,11 +15,11 @@ $(function(){
   // chart data
   $.get('/series/daily.json?networks=music', function (chart_data) {
     // Today's ongoing data
-    chart_data["btc"].push({
-      color: '#ff0000',
-      x: Date.parse('<%= DateTime.now.utc.to_date.to_s %>'),
-      y: <%= cent2coin(@music_data[:"current_btc_donated"] || @music_data[:"today_btc_donated"]) %>
-    });
+    // chart_data["btc"].push({
+    //   color: '#ff0000',
+    //   x: Date.parse('<%= DateTime.now.utc.to_date.to_s %>'),
+    //   y: <%= cent2coin(@music_data[:"current_btc_donated"] || @music_data[:"today_btc_donated"]) %>
+    // });
 
     var sum_btc = 0;
 
@@ -40,7 +40,13 @@ $(function(){
 
 <div class="countdown music">
   <h1 class="ags-logo" style="margin-bottom:0.2em; padding-bottom:0.2em;">BitShares Music</h1>
-  <div class="title">Countdown to last day of BitShares Music pre-sale (UTC):</div>
+  <div class="title">
+    <% unless music_donation_finished? %>
+    Countdown to last day of BitShares Music pre-sale (UTC):
+    <% else %>
+    The BitShares Music Pre-sale has ended!
+    <% end %>
+  </div>
   <div class="timer"><span id="music_timer"><%#= image_tag "2014/timer.png" %></span></div>
 </div>
 
@@ -86,10 +92,12 @@ $(function(){
   <p>Pre-sale made before 2014-10-06 are counted as day 1 (2014-10-06) pre-sale.</p>
 </div>
 
+<% if @by_date %>
 <h1><%= today(@date) %>'s Donation</h1>
 <div class="row-fluid">
   <%= render :partial => 'today_music_donation_table', :locals => { :network => :btc, :donations => @music_data[:today_btc_donations] } %>
 </div>
+<% end %>
 
 <div id="presale_music_btc" class="modal hide fade" role="dialog">
   <div class="modal-header">

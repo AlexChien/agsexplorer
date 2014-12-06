@@ -5,15 +5,15 @@
     <th>&nbsp;</th>
     <tr>
       <td>Total Pre-saled</td>
-      <td><%= dcp(@summary[network][:total], network) %></td>
+      <td><%= dcp(@music_summary[network][:total], network) %></td>
     </tr>
     <tr>
       <td>Total Transactions</td>
-      <td><%= number_with_delimiter @summary[network][:count] %></td>
+      <td><%= number_with_delimiter @music_summary[network][:count] %></td>
     </tr>
     <tr>
       <td>Daily Average Amount</td>
-      <td><%= dcp(@summary[network][:total].to_i / @summary[network][:count].to_i, network) %></td>
+      <td><%= dcp(@music_summary[network][:total].to_i / 60, network) %></td>
     </tr>
     <th>Issuance</th>
     <th>&nbsp;</th>

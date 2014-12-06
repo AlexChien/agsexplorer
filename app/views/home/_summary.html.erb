@@ -12,8 +12,8 @@
       <td><%= number_with_delimiter @summary[network][:count] %></td>
     </tr>
     <tr>
-      <td>Average Donation</td>
-      <td><%= dcp(@summary[network][:total].to_i / @summary[network][:count].to_i, network) %></td>
+      <td>Daily Average Donation</td>
+      <td><%= dcp(@summary[network][:total].to_i / 200, network) %></td>
     </tr>
     <th>Issuance</th>
     <th>&nbsp;</th>

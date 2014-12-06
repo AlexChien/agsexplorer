@@ -37,6 +37,7 @@ class HomeController < ApplicationController
 
   def by_date
     @date = begin
+      @by_date = true
       Date.parse(params[:date])
     rescue
       Time.zone.now.to_date
