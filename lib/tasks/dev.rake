@@ -112,5 +112,28 @@ namespace :dev do
       end
     end
 
+    namespace :play do
+      task :import_genesis => :environment do
+        [
+          { name: "play-ags", file: 'ags_20140718.json', total_key: "moneysupply" },
+          { name: "play-pts", file: 'pts_20141105.json', total_key: "moneysupply" },
+          { name: "play-bts", file: 'bts_20141208.json', total_key: "total" }
+        ].each do |dac|
+          genesis_file = File.join(Rails.root, 'data', 'play', dac[:file])
+          dac_name = dac[:name].upcase
+
+          # wipe out old entries
+          DacGenesis.where(dac: dac_name).delete_all
+
+          g = JSON.parse(File.read(genesis_file))
+          g["balances"].each do |r|
+            DacGenesis.create(dac: dac_name,
+                              address: r.first,
+                              amount: r.second * 1000)
+          end
+        end
+      end
+    end
+
   end
 end

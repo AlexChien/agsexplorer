@@ -158,7 +158,10 @@ $('#music-chart-container').highcharts({
     'VOTE': 'VOTE',
     'DNS': 'DNS',
     'MUSIC': 'NOTE',
-    'MUSIC-PTS': 'NOTE'
+    'MUSIC-PTS': 'NOTE',
+    'PLAY-AGS': 'PLS',
+    'PLAY-PTS': 'PLS',
+    'PLAY-BTS': 'PLS'
   }
   var snapshots = Object.keys(dacs);
   var address_spans = $('.donator-address');
@@ -233,6 +236,30 @@ $('#music-chart-container').highcharts({
     );
   }
   //*/
+
+  //toggle button
+  var visible_dacs = ['ags','btsx','music','play'];
+  $('.toggle-btn').each(function(){
+    dac_name = $(this).data('dac');
+    toggle_dac(dac_name, visible_dacs.indexOf(dac_name) != -1);
+
+    // click event
+    $(this).click(function(){
+      toggle_dac($(this).data('dac'), !$(this).hasClass('btn-success'));
+    })
+  });
+
+  function toggle_dac(dac_name, show){
+    console.log(dac_name, show);
+
+    if (show) {
+      $('.toggle-btn[data-dac='+dac_name+']').addClass('btn-success');
+      $('.dac.'+dac_name+', .'+dac_name).show();
+    } else {
+      $('.toggle-btn[data-dac='+dac_name+']').removeClass('btn-success');
+      $('.dac.'+dac_name+', .'+dac_name).hide();
+    }
+  }
 </script>
 <% end -%>
 
@@ -250,6 +277,17 @@ $('#music-chart-container').highcharts({
 -->
 </h4>
 
+<div class="text-right" style="margin-bottom:1em;">
+  <p>Toggle DAC Visibility:</p>
+  <button type="button" class="toggle-btn btn btn-success btn-mini" data-dac="ags">AngelShares</button>
+  <button type="button" class="toggle-btn btn btn-success btn-mini" data-dac="btsx">BitShares X</button>
+  <button type="button" class="toggle-btn btn btn-success btn-mini" data-dac="lts">LottoShares</button>
+  <button type="button" class="toggle-btn btn btn-success btn-mini" data-dac="vote">BitShares VOTE</button>
+  <button type="button" class="toggle-btn btn btn-success btn-mini" data-dac="dns">BitShares DNS</button>
+  <button type="button" class="toggle-btn btn btn-success btn-mini" data-dac="music">BitShares MUSIC</button>
+  <button type="button" class="toggle-btn btn btn-success btn-mini" data-dac="play">BitShares PLAY</button>
+</div>
+
 <div class="row-fluid">
   <div class="span12">
     <% if true || @total_donated %>
@@ -257,19 +295,23 @@ $('#music-chart-container').highcharts({
       <thead>
         <tr>
           <th rowspan="2" class="text-left">Address</th>
-          <th colspan="2">AngelShares</th>
-          <th rowspan="2">BitSharesX</th>
-          <th rowspan="2">LottoShares</th>
-          <th rowspan="2">Bitshares Vote</th>
-          <th rowspan="2">BitShares DNS</th>
-          <th colspan="3">BitShares Music</th>
+          <th colspan="2" class="ags">AngelShares</th>
+          <th rowspan="2" class="btxs">BitSharesX</th>
+          <th rowspan="2" class="lts">LottoShares</th>
+          <th rowspan="2" class="vote">Bitshares Vote</th>
+          <th rowspan="2" class="dns">BitShares DNS</th>
+          <th colspan="3" class="music">BitShares Music</th>
+          <th colspan="3" class="play">BitShares PLAY</th>
         </tr>
         <tr>
-          <th>Donated</th>
-          <th>Rewarded</th>
-          <th>AGS</th>
-          <th>PTS</th>
-          <th>Pre-sale</th>
+          <th class="ags">Donated</th>
+          <th class="ags">Rewarded</th>
+          <th class="music">AGS</th>
+          <th class="music">PTS</th>
+          <th class="music">Pre-sale</th>
+          <th class="play">AGS</th>
+          <th class="play">PTS</th>
+          <th class="play">BTS</th>
         </tr>
       </thead>
 
@@ -282,15 +324,20 @@ $('#music-chart-container').highcharts({
               <td>
                 <span class='label donator-address' title="<%= address %>" data-toggle="tooltip" data-placement="right" data-address='<%= address %>'><%= short_address(address) %></span>
               </td>
-              <td class="dac dac-ags-donated">...</td>
-              <td class="dac dac-ags-rewarded">...</td>
-              <td class="dac dac-btsx">...</td>
-              <td class="dac dac-lts">...</td>
-              <td class="dac dac-vote">...</td>
-              <td class="dac dac-dns">...</td>
-              <td class="dac dac-music-ags">...</td>
-              <td class="dac dac-music-pts">...</td>
-              <td class="dac dac-music-presale">...</td>
+              <td class="dac ags dac-ags-donated">...</td>
+              <td class="dac ags dac-ags-rewarded">...</td>
+              <td class="dac btsx dac-btsx">...</td>
+              <td class="dac lts dac-lts">...</td>
+              <td class="dac vote dac-vote">...</td>
+              <td class="dac dns dac-dns">...</td>
+
+              <td class="dac music dac-music-ags">...</td>
+              <td class="dac music dac-music-pts">...</td>
+              <td class="dac music dac-music-presale">...</td>
+
+              <td class="dac play dac-play-ags">...</td>
+              <td class="dac play dac-play-pts">...</td>
+              <td class="dac play dac-play-bts">...</td>
             </tr>
           <% end %>
 
@@ -304,18 +351,22 @@ $('#music-chart-container').highcharts({
                   @addresses.include?(address) ? "<span class='label label-success donator-address' data-address='#{address}'>#{short_address(address)}</span>".html_safe : short_address(address)
                 end %>
               </td>
-              <td class="dac dac-ags-donated"><%= dcp(donation_amount_by_address(@donations, address), @network, 2) %></td>
-              <td class="dac dac-ags-rewarded"><%= dcp(ags_amount_by_address(@donations, address), :ags, 2) %></td>
-              <td class="dac dac-btsx">...</td>
-              <td class="dac dac-lts">...</td>
-              <td class="dac dac-vote">...</td>
-              <td class="dac dac-dns">...</td>
-              <td class="dac dac-music-ags"
+              <td class="dac ags dac-ags-donated"><%= dcp(donation_amount_by_address(@donations, address), @network, 2) %></td>
+              <td class="dac ags dac-ags-rewarded"><%= dcp(ags_amount_by_address(@donations, address), :ags, 2) %></td>
+              <td class="dac btsx dac-btsx">...</td>
+              <td class="dac lts dac-lts">...</td>
+              <td class="dac vote dac-vote">...</td>
+              <td class="dac dns dac-dns">...</td>
+              <td class="dac music dac-music-ags"
                   data-val='<%= music_ags_reward_amount = ags_amount_by_address(@donations, address) * 262.5 %>'>
                 <%= dcp(music_ags_reward_amount, :note, 2) %>
               </td>
-              <td class="dac dac-music-pts">...</td>
-              <td class="dac dac-music-presale">...</td>
+              <td class="dac music dac-music-pts">...</td>
+              <td class="dac music dac-music-presale">...</td>
+
+              <td class="dac play dac-play-ags">...</td>
+              <td class="dac play dac-play-pts">...</td>
+              <td class="dac play dac-play-bts">...</td>
             </tr>
           <% end %>
 
@@ -325,17 +376,23 @@ $('#music-chart-container').highcharts({
         <!--sub-total -->
         <tr class="sub-total" style="border-top:2px solid #aaa;">
           <td><strong>Total</strong></td>
-          <td class="dac dac-ags-donated"><%= dcp(@total_donated, @network, 2) %></td>
-          <td class="dac dac-ags-rewarded">
+          <td class="dac ags dac-ags-donated"><%= dcp(@total_donated, @network, 2) %></td>
+          <td class="dac ags dac-ags-rewarded">
             <span class="label label-success"><%= dcp(@total_ags_confirmed, :ags, 2) %></span>
           </td>
-          <td class="dac dac-btsx">...</td>
-          <td class="dac dac-lts">...</td>
-          <td class="dac dac-vote">...</td>
-          <td class="dac dac-dns">...</td>
-          <td class="dac dac-music-ags">...</td>
-          <td class="dac dac-music-pts">...</td>
-          <td class="dac dac-music-presale">...</td>
+          <td class="dac btsx dac-btsx">...</td>
+          <td class="dac lts dac-lts">...</td>
+          <td class="dac vote dac-vote">...</td>
+          <td class="dac dns dac-dns">...</td>
+
+          <td class="dac music dac-music-ags">...</td>
+          <td class="dac music dac-music-pts">...</td>
+          <td class="dac music dac-music-presale">...</td>
+
+
+          <td class="dac play dac-play-ags">...</td>
+          <td class="dac play dac-play-pts">...</td>
+          <td class="dac play dac-play-presale">...</td>
         </tr>
 
 
