@@ -80,9 +80,11 @@ $(function(){
       </ul>
     </p>
     <p>The AGS style pre-sale will last for 60 days, starting from 6th, Oct (UTC) with issurance of 5 million NOTEs daily. Visit <a href="http://www.bitsharesmusicfoundation.org/" target="_blank">BitShares Music Foundation</a> for details</p>
+    <% unless music_donation_finished?  %>
     <div style="text-align:center;margin-top:1.5em;clear:both;">
     <a href="#presale_music_btc" data-toggle="modal" class="btn btn-primary">Send fund to pre-sale address Now</a>
     </div>
+    <% end %>
   </div>
 </div>
 
