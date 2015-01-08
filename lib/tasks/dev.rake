@@ -113,6 +113,11 @@ namespace :dev do
     end
 
     namespace :play do
+      desc "dev related tools"
+      task :download_data => :environment do
+        system "wget http://www1.agsexplorer.com/data/playcrowdfund.csv.txt -O #{Rails.root}/data/playcrowdfund.csv.txt"
+      end
+
       task :import_genesis => :environment do
         [
           { name: "play-ags", file: 'ags_20140718.json', total_key: "moneysupply" },
