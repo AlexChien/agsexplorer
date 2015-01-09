@@ -22,7 +22,7 @@ set :output, "/home/mongrel/agsexplorer/shared/log/cron_log.log"
 # fetch new blockchain data every 1 minutes
 every 5.minutes do
   # runner "Donation.parse_all"
-  runner "MusicDonation.parse_all"
+  runner "PlayDonation.parse_all"
 end
 
 # fetch tickers every 1 minute
@@ -35,7 +35,7 @@ every 1.day, :at => '8:10 am' do
   # calculate each donation obtained ags reward for yesterday
   # re-calculate each wallet's total ags amount obtained from its all addresses
   # rake "donation:daily"
-  rake "music_presale:daily"
+  rake "play:daily"
 end
 
 # re-calculate ags_reward
