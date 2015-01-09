@@ -1,0 +1,126 @@
+<% content_for :footer_js do -%>
+<script type="text/javascript" charset="utf-8">
+$(function(){
+  <% unless play_crowdfund_finished? %>
+  // count down
+  $('#play_timer').countdown({
+    stepTime: 60,
+    continuous: true,
+    format: 'dd:hh:mm:ss',
+    image: '/assets/countdown/digits.png',
+    startTime: '<%= play_count_down_start_time %>'
+  });
+  <% end %>
+
+  // chart data
+  $.get('/series/daily.json?networks=play', function (chart_data) {
+    // Today's ongoing data
+    chart_data["btc"].push({
+      color: '#ff0000',
+      x: Date.parse('<%= DateTime.now.utc.to_date.to_s %>'),
+      y: <%= cent2coin(@play_data[:"current_btc_donated"] || @play_data[:"today_btc_donated"]) %>
+    });
+
+    var sum_btc = 0;
+
+    for (var i = 0; i < chart_data["btc"].length; i++) {
+      d = chart_data["btc"][i];
+      sum_btc += (d instanceof Array) ? d[1] : d["y"];
+    }
+
+    chart_data["btc_avg"] = sum_btc / chart_data["btc"].length;
+
+    drawPlayChart('#play-chart-container', chart_data);
+  });
+});
+
+</script>
+
+<% end -%>
+
+<div class="countdown play">
+  <h1 class="ags-logo" style="margin-bottom:0.2em; padding-bottom:0.2em;">BitShares PLAY</h1>
+  <div class="title">
+    <% unless play_crowdfund_finished? %>
+    Countdown to last day of BitShares PLAY Crowdfunding (UTC):
+    <% else %>
+    The BitShares PLAY Crowdfunding has ended!
+    <% end %>
+  </div>
+  <div class="timer"><span id="play_timer"><%#= image_tag "2014/timer.png" %></span></div>
+</div>
+
+<div class="clearfix"></div>
+
+<h1>Summary</h1>
+<div class="row-fluid">
+  <div class="span6">
+    <% if play_crowdfund_finished? %>
+      <%#= render :partial => 'play_summary', :locals => { :network => :btc } %>
+    <% else %>
+      <%= render :partial => 'play_daily_overview', :locals => { :network => :btc } %>
+    <% end %>
+
+    <% if false %>
+    <div class="alert alert-warn">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>NOTICE:</strong> Charts and address-based pre-sale lookup features will be online shortly.
+    </div>
+    <% end %>
+  </div>
+  <div class="span6">
+    <h3>BitShares PLAY DAC</h3>
+    <p>
+      As for the PLS allocation at Genesis block:
+      <ul>
+        <li>35% BTS</li>
+        <li>10% AGS</li>
+        <li>10% PTS</li>
+        <li>20% Crowdfunding</li>
+        <li>15% Development & Marketing</li>
+        <li>10% Reserved Funds</li>
+      </ul>
+    </p>
+    <p>Crowdfunding will last for 28 days, starting from 5th, Jan, 2015 (UTC). Early donations will get extra bonus.
+      <ul>
+        <li>1st week: 1BTC=130,000PLS</li>
+        <li>2nd week: 1BTC=120,000PLS</li>
+        <li>3rd week: 1BTC=110,000PLS</li>
+        <li>4th week: 1BTC=100,000PLS</li>
+      </ul>
+      Visit <a href="http://dax.com/play" target="_blank">DACx.com</a> for details</p>
+  </div>
+</div>
+
+<h1>Charts </h1>
+<div class="row-fluid">
+  <div id="play-chart-container" class="span12"></div>
+</div>
+
+<% if true || @by_date %>
+<h1><%= today(@date) %>'s Donation</h1>
+<div class="row-fluid">
+  <%= render :partial => 'today_play_donation_table', :locals => { :network => :btc, :donations => @play_data[:today_btc_donations] } %>
+</div>
+<% end %>
+
+<div id="presale_play_btc" class="modal hide fade" role="dialog">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Send BTC</h3>
+  </div>
+  <div class="modal-body">
+    <div class="media">
+        <img src="http://blockchain.info/qr?data=3DPD7z66T7DXULvFZUsc4xNcVS2q68TM3u&amp;size=200" class="pull-left">
+        <div class="media-body">
+        <h4>BitShares PLAY Crowdfunding Address</h4>
+        <p>3DPD7z66T7DXULvFZUsc4xNcVS2q68TM3u</p>
+        <p>&nbsp;</p>
+        <p>Source: <br /><a href="http://www.dacx.com/play" target="_blank">Crowdfunding Announcement Post</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn btn-primary" data-dismiss="modal">Done</a>
+  </div>
+</div>

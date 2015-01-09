@@ -1,5 +1,6 @@
 class HomeController < ApplicationController
   def index
+    # ags
     @date = Time.zone.now.to_date
     @daily_data = Donation.daily
     @today = Donation.by_date
@@ -18,6 +19,7 @@ class HomeController < ApplicationController
       @summary[summary.network.to_sym] = {total: summary.total, count: summary.count}
     end if donation_finished?
 
+    # music
     @music_daily_data = MusicDonation.daily
     @music_today = MusicDonation.by_date
     @music_data = {
@@ -31,6 +33,20 @@ class HomeController < ApplicationController
       @music_summary[summary.network.to_sym] = {total: summary.total, count: summary.count}
     end if music_donation_finished?
 
+    # play
+    @play_daily_data = PlayDonation.daily
+    @play_today = PlayDonation.by_date
+    @play_data = {
+      today_btc_donations: PlayDonation.btc.today_donations,
+      today_btc_donated:   PlayDonation.today_donated(:btc),
+      btc_current_price:   PlayDonation.current_price(:btc) * PlayCrowdfund::COIN,
+      total_donated:       PlayDonation.total_donated(:btc)
+    }
+
+    @play_summary = {}
+    PlayDonation.summary.all.each do |summary|
+      @play_summary[summary.network.to_sym] = {total: summary.total, count: summary.count}
+    end if play_crowdfund_finished?
 
     render :index_after_donation_finished and return if donation_finished?
   end
@@ -78,6 +94,21 @@ class HomeController < ApplicationController
       @music_summary[summary.network.to_sym] = {total: summary.total, count: summary.count}
     end if music_donation_finished?
 
+    # play
+    @play_daily_data = PlayDonation.daily
+    @play_today = PlayDonation.by_date
+    @play_data = {
+      today_btc_donations: PlayDonation.btc.today_donations,
+      today_btc_donated:   PlayDonation.today_donated(:btc),
+      btc_current_price:   PlayDonation.current_price(:btc) * PlayCrowdfund::COIN,
+      total_donated:       PlayDonation.total_donated(:btc)
+    }
+
+    @play_summary = {}
+    PlayDonation.summary.all.each do |summary|
+      @play_summary[summary.network.to_sym] = {total: summary.total, count: summary.count}
+    end if play_crowdfund_finished?
+
     render :index_after_donation_finished
   end
 
@@ -92,6 +123,9 @@ class HomeController < ApplicationController
     if networks == 'music'
       end_date = (MusicPresale::END_DATE).to_date.to_s if end_date.nil?
       @daily_data = MusicDaily.series(networks, start_date, end_date)
+    elsif networks == 'play'
+      end_date = (PlayCrowdfund::END_DATE).to_date.to_s if end_date.nil?
+      @daily_data = PlayDaily.series(networks, start_date, end_date)
     else
       end_date = (Ags::END_DATE).to_date.to_s if end_date.nil?
       @daily_data = Daily.series(networks, start_date, end_date)

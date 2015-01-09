@@ -90,4 +90,9 @@ class ApplicationController < ActionController::Base
     Time.now.utc > MusicPresale::END_DATE
   end
   helper_method :music_donation_finished?
+
+  def play_crowdfund_finished?
+    PlayDonation.play_crowdfund_finished?(Time.now.utc)
+  end
+  helper_method :play_crowdfund_finished?
 end

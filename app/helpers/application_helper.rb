@@ -106,6 +106,8 @@ module ApplicationHelper
       "AGS"
     when :note
       "NOTE"
+    when :pls
+      'PLS'
     end
   end
 

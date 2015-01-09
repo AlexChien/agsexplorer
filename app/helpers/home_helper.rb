@@ -9,8 +9,13 @@ module HomeHelper
     output_time(d)
   end
 
+  def play_count_down_start_time
+    d = PlayCrowdfund::END_DATE
+    output_time(d)
+  end
+
   def output_time(d)
-    n = Time.now
+    n = Time.now.utc
     offset = d - n
     offset = 0 if offset < 0
 
@@ -24,5 +29,10 @@ module HomeHelper
 
   def dd(d,p=2)
     d < 10**(p-1) ? "#{"0"*(p-d.to_s.length)}#{d}" : d
+  end
+
+  def play_rate_change_in_days
+    days_passed = (Time.now.utc - PlayCrowdfund::START_DATE).to_i / 3600 / 24
+    days_remain = 7 - days_passed % 7 - 1
   end
 end

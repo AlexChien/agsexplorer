@@ -1,0 +1,48 @@
+<h3 class="<%= network.to_s == 'pts' ? 'pull-right' : '' %>"><%= network.upcase %></h3>
+<table class="table table-striped table-condensed table-hover overview" data-network="<%= network %>">
+  <tbody>
+    <tr>
+      <th colspan="2"><%= today(@date) %></th>
+    </tr>
+    <tr>
+      <td>Current Rate</td>
+      <td style="font-size:1.5em;"><span class="symolizable" data-type="note_<%= network %>" data-cur="note_<%= network %>" data-value="<%= @play_data[:"#{network}_current_price"] %>">
+        <%= dcp(@play_data[:"#{network}_current_price"], network).gsub(network.to_s.upcase, "PLS / #{network.to_s.upcase}").html_safe %>
+      </span></td>
+    </tr>
+    <tr>
+      <td>Funded Today / Average</td>
+      <td>
+        <span class="symolizable label label-success %>"
+          data-type="<%= network %>" data-cur="<%= network %>" data-value="<%= @play_data[:"today_#{network}_donated"] %>">
+        <%= dcp(@play_data[:"today_#{network}_donated"], network) %>
+        </span> / <span class="symolizable" data-type="<%= network %>" data-cur="<%= network %>" data-value="<%= @play_daily_data["#{network}_avg".to_sym] %>">
+        <%= dcp(@play_daily_data["#{network}_avg".to_sym], network) %>
+        </span>
+    </td>
+    </tr>
+    <tr>
+      <th colspan="2">Summary</th>
+    </tr>
+    <tr>
+      <td>Total Funded</td>
+      <td><span class="symolizable" data-type="<%= network %>" data-cur="<%= network %>" data-value="<%= @play_data[:total_donated] %>">
+        <%= dcp(@play_data[:total_donated], network) %>
+      </span></td>
+    </tr>
+    <tr>
+      <td>Total PLS Issued</td>
+      <td><%= dcp(PlayCrowdfund.total_issued(network), :pls) %></td>
+    </tr>
+  </tbody>
+</table>
+
+<% unless play_crowdfund_finished?  %>
+<div class="alert alert-info">
+  Rate will drop from <span class="symolizable label label-success"><%= dcp(@play_data[:"#{network}_current_price"], network).gsub(network.to_s.upcase, "PLS / #{network.to_s.upcase}").html_safe %></span> to <span class="symolizable label label-warning"><%= dcp(@play_data[:"#{network}_current_price"] - 10_000 * PlayCrowdfund::COIN, network).gsub(network.to_s.upcase, "PLS / #{network.to_s.upcase}").html_safe %></span> in <span class="symolizable label label-success"><%= play_rate_change_in_days %></span> days
+</div>
+
+<div style="text-align:center;margin-top:2.5em;clear:both;">
+  <a href="#presale_play_btc" data-toggle="modal" class="btn btn-primary">Send fund to crowdfunding address Now</a>
+</div>
+<% end %>
