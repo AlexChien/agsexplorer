@@ -22,13 +22,21 @@ class BalancesController < ApplicationController
       @music_wallet = MusicDonation.where(address: @address).limit(1).first.try(:wallet)
     end
 
+    # add play donation address
+    if (@play_donation = PlayDonation.where(address: @address).limit(1).first).nil?
+      @play_wallet = WalletAddress.where(address: @address).first.try(:wallet)
+    else
+      @play_wallet = PlayDonation.where(address: @address).limit(1).first.try(:wallet)
+    end
+
     @wallets = [@wallet, @music_wallet].uniq.compact
 
     # find a wallet
     unless @wallet.nil?
       # donation addresses
       @addresses = Donation.where(wallet_id: @wallets.map(&:wallet_id)).pluck("distinct address") +
-                   MusicDonation.where(wallet_id: @wallets.map(&:wallet_id)).pluck("distinct address")
+                   MusicDonation.where(wallet_id: @wallets.map(&:wallet_id)).pluck("distinct address") +
+                   PlayDonation.where(wallet_id: @wallets.map(&:wallet_id)).pluck("distinct address")
 
       # related_addresses
       @related_addresses = @wallets.map(&:addresses).flatten.map(&:address)
@@ -36,10 +44,12 @@ class BalancesController < ApplicationController
       # decide view
       @donations = Donation.where(address: seperate_view? ? @address : @addresses).order('time desc') unless @addresses.blank?
       @music_donations = MusicDonation.where(address: seperate_view? ? @address : @addresses).order('time desc') unless @addresses.blank?
+      @play_donations = PlayDonation.where(address: seperate_view? ? @address : @addresses).order('time desc') unless @addresses.blank?
 
       @network = @donations.try(:first).try(:network) || :btc
       @avg_donation_amount = Donation.avg_donation(@network.to_sym)
       @avg_music_donation_amount = MusicDonation.avg_donation(@network.to_sym)
+      @avg_play_donation_amount = PlayDonation.avg_donation(@network.to_sym)
 
       unless @donations.blank?
         @total_donated = @donations.map(&:amount).sum
@@ -61,7 +71,16 @@ class BalancesController < ApplicationController
 
         @total_music_ags_confirmed = @music_donations.select{ |d| d.time < today }.map(&:ags_amount).sum
         @total_music_ags_pending = @music_donations.select{ |d| d.time >= today }.map(&:amount).sum.to_f / @today_total_music_donated * MusicPresale.daily_issue(@network.to_sym)
+      end
 
+      unless @play_donations.blank?
+        @total_play_donated = @play_donations.map(&:amount).sum
+
+        @today_total_play_donated = PlayDonation.where(network: @network).by_date.first.try(:total) || 0
+
+        today = Time.zone.now.to_date.beginning_of_day
+
+        @total_play_ags_confirmed = @play_donations.select{ |d| d.time < today }.map(&:ags_amount).sum
       end
     else
       # non-ags address

@@ -30,6 +30,23 @@ class GenesisController < ApplicationController
         })
       end
 
+    # if play, we calculate ongoing donation
+    elsif dac == 'PLAY'
+      today = Time.zone.now.to_date.beginning_of_day
+      md_confirmed   = PlayDonation.where(address: address).
+                       where('time < ?', today.tomorrow).group(:address).sum(:ags_amount)
+      # md_unconfirmed = MusicDonation.where(address: address).
+      #                  where('time >= ?', today).group(:address).sum(:amount)
+      md_today_total = PlayDonation.where('time >= ?', today).sum(:amount)
+
+      @result = []
+      address.each do |addr|
+        @result.push ({
+          dac: "PLAY", address: addr,
+          amount: md_confirmed[addr] || 0,
+          unconfirmed: 0
+        })
+      end
     else
 
       # look up through dac genesis block data

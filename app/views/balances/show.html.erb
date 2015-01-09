@@ -2,6 +2,80 @@
 <script type="text/javascript" charset="utf-8">
 $('.balance-table').tooltip({ selector: "[data-toggle=tooltip]" });
 
+<% if !@play_donations.blank? && @play_donations.size > 0 %>
+var play_chart_data = <%= @play_donations.reverse.to_json(only: [:time, :amount]).html_safe %>;
+var play_span = play_chart_data.length;
+
+var c = 'btc';
+var C = c.toUpperCase();
+
+play_ags['s_'+c] = [];
+for (var i = 0; i < play_span; i++) {
+  play_ags['s_'+c].push(play_chart_data[i].amount/100000000);
+  play_ags.s_date.push( play_chart_data[i].time.split('T')[0] );
+}
+
+// current price
+play_ags['price_'+c] = <%= @avg_play_donation_amount %>/100000000;
+
+// draw charts
+$('#play-chart-container').highcharts({
+  chart: {
+    zoomType: 'xy'
+  },
+  title: {
+    text: 'Donation History',
+    x: -20 //center
+  },
+  xAxis: {
+    categories: play_ags.s_date
+  },
+  yAxis: [{
+    title: {
+      text: 'Amount Donated (' + C + ')'
+    },
+    plotLines: [{
+      value: play_ags["price_"+c],
+      width: 1,
+      color: play_ags['color_'+c],
+      dashStyle: 'dash',
+      label: {
+        text: 'Avg.',
+        align: 'left',
+        x: 20
+      }
+    }],
+    labels: {
+      format: '{value} ' + C,
+      style: {
+        color: play_ags['color_'+c]
+      }
+    }
+  }],
+  tooltip: {
+    shared: true
+  },
+  legend: {
+    layout: 'vertical',
+    align: 'left',
+    x: 90,
+    verticalAlign: 'top',
+    y: 30,
+    floating: true,
+    backgroundColor: '#FFFFFF'
+  },
+  series: [{
+    name: 'Daily ' + C + ' Donation',
+    color: play_ags['color_'+c],
+    type: 'column',
+    tooltip: {
+      valueSuffix: ' ' + C
+    },
+    data: play_ags['s_'+c]
+  }]
+});
+<% end %>
+
 <% if !@music_donations.blank? && @music_donations.size > 0 %>
 var music_chart_data = <%= @music_donations.reverse.to_json(only: [:time, :amount]).html_safe %>;
 var music_span = music_chart_data.length;
@@ -161,7 +235,8 @@ $('#music-chart-container').highcharts({
     'MUSIC-PTS': 'NOTE',
     'PLAY-AGS': 'PLS',
     'PLAY-PTS': 'PLS',
-    'PLAY-BTS': 'PLS'
+    'PLAY-BTS': 'PLS',
+    'PLAY': 'PLS'
   }
   var snapshots = Object.keys(dacs);
   var address_spans = $('.donator-address');
@@ -197,6 +272,7 @@ $('#music-chart-container').highcharts({
             // update each address's dac balance
             var tr = '.addr-' + d.address + ' .dac.dac-' + d.dac.toLowerCase();
             if (d.dac == 'MUSIC') tr += '-presale';
+            if (d.dac == 'PLAY') tr += '-cf'
 
             $( tr ).html( display_currency( d.amount/100000000, unit, 2 ) );
 
@@ -211,6 +287,7 @@ $('#music-chart-container').highcharts({
             // update total for dac
             var total_tr = '.sub-total .dac.dac-'+d.dac.toLowerCase();
             if (d.dac == 'MUSIC') total_tr += '-presale';
+            if (d.dac == 'PLAY') total_tr += '-cf';
             $( total_tr )
               .html( ' <span class="label label-info">' + display_currency(total/100000000, unit, 2) + '</span>' );
 
@@ -301,7 +378,7 @@ $('#music-chart-container').highcharts({
           <th rowspan="2" class="vote">Bitshares Vote</th>
           <th rowspan="2" class="dns">BitShares DNS</th>
           <th colspan="3" class="music">BitShares Music</th>
-          <th colspan="3" class="play">BitShares PLAY</th>
+          <th colspan="4" class="play">BitShares PLAY</th>
         </tr>
         <tr>
           <th class="ags">Donated</th>
@@ -312,6 +389,7 @@ $('#music-chart-container').highcharts({
           <th class="play">AGS</th>
           <th class="play">PTS</th>
           <th class="play">BTS</th>
+          <th class="play" title="Crowdfunding">CF</th>
         </tr>
       </thead>
 
@@ -338,6 +416,7 @@ $('#music-chart-container').highcharts({
               <td class="dac play dac-play-ags">...</td>
               <td class="dac play dac-play-pts">...</td>
               <td class="dac play dac-play-bts">...</td>
+              <td class="dac play dac-play-cf">...</td>
             </tr>
           <% end %>
 
@@ -367,6 +446,7 @@ $('#music-chart-container').highcharts({
               <td class="dac play dac-play-ags">...</td>
               <td class="dac play dac-play-pts">...</td>
               <td class="dac play dac-play-bts">...</td>
+              <td class="dac play dac-play-cf"></td>
             </tr>
           <% end %>
 
@@ -392,7 +472,8 @@ $('#music-chart-container').highcharts({
 
           <td class="dac play dac-play-ags">...</td>
           <td class="dac play dac-play-pts">...</td>
-          <td class="dac play dac-play-presale">...</td>
+          <td class="dac play dac-play-bts">...</td>
+          <td class="dac play dac-play-cf">...</td>
         </tr>
 
 
@@ -431,6 +512,28 @@ $('#music-chart-container').highcharts({
   <% end %>
 </div>
 
+<% if !@play_donations.blank? && @play_donations.size > 0 %>
+<div class="clearfix"></div>
+
+<h1>BitShares PLAY Crowdfunding Charts </h1>
+<div class="row-fluid">
+  <div id="play-chart-container" class="span12"></div>
+</div>
+<% end %>
+
+<div class="clearfix"></div>
+
+<h1>BitShares PLAY Crowdfund History</h1>
+<div class="row-fluid">
+  <% unless @play_donations.blank? %>
+  <%= render :partial => 'home/today_play_donation_table_with_ags',
+      :locals => { :network => @network, :donations => @play_donations }  %>
+  <% else %>
+  <p>no donations found</p>
+  <% end %>
+</div>
+
+<div class="clearfix"></div>
 <% if !@music_donations.blank? && @music_donations.size > 0 %>
 <div class="clearfix"></div>
 

@@ -1,0 +1,17 @@
+<div class="span12">
+  <h3><%= network.to_s.upcase %></h3>
+  <table class="table table-striped table-condensed table-hover">
+    <tbody>
+      <tr>
+        <th>Time</th>
+        <th>Address</th>
+        <th>Tx</th>
+        <th>Donated</th>
+        <th>Total Donation (day)</th>
+        <th>Rate</th>
+        <th>NOTEs obtained</th>
+      </tr>
+      <%= render :partial => 'home/today_play_donation_item_with_ags', :collection => donations, :as => 'donation', :locals => { :network => network } %>
+    </tbody>
+  </table>
+</div>
