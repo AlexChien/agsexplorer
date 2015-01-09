@@ -113,7 +113,7 @@ class BalancesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @donations.as_json(only: [:address, :ags_amount]) }
+      format.json { render json: @donations.as_json(only: [:address, :ags_amount]), :callback => params[:callback] }
       format.xml { render xml: @donations.to_xml(only: [:address, :ags_amount]) }
     end
   end

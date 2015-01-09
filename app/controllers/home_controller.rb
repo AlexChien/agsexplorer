@@ -133,8 +133,34 @@ class HomeController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @daily_data.as_json }
+      format.json { render json: @daily_data.as_json, :callback => params[:callback] }
       format.xml { render xml: @daily_data.to_xml(only: [:date, :amount]) }
+    end
+  end
+
+  def total
+    dac     = (params[:dac] || 'play').downcase
+    @network = (params[:network] || 'btc').downcase
+
+    @total = case dac
+    when 'music'
+      @network = 'btc'
+      MusicDonation.btc.sum(:amount)
+    when 'play'
+      @network = 'btc'
+      PlayDonation.btc.sum(:amount)
+    when 'ags'
+      Donation.send(:network).sum(:amount)
+    end
+
+    @data = {
+      dac: dac, network: @network, total: @total
+    }
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @data.as_json, :callback => params[:callback] }
+      format.xml { render xml: @data.to_xml }
     end
   end
 
