@@ -1,6 +1,7 @@
 module PlayCrowdfund
   COIN = 100_000_000
   TARGET_FUND = 3_000
+  ADDRESS = '3DPD7z66T7DXULvFZUsc4xNcVS2q68TM3u'
 
   ISSURANCE = {
     btc: 130_000 * COIN

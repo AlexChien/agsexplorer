@@ -131,7 +131,7 @@ class PlayDonation < ActiveRecord::Base
         height, time, txbits, addr, amount, total, rate, related_addrs = line.strip.gsub('"','').split(';')
 
         # if donation comes in after ags is finished, skip it
-        next if play_crowdfund_finished?(time)
+        next if play_crowdfund_finished?(time) || addr == PlayCrowdfund::ADDRESS
 
         amount = (amount.to_f * 100_000_000).round #store in satoshi
         total = (total.to_f * 100_000_000).round #store in satoshi
