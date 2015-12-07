@@ -327,7 +327,7 @@ function drawChart(container, chart_data){
             click: function(){
               ts = this.category;
               date = new Date(ts);
-              window.location = '/by_date/' + (date.getUTCFullYear()+'-'+(date.getUTCMonth()+1)+'-'+date.getUTCDate())
+              window.location = '/by_date/' + (date.getUTCFullYear()+'-'+(date.getUTCMonth()+1)+'-'+date.getUTCDate()) + '?project=ags'
             }
           }
         }
@@ -422,7 +422,7 @@ function drawMusicChart(container, chart_data){
             click: function(){
               ts = this.category;
               date = new Date(ts);
-              window.location = '/by_date/' + (date.getUTCFullYear()+'-'+(date.getUTCMonth()+1)+'-'+date.getUTCDate())
+              window.location = '/by_date/' + (date.getUTCFullYear()+'-'+(date.getUTCMonth()+1)+'-'+date.getUTCDate()) + '?project=music'
             }
           }
         }
@@ -512,7 +512,7 @@ function drawPlayChart(container, chart_data){
             click: function(){
               ts = this.category;
               date = new Date(ts);
-              window.location = '/by_date/' + (date.getUTCFullYear()+'-'+(date.getUTCMonth()+1)+'-'+date.getUTCDate())
+              window.location = '/by_date/' + (date.getUTCFullYear()+'-'+(date.getUTCMonth()+1)+'-'+date.getUTCDate()) + '?project=play'
             }
           }
         }

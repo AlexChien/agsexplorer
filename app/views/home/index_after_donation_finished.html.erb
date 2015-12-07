@@ -67,6 +67,7 @@ $(function(){
 <% end %>
 <div class="clearfix"></div>
 
+<% if @project.nil? || @project == 'play' %>
 <%= render :partial => 'play_donation_home' %>
 
 <!-- upper ad start-->
@@ -85,6 +86,9 @@ $(function(){
 <!-- upper ad end-->
 
 <div class="clearfix" style="margin-top:3em;"></div>
+<% end %>
+
+<% if @project.nil? || @project == 'music' %>
 
 <%= render :partial => 'music_donation_home' %>
 
@@ -106,6 +110,9 @@ $(function(){
 
 
 <div class="clearfix" style="margin-top:3em;"></div>
+<% end %>
+
+<% if @project.nil? || @project == 'ags' %>
 
 <div class="countdown">
   <div class="ags-logo"><%= image_tag "ags-sm-logo.png" %></div>
@@ -165,3 +172,5 @@ $(function(){
 </script>
 </div>
 <!-- lower ad end-->
+
+<% end %>

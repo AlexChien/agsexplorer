@@ -59,6 +59,8 @@ class HomeController < ApplicationController
       Time.zone.now.to_date
     end
 
+    @project = params[:project]
+
     redirect_to root_path and return if @date == Time.zone.now.to_date
 
     @daily_data = Donation.daily
@@ -81,7 +83,7 @@ class HomeController < ApplicationController
     end if donation_finished?
 
     @music_daily_data = MusicDonation.daily
-    @music_today = MusicDonation.by_date
+    @music_today = MusicDonation.by_date(@date.beginning_of_day)
     @music_data = {
       today_btc_donations: MusicDonation.btc.today_donations(@date),
       today_btc_donated:   MusicDonation.today_donated(:btc, @date),
@@ -96,11 +98,11 @@ class HomeController < ApplicationController
 
     # play
     @play_daily_data = PlayDonation.daily
-    @play_today = PlayDonation.by_date
+    @play_today = PlayDonation.by_date(@date.beginning_of_day)
     @play_data = {
-      today_btc_donations: PlayDonation.btc.today_donations,
-      today_btc_donated:   PlayDonation.today_donated(:btc),
-      btc_current_price:   PlayDonation.current_price(:btc) * PlayCrowdfund::COIN,
+      today_btc_donations: PlayDonation.btc.today_donations(@date),
+      today_btc_donated:   PlayDonation.today_donated(:btc, @date),
+      btc_current_price:   PlayDonation.current_price(:btc, @date) * PlayCrowdfund::COIN,
       total_donated:       PlayDonation.total_donated(:btc)
     }
 
