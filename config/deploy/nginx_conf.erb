@@ -5,15 +5,15 @@ server {
   root <%= "#{deploy_to}/current/public" %>;
   try_files $uri/index.html $uri /cache/$uri/index.html /cache/$uri @passenger;
 
-  access_log  logs/<%= application %>.access.log  main;
-  error_log   logs/<%= application %>.error.log info;
+  access_log  <%= deploy_to %>/shared/log/<%= application %>.access.log;
+  error_log   <%= deploy_to %>/shared/log/<%= application %>.error.log info;
 
   location @passenger {
     passenger_ruby <%= passenger_ruby %>;
     passenger_enabled on;
     rack_env production;
     # Make sure that Rails knows whether the connection was encrypted or not
-    passenger_set_cgi_param HTTP_X_FORWARDED_PROTO $scheme;
+    passenger_env_var HTTP_X_FORWARDED_PROTO $scheme;
     passenger_pass_header X-Accel-Redirect;
     passenger_min_instances 4;
 

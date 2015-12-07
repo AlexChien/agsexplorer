@@ -20,22 +20,22 @@ set :output, "/home/mongrel/agsexplorer/shared/log/cron_log.log"
 # Learn more: http://github.com/javan/whenever
 
 # fetch new blockchain data every 1 minutes
-every 5.minutes do
-  # runner "Donation.parse_all"
-  runner "PlayDonation.parse_all"
-end
+# every 5.minutes do
+#   # runner "Donation.parse_all"
+#   runner "PlayDonation.parse_all"
+# end
 
 # fetch tickers every 1 minute
-every 5.minutes do
-  runner "Ticker.fetch_tickers"
-end
+# every 5.minutes do
+#   runner "Ticker.fetch_tickers"
+# end
 
 # update past day's ags amount actually accquired
 every 1.day, :at => '8:10 am' do
   # calculate each donation obtained ags reward for yesterday
   # re-calculate each wallet's total ags amount obtained from its all addresses
   # rake "donation:daily"
-  rake "play:daily"
+  # rake "play:daily"
 end
 
 # re-calculate ags_reward

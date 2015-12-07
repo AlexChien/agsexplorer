@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-set :stages, %w(staging production)
+set :stages, %w(staging production aws ey180)
 set :default_stage, "staging"
 
 require 'capistrano/ext/multistage'

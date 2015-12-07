@@ -56,7 +56,7 @@ $(function(){
 <div class="row-fluid">
   <div class="span6">
     <% if play_crowdfund_finished? %>
-      <%#= render :partial => 'play_summary', :locals => { :network => :btc } %>
+      <%= render :partial => 'play_summary', :locals => { :network => :btc } %>
     <% else %>
       <%= render :partial => 'play_daily_overview', :locals => { :network => :btc } %>
     <% end %>
@@ -97,7 +97,7 @@ $(function(){
   <div id="play-chart-container" class="span12"></div>
 </div>
 
-<% if true || @by_date %>
+<% if @by_date %>
 <h1><%= today(@date) %>'s Donation</h1>
 <div class="row-fluid">
   <%= render :partial => 'today_play_donation_table', :locals => { :network => :btc, :donations => @play_data[:today_btc_donations] } %>

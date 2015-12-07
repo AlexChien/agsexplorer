@@ -4,30 +4,26 @@
     <th>Donations</th>
     <th>&nbsp;</th>
     <tr>
-      <td>Total Pre-saled</td>
-      <td><%= dcp(@music_summary[network][:total], network) %></td>
+      <td>Total Funded</td>
+      <td><%= dcp(@play_summary[network][:total], network) %></td>
     </tr>
     <tr>
       <td>Total Transactions</td>
-      <td><%= number_with_delimiter @music_summary[network][:count] %></td>
+      <td><%= number_with_delimiter @play_summary[network][:count] %></td>
     </tr>
     <tr>
       <td>Daily Average Amount</td>
-      <td><%= dcp(@music_summary[network][:total].to_i / 60, network) %></td>
+      <td><%= dcp(@play_summary[network][:total].to_i / 60, network) %></td>
     </tr>
     <th>Issuance</th>
     <th>&nbsp;</th>
     <tr>
-      <td>Total Pre-sale Days</td>
-      <td>60</td>
+      <td>Total Days</td>
+      <td>28</td>
     </tr>
     <tr>
-      <td>Daily NOTE Issued</td>
-      <td><%= dcp(MusicPresale.daily_issue(network), "note") %></td>
-    </tr>
-    <tr>
-      <td>Total BitShares Music Note Pre-sale Planned</td>
-      <td><%= dcp(MusicPresale.daily_issue(network) * 60, "note") %></td>
+      <td>Total PLS Issued</td>
+      <td><%= dcp(PlayCrowdfund.total_issued(network) * 60, "note") %></td>
     </tr>
 
   </tbody>

@@ -257,7 +257,7 @@ function drawChart(container, chart_data){
         type: 'all',
         text: 'All'
       }],
-      selected : 0
+      selected : 4
     },
 
     title : {
@@ -372,7 +372,7 @@ function drawMusicChart(container, chart_data){
         type: 'all',
         text: 'All'
       }],
-      selected : 0
+      selected : 2
     },
 
     title : {
@@ -462,7 +462,7 @@ function drawPlayChart(container, chart_data){
         type: 'all',
         text: 'All'
       }],
-      selected : 0
+      selected : 2
     },
 
     title : {

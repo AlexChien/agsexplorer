@@ -61,6 +61,7 @@ $(function(){
 
 <%= render :partial => 'announcement' %>
 
+<% if false %>
 <table id="ticker" class="table table-striped table-condensed table-hover span1 pull-right">
   <tr>
     <th>PTS/BTC</th>
@@ -73,6 +74,7 @@ $(function(){
     <td id="pts_usd" data-value="0"></td>
   </tr>
 </table>
+<% end %>
 <div class="clearfix"></div>
 
 <% unless donation_finished? %>
